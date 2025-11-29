@@ -3,7 +3,7 @@ LAMBDA_DIR=backend/add_game
 ZIP_FILE=$(LAMBDA_DIR)/add_game.zip
 TERRAFORM_DIR=infra
 
-.PHONY: lambda terraform terraform-init terraform-plan terraform-apply clean
+.PHONY: lambda terraform terraform-init terraform-plan terraform-apply terraform-destroy clean
 
 # Prepare the Lambda: initialize Node.js, install dependencies, and create zip
 lambda:
@@ -39,6 +39,9 @@ terraform-plan:
 
 terraform-apply:
 	cd $(TERRAFORM_DIR) && terraform apply -auto-approve
+
+terraform-destroy:
+	cd $(TERRAFORM_DIR) && terraform destroy -auto-approve
 
 # Convenience target: run init, plan, apply
 terraform: terraform-init terraform-plan terraform-apply
