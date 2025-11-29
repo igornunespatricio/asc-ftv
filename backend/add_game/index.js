@@ -4,6 +4,12 @@ const { v4: uuidv4 } = require("uuid");
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.DYNAMODB_TABLE;
 
+const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST,OPTIONS"
+};
+
 exports.handler = async (event) => {
     console.log("Received event:", JSON.stringify(event));
 
@@ -14,6 +20,7 @@ exports.handler = async (event) => {
         console.error("Invalid JSON:", err);
         return {
             statusCode: 400,
+            headers: corsHeaders,
             body: JSON.stringify({ message: "Invalid JSON payload" }),
         };
     }
@@ -24,6 +31,7 @@ exports.handler = async (event) => {
     if (!match_date || !winner1 || !winner2 || !loser1 || !loser2) {
         return {
             statusCode: 400,
+            headers: corsHeaders,
             body: JSON.stringify({ message: "Missing required fields" }),
         };
     }
@@ -43,12 +51,14 @@ exports.handler = async (event) => {
         await dynamo.put({ TableName: tableName, Item: item }).promise();
         return {
             statusCode: 200,
+            headers: corsHeaders,
             body: JSON.stringify(item),
         };
     } catch (err) {
         console.error("DynamoDB error:", err);
         return {
             statusCode: 500,
+            headers: corsHeaders,
             body: JSON.stringify({ message: "Error saving game" }),
         };
     }
