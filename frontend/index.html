@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Jogo de Futevôlei</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Adicionar Jogo de Futevôlei</h1>
+
+  <form id="game-form">
+    <label>Data da partida:
+      <input type="date" name="match_date" required>
+    </label><br>
+
+    <label>Vencedor 1:
+      <input type="text" name="winner1" required>
+    </label><br>
+
+    <label>Vencedor 2:
+      <input type="text" name="winner2" required>
+    </label><br>
+
+    <label>Perdedor 1:
+      <input type="text" name="loser1" required>
+    </label><br>
+
+    <label>Perdedor 2:
+      <input type="text" name="loser2" required>
+    </label><br>
+
+    <label>Placar:
+      <input type="text" name="scores">
+    </label><br>
+
+    <button type="submit">Adicionar Jogo</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script src="main.js"></script>
+</body>
+</html>
