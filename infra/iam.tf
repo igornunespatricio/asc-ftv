@@ -48,3 +48,23 @@ resource "aws_iam_role" "apigw_cloudwatch_role" {
     ]
   })
 }
+
+data "aws_iam_policy_document" "website_public" {
+  statement {
+    sid    = "PublicReadGetObject"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "s3:GetObject"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.website.arn}/*"
+    ]
+  }
+}
