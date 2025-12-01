@@ -32,7 +32,7 @@ lambda:
 
 # Terraform commands
 terraform-init:
-	cd $(TERRAFORM_DIR) && terraform init
+	cd $(TERRAFORM_DIR) && terraform init -upgrade
 
 terraform-plan:
 	cd $(TERRAFORM_DIR) && terraform plan
