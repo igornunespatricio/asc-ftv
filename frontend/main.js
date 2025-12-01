@@ -1,4 +1,4 @@
-const apiUrl = "https://xyjtrnyfhb.execute-api.us-east-1.amazonaws.com/prod/games"; // sua API Gateway
+const apiUrl = window.APP_CONFIG.apiUrl;
 
 document.getElementById("game-form").addEventListener("submit", async (e) => {
   e.preventDefault();
