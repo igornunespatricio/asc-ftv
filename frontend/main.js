@@ -14,10 +14,10 @@ async function loadGames() {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td>${game.match_date}</td>
-        <td>${game.winner1} / ${game.winner2}</td>
-        <td>${game.loser1} / ${game.loser2}</td>
-        <td>${game.scores || "-"}</td>
+        <td data-label="Data">${game.match_date}</td>
+        <td data-label="Vencedores">${game.winner1} / ${game.winner2}</td>
+        <td data-label="Perdedores">${game.loser1} / ${game.loser2}</td>
+        <td data-label="Placar">${game.scores || "-"}</td>
       `;
 
       tableBody.appendChild(row);
