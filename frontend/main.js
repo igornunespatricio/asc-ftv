@@ -1,5 +1,33 @@
 const apiUrl = window.APP_CONFIG.apiUrl;
 
+async function loadGames() {
+  const tableBody = document.querySelector("#games-table tbody");
+
+  try {
+    const response = await fetch(apiUrl); // GET no mesmo endpoint
+    const games = await response.json();
+
+    // Limpa a tabela
+    tableBody.innerHTML = "";
+
+    games.forEach(game => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${game.match_date}</td>
+        <td>${game.winner1} / ${game.winner2}</td>
+        <td>${game.loser1} / ${game.loser2}</td>
+        <td>${game.scores || "-"}</td>
+      `;
+
+      tableBody.appendChild(row);
+    });
+
+  } catch (err) {
+    console.error("Erro ao carregar jogos:", err);
+  }
+}
+
 document.getElementById("game-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -25,6 +53,7 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     if (response.ok) {
       document.getElementById("status").textContent = `Jogo adicionado com sucesso! ID: ${result.id}`;
       form.reset();
+      loadGames();
     } else {
       document.getElementById("status").textContent = `Erro: ${result.message}`;
     }
@@ -32,3 +61,5 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     document.getElementById("status").textContent = `Erro de rede: ${err.message}`;
   }
 });
+
+window.addEventListener("DOMContentLoaded", loadGames);
