@@ -17,7 +17,7 @@ async function loadGames() {
         <td data-label="Data">${game.match_date}</td>
         <td data-label="Vencedores">${game.winner1} / ${game.winner2}</td>
         <td data-label="Perdedores">${game.loser1} / ${game.loser2}</td>
-        <td data-label="Placar">${game.scores || "-"}</td>
+        <td data-label="Placar">${game.score_winner} x ${game.score_loser}</td>
       `;
 
       tableBody.appendChild(row);
@@ -38,7 +38,8 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     winner2: form.winner2.value,
     loser1: form.loser1.value,
     loser2: form.loser2.value,
-    scores: form.scores.value,
+    score_winner: form.score_winner.value,
+    score_loser: form.score_loser.value,
   };
 
   try {
