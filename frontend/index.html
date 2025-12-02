@@ -6,38 +6,96 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Adicionar Jogo de Futevôlei</h1>
 
-  <form id="game-form">
-    <label>Data da partida:
-      <input type="date" name="match_date" required>
-    </label><br>
+  <h1 class="page-title">Gerenciamento de Jogos de Futevôlei</h1>
 
-    <label>Vencedor 1:
-      <input type="text" name="winner1" required>
-    </label><br>
+  <!-- Main two-column layout -->
+  <div class="main-layout">
 
-    <label>Vencedor 2:
-      <input type="text" name="winner2" required>
-    </label><br>
+    <!-- LEFT PANEL - FORM -->
+    <div class="left-panel">
+      <div class="form-container">
+        <h2>Adicionar Partida</h2>
 
-    <label>Perdedor 1:
-      <input type="text" name="loser1" required>
-    </label><br>
+        <form id="game-form">
 
-    <label>Perdedor 2:
-      <input type="text" name="loser2" required>
-    </label><br>
+          <div class="form-group">
+            <label for="match_date">Data da partida</label>
+            <input type="date" id="match_date" name="match_date" required>
+          </div>
 
-    <label>Placar:
-      <input type="text" name="scores">
-    </label><br>
+          <h3 class="section-title">Vencedores</h3>
 
-    <button type="submit">Adicionar Jogo</button>
-  </form>
+          <div class="form-group">
+            <label for="winner1">Jogador 1</label>
+            <input type="text" id="winner1" name="winner1" placeholder="Ex: João" required>
+          </div>
 
-  <p id="status"></p>
+          <div class="form-group">
+            <label for="winner2">Jogador 2</label>
+            <input type="text" id="winner2" name="winner2" placeholder="Ex: Pedro" required>
+          </div>
+
+          <h3 class="section-title">Perdedores</h3>
+
+          <div class="form-group">
+            <label for="loser1">Jogador 1</label>
+            <input type="text" id="loser1" name="loser1" placeholder="Ex: Lucas" required>
+          </div>
+
+          <div class="form-group">
+            <label for="loser2">Jogador 2</label>
+            <input type="text" id="loser2" name="loser2" placeholder="Ex: Rafael" required>
+          </div>
+
+          <div class="form-group">
+            <label for="scores">Placar</label>
+            <input type="text" id="scores" name="scores" placeholder="Ex: 18x12">
+          </div>
+
+          <button type="submit" class="btn-submit">Adicionar Partida</button>
+        </form>
+      </div>
+
+      <p id="status"></p>
+    </div>
+
+    <!-- RIGHT PANEL - TABLE -->
+    <div class="right-panel">
+
+      <!-- Table container -->
+      <div class="table-container">
+
+        <table id="games-table">
+          <thead>
+
+            <!-- Full-width header title row -->
+            <tr>
+              <th colspan="4" class="table-title">Histórico de Partidas</th>
+            </tr>
+
+            <!-- Column titles -->
+            <tr>
+              <th>Data</th>
+              <th>Vencedores</th>
+              <th>Perdedores</th>
+              <th>Placar</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <!-- Filled by JavaScript -->
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+  </div>
+
   <script src="config.js"></script>
   <script src="main.js"></script>
+
 </body>
 </html>

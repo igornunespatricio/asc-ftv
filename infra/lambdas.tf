@@ -21,3 +21,27 @@ resource "aws_lambda_permission" "apigw" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
+
+
+resource "aws_lambda_function" "get_games" {
+  function_name    = "getFutevoleiGames"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "index.handler"
+  runtime          = "nodejs18.x"
+  filename         = "${path.module}/../backend/get_games/get_games.zip"
+  source_code_hash = filebase64sha256("${path.module}/../backend/get_games/get_games.zip")
+  environment {
+    variables = {
+      DYNAMODB_TABLE = aws_dynamodb_table.games.name
+    }
+  }
+}
+
+
+resource "aws_lambda_permission" "apigw_get" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_games.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+}

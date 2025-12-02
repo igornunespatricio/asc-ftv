@@ -77,6 +77,24 @@ resource "aws_api_gateway_integration" "post_games_integration" {
   uri                     = aws_lambda_function.add_game.invoke_arn
 }
 
+resource "aws_api_gateway_method" "get_games" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.games_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_games_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.games_resource.id
+  http_method             = aws_api_gateway_method.get_games.http_method
+  type                    = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.get_games.invoke_arn
+}
+
+
+
 resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.api.id
 
@@ -84,11 +102,13 @@ resource "aws_api_gateway_deployment" "api_deployment" {
     redeploy = sha1(jsonencode({
       methods = [
         aws_api_gateway_method.post_games.http_method,
-        aws_api_gateway_method.options_games.http_method
+        aws_api_gateway_method.options_games.http_method,
+        aws_api_gateway_method.get_games.http_method
       ]
       integrations = [
         aws_api_gateway_integration.post_games_integration.id,
-        aws_api_gateway_integration.options_games_integration.id
+        aws_api_gateway_integration.options_games_integration.id,
+        aws_api_gateway_integration.get_games_integration.id
       ]
     }))
   }

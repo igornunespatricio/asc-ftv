@@ -98,6 +98,8 @@ resource "aws_s3_object" "config_js" {
   bucket       = aws_s3_bucket.website.id
   key          = "config.js"
   source       = "${path.module}/../frontend/config.js"
-  etag         = filemd5("${path.module}/../frontend/config.js")
   content_type = "application/javascript"
+  depends_on = [
+    local_file.config_js
+  ]
 }
