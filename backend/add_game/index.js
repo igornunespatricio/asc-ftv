@@ -25,7 +25,7 @@ exports.handler = async (event) => {
         };
     }
 
-    const { match_date, winner1, winner2, loser1, loser2, scores } = body;
+    const { match_date, winner1, winner2, loser1, loser2, score_winner, score_loser } = body;
 
     // Validação dos campos obrigatórios
     if (!match_date || !winner1 || !winner2 || !loser1 || !loser2) {
@@ -43,7 +43,8 @@ exports.handler = async (event) => {
         winner2,
         loser1,
         loser2,
-        scores: scores || null,
+        score_winner: score_winner !== undefined && score_winner !== "" ? Number(score_winner) : null,
+        score_loser: score_loser !== undefined && score_loser !== "" ? Number(score_loser) : null,
         created_at: new Date().toISOString(),
     };
 
