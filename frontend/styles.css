@@ -52,7 +52,10 @@ button {
 }
 
 
-/* Table with matches */
+/* ============================================================
+   TABLE CONTAINERS (Ranking + Histórico)
+   ============================================================ */
+
 .table-container {
   max-width: 800px;
   margin: 30px auto;
@@ -65,13 +68,19 @@ button {
   font-size: 22px;
   font-weight: 700;
   padding: 14px 0;
-  background: #1e88e5;      /* Strong blue background */
-  color: white;              /* White text for contrast */
+  background: #1e88e5;     /* azul forte */
+  color: white;
   border-bottom: 3px solid #1565c0;
   letter-spacing: 0.5px;
 }
 
-#games-table {
+/* ============================================================
+   TABELAS ESTILIZADAS (Ranking + Histórico)
+   ============================================================ */
+
+/* Ambas as tabelas terão exatamente o mesmo estilo */
+#games-table,
+#ranking-table {
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
@@ -82,12 +91,14 @@ button {
 }
 
 /* Cabeçalho */
-#games-table thead {
+#games-table thead,
+#ranking-table thead {
   background: #1e88e5;
   color: white;
 }
 
-#games-table th {
+#games-table th,
+#ranking-table th {
   text-align: left;
   padding: 14px;
   font-size: 15px;
@@ -95,30 +106,42 @@ button {
 }
 
 /* Linhas */
-#games-table td {
+#games-table td,
+#ranking-table td {
   padding: 12px 14px;
   border-bottom: 1px solid #e6e6e6;
   font-size: 14px;
 }
 
 /* Zebra stripes */
-#games-table tbody tr:nth-child(even) {
+#games-table tbody tr:nth-child(even),
+#ranking-table tbody tr:nth-child(even) {
   background: #f9f9f9;
 }
 
 /* Hover highlight */
-#games-table tbody tr:hover {
+#games-table tbody tr:hover,
+#ranking-table tbody tr:hover {
   background: #e3f2fd;
   cursor: pointer;
 }
 
-/* Ajuste responsivo para mobile */
+
+/* ============================================================
+   TABLE - MOBILE RESPONSIVE
+   ============================================================ */
+
 @media (max-width: 600px) {
-  #games-table thead {
+
+  /* Esconde cabeçalho */
+  #games-table thead,
+  #ranking-table thead {
     display: none;
   }
 
-  #games-table tr {
+  /* Cada linha vira card */
+  #games-table tr,
+  #ranking-table tr {
     display: block;
     margin-bottom: 15px;
     border-radius: 8px;
@@ -126,25 +149,32 @@ button {
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
 
-  #games-table td {
+  #games-table td,
+  #ranking-table td {
     display: flex;
     justify-content: space-between;
     padding: 12px;
     border-bottom: 1px solid #eee;
   }
 
-  #games-table td::before {
+  #games-table td::before,
+  #ranking-table td::before {
     content: attr(data-label);
     font-weight: bold;
     color: #444;
   }
 
-  #games-table td:last-child {
+  #games-table td:last-child,
+  #ranking-table td:last-child {
     border-bottom: none;
   }
 }
 
-/* Form container */
+
+/* ============================================================
+   FORM CONTAINER
+   ============================================================ */
+
 .form-container {
   max-width: 420px;
   margin: 40px auto;

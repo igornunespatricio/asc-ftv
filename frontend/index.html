@@ -67,36 +67,63 @@
       <p id="status"></p>
     </div>
 
-    <!-- RIGHT PANEL - TABLE -->
+    <!-- RIGHT PANEL -->
     <div class="right-panel">
 
-      <!-- Table container -->
+      <!-- RANKING MENSAL -->
       <div class="table-container">
 
-        <table id="games-table">
+        <table id="ranking-table">
           <thead>
 
-            <!-- Full-width header title row -->
+            <!-- Full width header -->
             <tr>
-              <th colspan="4" class="table-title">Histórico de Partidas</th>
+              <th colspan="7" class="table-title">Ranking do Mês</th>
             </tr>
 
             <!-- Column titles -->
+            <tr>
+              <th>Colocação</th>
+              <th>Jogador</th>
+              <th>Pontos</th>
+              <th>Jogos</th>
+              <th>Vitórias</th>
+              <th>Derrotas</th>
+              <th>Aproveitamento</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <!-- Preenchido via main.js -->
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <!-- HISTÓRICO DE PARTIDAS -->
+      <div class="table-container" style="margin-top: 40px;">
+
+        <table id="games-table">
+          <thead>
+            <tr>
+              <th colspan="4" class="table-title">Histórico de Partidas</th>
+            </tr>
             <tr>
               <th>Data</th>
               <th>Vencedores</th>
               <th>Perdedores</th>
               <th>Placar</th>
             </tr>
-
           </thead>
-
           <tbody>
-            <!-- Filled by JavaScript -->
+            <!-- Preenchido via main.js -->
           </tbody>
-
         </table>
+
       </div>
+
     </div>
 
   </div>
