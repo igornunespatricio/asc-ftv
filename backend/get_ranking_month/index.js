@@ -68,9 +68,16 @@ exports.handler = async () => {
       }))
       .sort((a, b) => b.points - a.points);
 
-    // Add position
-    rankingArray.forEach((r, index) => {
-      r.position = index + 1;
+    // Add position using DENSE ranking (1,1,2,2,3...)
+    let lastPoints = null;
+    let currentRank = 0;
+
+    rankingArray.forEach((r) => {
+      if (r.points !== lastPoints) {
+        currentRank += 1;
+        lastPoints = r.points;
+      }
+      r.position = currentRank;
     });
 
     return {
