@@ -87,7 +87,7 @@ resource "local_file" "config_js" {
   content = templatefile(
     "${path.module}/../frontend/config.js.tpl",
     {
-      api_url = "${aws_api_gateway_stage.prod.invoke_url}/games"
+      api_url = "${aws_api_gateway_stage.prod.invoke_url}"
     }
   )
 
@@ -99,7 +99,9 @@ resource "aws_s3_object" "config_js" {
   key          = "config.js"
   source       = "${path.module}/../frontend/config.js"
   content_type = "application/javascript"
+  etag         = filemd5("${path.module}/../frontend/config.js")
   depends_on = [
     local_file.config_js
   ]
 }
+
