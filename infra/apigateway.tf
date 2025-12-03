@@ -93,7 +93,77 @@ resource "aws_api_gateway_integration" "get_games_integration" {
   uri                     = aws_lambda_function.get_games.invoke_arn
 }
 
+resource "aws_api_gateway_resource" "ranking_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
+  path_part   = "ranking"
+}
 
+resource "aws_api_gateway_method" "options_ranking" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.ranking_resource.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_ranking_integration" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.ranking_resource.id
+  http_method = aws_api_gateway_method.options_ranking.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+
+  passthrough_behavior = "WHEN_NO_MATCH"
+}
+
+resource "aws_api_gateway_method_response" "options_ranking_response" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.ranking_resource.id
+  http_method = aws_api_gateway_method.options_ranking.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options_ranking_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.ranking_resource.id
+  http_method = aws_api_gateway_method.options_ranking.http_method
+  status_code = aws_api_gateway_method_response.options_ranking_response.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  response_templates = {
+    "application/json" = ""
+  }
+}
+
+resource "aws_api_gateway_method" "get_ranking" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.ranking_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_ranking_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.ranking_resource.id
+  http_method             = aws_api_gateway_method.get_ranking.http_method
+  type                    = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.get_ranking_month.invoke_arn
+}
 
 resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.api.id
@@ -103,15 +173,20 @@ resource "aws_api_gateway_deployment" "api_deployment" {
       methods = [
         aws_api_gateway_method.post_games.http_method,
         aws_api_gateway_method.options_games.http_method,
-        aws_api_gateway_method.get_games.http_method
+        aws_api_gateway_method.get_games.http_method,
+        aws_api_gateway_method.get_ranking.http_method,
+        aws_api_gateway_method.options_ranking.http_method,
       ]
       integrations = [
         aws_api_gateway_integration.post_games_integration.id,
         aws_api_gateway_integration.options_games_integration.id,
-        aws_api_gateway_integration.get_games_integration.id
+        aws_api_gateway_integration.get_games_integration.id,
+        aws_api_gateway_integration.get_ranking_integration.id,
+        aws_api_gateway_integration.options_ranking_integration.id,
       ]
     }))
   }
+
 
   lifecycle {
     create_before_destroy = true
@@ -119,7 +194,10 @@ resource "aws_api_gateway_deployment" "api_deployment" {
 
   depends_on = [
     aws_api_gateway_integration.post_games_integration,
-    aws_api_gateway_integration.options_games_integration
+    aws_api_gateway_integration.options_games_integration,
+    aws_api_gateway_integration.get_games_integration,
+    aws_api_gateway_integration.get_ranking_integration,
+    aws_api_gateway_integration.options_ranking_integration
   ]
 }
 
