@@ -11,3 +11,9 @@ variable "website_bucket" {
   default     = "futevolei-website"
   type        = string
 }
+
+variable "dynamodb_table_v2_name" {
+  type        = string
+  description = "Nome da tabela DynamoDB versão 2"
+  default     = "futevolei-games-v2"
+}

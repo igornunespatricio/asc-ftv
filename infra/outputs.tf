@@ -4,5 +4,5 @@ output "api_http_url" {
 }
 
 output "dynamodb_table_name" {
-  value = aws_dynamodb_table.games.name
+  value = aws_dynamodb_table.games_v2.name
 }
