@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const TABLE = process.env.DYNAMODB_TABLE;
 
-// Returns YYYY-MM (e.g., "2025-12")
+// Retorna "YYYY-MM"
 function getCurrentMonthPrefix() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -10,18 +10,22 @@ function getCurrentMonthPrefix() {
 
 exports.handler = async () => {
   try {
-    const monthPrefix = getCurrentMonthPrefix();
+    const month = getCurrentMonthPrefix();
+    const pkValue = `MONTH#${month}`;
 
-    // Load all games
-    const result = await dynamo.scan({ TableName: TABLE }).promise();
-    const games = result.Items || [];
+    // Busca apenas os jogos do mês atual
+    const params = {
+      TableName: TABLE,
+      KeyConditionExpression: "pk = :pk",
+      ExpressionAttributeValues: {
+        ":pk": pkValue,
+      },
+    };
 
-    // Filter games for current month
-    const monthGames = games.filter((g) =>
-      (g.match_date || "").startsWith(monthPrefix),
-    );
+    const result = await dynamo.query(params).promise();
+    const monthGames = result.Items || [];
 
-    // Accumulator object: { player: { points, matches, wins, losses } }
+    // Ranking accumulator
     const ranking = {};
 
     function ensurePlayer(name) {
@@ -36,15 +40,14 @@ exports.handler = async () => {
       }
     }
 
+    // Processar jogos
     monthGames.forEach((game) => {
       const winners = [game.winner1, game.winner2];
       const losers = [game.loser1, game.loser2];
 
-      // Ensure players exist
       winners.forEach(ensurePlayer);
       losers.forEach(ensurePlayer);
 
-      // Update stats
       winners.forEach((player) => {
         ranking[player].points += 3;
         ranking[player].matches += 1;
@@ -57,7 +60,7 @@ exports.handler = async () => {
       });
     });
 
-    // Convert to array and sort
+    // Transformar para array e calcular eficiência
     const rankingArray = Object.values(ranking)
       .map((entry) => ({
         ...entry,
@@ -68,7 +71,7 @@ exports.handler = async () => {
       }))
       .sort((a, b) => b.points - a.points);
 
-    // Add position using DENSE ranking (1,1,2,2,3...)
+    // Ranking estilo DENSE (1,1,2,2,3,...)
     let lastPoints = null;
     let currentRank = 0;
 
