@@ -8,9 +8,11 @@ function getCurrentMonthPrefix() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
-exports.handler = async () => {
+exports.handler = async (event) => {
   try {
-    const month = getCurrentMonthPrefix();
+    const queryMonth = event.queryStringParameters?.month;
+    const month = queryMonth || getCurrentMonthPrefix();
+
     const pkValue = `MONTH#${month}`;
 
     // Busca apenas os jogos do mês atual

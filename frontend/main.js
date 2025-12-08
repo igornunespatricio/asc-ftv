@@ -3,13 +3,34 @@ const gamesUrl = `${baseUrl}/games`;
 const rankingUrl = `${baseUrl}/ranking`;
 
 /* ============================================================
+   CARREGAR OPÇÕES DE MESES
+   ============================================================ */
+function generateMonthOptions() {
+  const select = document.getElementById("month-selector");
+
+  const today = new Date();
+
+  for (let i = 0; i < 12; i++) {
+    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    if (i === 0) option.selected = true; // mês atual
+
+    select.appendChild(option);
+  }
+}
+
+/* ============================================================
    CARREGAR HISTÓRICO DE JOGOS
    ============================================================ */
-async function loadGames() {
+async function loadGames(month) {
   const tableBody = document.querySelector("#games-table tbody");
-
+  const url = `${gamesUrl}?month=${month}`;
   try {
-    const response = await fetch(gamesUrl);
+    const response = await fetch(url);
     const games = await response.json();
 
     tableBody.innerHTML = "";
@@ -34,11 +55,11 @@ async function loadGames() {
 /* ============================================================
    CARREGAR RANKING MENSAL
    ============================================================ */
-async function loadRanking() {
+async function loadRanking(month) {
   const tableBody = document.querySelector("#ranking-table tbody");
-
+  const url = `${rankingUrl}?month=${month}`;
   try {
-    const response = await fetch(rankingUrl);
+    const response = await fetch(url);
     const ranking = await response.json();
 
     tableBody.innerHTML = "";
@@ -96,8 +117,9 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
       form.reset();
 
       // Recarrega tabelas
-      loadGames();
-      loadRanking();
+      const selectedMonth = document.getElementById("month-selector").value;
+      loadGames(selectedMonth);
+      loadRanking(selectedMonth);
     } else {
       document.getElementById("status").textContent = `Erro: ${result.message}`;
     }
@@ -111,6 +133,14 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
    AO CARREGAR A PÁGINA
    ============================================================ */
 window.addEventListener("DOMContentLoaded", () => {
-  loadGames();
-  loadRanking();
+  generateMonthOptions();
+  const currentMonth = document.getElementById("month-selector").value;
+  loadGames(currentMonth);
+  loadRanking(currentMonth);
+});
+
+document.getElementById("month-selector").addEventListener("change", (e) => {
+  const selectedMonth = e.target.value;
+  loadGames(selectedMonth);
+  loadRanking(selectedMonth);
 });
