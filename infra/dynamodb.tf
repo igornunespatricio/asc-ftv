@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "games" {
-  name         = var.dynamodb_table_name
+  name         = "asc-ftv-${terraform.workspace}-games"
   billing_mode = "PAY_PER_REQUEST"
 
   hash_key  = "pk"
@@ -27,6 +27,6 @@ resource "aws_dynamodb_table" "games" {
   }
 
   tags = {
-    Name = "Futevolei Games V2"
+    Name = "asc-ftv-${terraform.workspace}-games"
   }
 }

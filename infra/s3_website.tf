@@ -1,12 +1,12 @@
 resource "aws_s3_bucket" "website" {
-  bucket = var.website_bucket
+  bucket = "${terraform.workspace}-${var.website_bucket}"
 
   tags = {
-    Name = "Website Bucket"
+    Name = "${terraform.workspace}-website-bucket"
   }
 }
 
-# Obrigatório para permitir ACLs específicas (mas sem ACL pública no bucket)
+# Ownership (obrigatório)
 resource "aws_s3_bucket_ownership_controls" "website" {
   bucket = aws_s3_bucket.website.id
 
@@ -15,7 +15,7 @@ resource "aws_s3_bucket_ownership_controls" "website" {
   }
 }
 
-# Libera objetos para serem públicos (sem forçar o bucket todo a ser público)
+# Liberação de ACLs (necessário para website)
 resource "aws_s3_bucket_public_access_block" "website" {
   bucket = aws_s3_bucket.website.id
 
@@ -25,14 +25,30 @@ resource "aws_s3_bucket_public_access_block" "website" {
   restrict_public_buckets = false
 }
 
-# Agora sim, liberamos acesso ao conteúdo através da policy
+# Política pública do bucket
 resource "aws_s3_bucket_policy" "website" {
   bucket = aws_s3_bucket.website.id
   policy = data.aws_iam_policy_document.website_public.json
 }
 
+data "aws_iam_policy_document" "website_public" {
+  statement {
+    sid     = "AllowPublicRead"
+    effect  = "Allow"
+    actions = ["s3:GetObject"]
 
-# Configuração do website
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      "${aws_s3_bucket.website.arn}/*"
+    ]
+  }
+}
+
+# Website Hosting
 resource "aws_s3_bucket_website_configuration" "website" {
   bucket = aws_s3_bucket.website.id
 
@@ -45,7 +61,7 @@ resource "aws_s3_bucket_website_configuration" "website" {
   }
 }
 
-# CORS (opcional, mas útil para requisições JS)
+# CORS para frontend
 resource "aws_s3_bucket_cors_configuration" "website" {
   bucket = aws_s3_bucket.website.id
 
@@ -57,6 +73,7 @@ resource "aws_s3_bucket_cors_configuration" "website" {
   }
 }
 
+# Upload de todos os arquivos do frontend
 locals {
   frontend_files = fileset("${path.module}/../frontend", "**")
 }
@@ -83,11 +100,12 @@ resource "aws_s3_object" "frontend" {
   )
 }
 
+# Geração do config.js com URL dinâmica via workspace
 resource "local_file" "config_js" {
   content = templatefile(
     "${path.module}/../frontend/config.js.tpl",
     {
-      api_url = "${aws_api_gateway_stage.prod.invoke_url}"
+      api_url = aws_api_gateway_stage.stage.invoke_url
     }
   )
 
@@ -100,8 +118,8 @@ resource "aws_s3_object" "config_js" {
   source       = "${path.module}/../frontend/config.js"
   content_type = "application/javascript"
   etag         = filemd5("${path.module}/../frontend/config.js")
+
   depends_on = [
     local_file.config_js
   ]
 }
-

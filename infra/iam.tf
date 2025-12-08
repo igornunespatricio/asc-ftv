@@ -1,6 +1,8 @@
-# IAM Role for Lambda
+# ---------------------------------------------------------
+# IAM ROLE FOR LAMBDA
+# ---------------------------------------------------------
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda-futevolei-role"
+  name = "asc-ftv-${terraform.workspace}-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -16,24 +18,23 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+# DynamoDB full access (pode ser reduzido futuramente)
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
+# Permite Lambda escrever logs no CloudWatch
 resource "aws_iam_role_policy_attachment" "lambda_cloudwatch_attach" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_iam_role_policy_attachment" "apigw_cloudwatch_role_attach" {
-  role       = aws_iam_role.apigw_cloudwatch_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-}
-
-# IAM role para API Gateway enviar logs
+# ---------------------------------------------------------
+# IAM ROLE FOR API GATEWAY LOGS
+# ---------------------------------------------------------
 resource "aws_iam_role" "apigw_cloudwatch_role" {
-  name = "APIGatewayPushToCloudWatchLogs"
+  name = "asc-ftv-${terraform.workspace}-apigw-cloudwatch-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -49,22 +50,7 @@ resource "aws_iam_role" "apigw_cloudwatch_role" {
   })
 }
 
-data "aws_iam_policy_document" "website_public" {
-  statement {
-    sid    = "PublicReadGetObject"
-    effect = "Allow"
-
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-
-    actions = [
-      "s3:GetObject"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.website.arn}/*"
-    ]
-  }
+resource "aws_iam_role_policy_attachment" "apigw_cloudwatch_role_attach" {
+  role       = aws_iam_role.apigw_cloudwatch_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
