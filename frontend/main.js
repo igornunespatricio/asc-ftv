@@ -26,11 +26,11 @@ function generateMonthOptions() {
 /* ============================================================
    CARREGAR HISTÓRICO DE JOGOS
    ============================================================ */
-async function loadGames() {
+async function loadGames(month) {
   const tableBody = document.querySelector("#games-table tbody");
-
+  const url = `${gamesUrl}?month=${month}`;
   try {
-    const response = await fetch(gamesUrl);
+    const response = await fetch(url);
     const games = await response.json();
 
     tableBody.innerHTML = "";
@@ -57,7 +57,7 @@ async function loadGames() {
    ============================================================ */
 async function loadRanking(month) {
   const tableBody = document.querySelector("#ranking-table tbody");
-  const url = month ? `${rankingUrl}?month=${month}` : rankingUrl;
+  const url = `${rankingUrl}?month=${month}`;
   try {
     const response = await fetch(url);
     const ranking = await response.json();
@@ -117,8 +117,8 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
       form.reset();
 
       // Recarrega tabelas
-      loadGames();
       const selectedMonth = document.getElementById("month-selector").value;
+      loadGames(selectedMonth);
       loadRanking(selectedMonth);
     } else {
       document.getElementById("status").textContent = `Erro: ${result.message}`;
@@ -135,11 +135,12 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
 window.addEventListener("DOMContentLoaded", () => {
   generateMonthOptions();
   const currentMonth = document.getElementById("month-selector").value;
-  loadGames();
+  loadGames(currentMonth);
   loadRanking(currentMonth);
 });
 
 document.getElementById("month-selector").addEventListener("change", (e) => {
   const selectedMonth = e.target.value;
+  loadGames(selectedMonth);
   loadRanking(selectedMonth);
 });

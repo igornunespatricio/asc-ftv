@@ -8,8 +8,9 @@ function getCurrentMonthPrefix() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
-exports.handler = async () => {
-  const month = getCurrentMonthPrefix();
+exports.handler = async (event) => {
+  const requestedMonth = event.queryStringParameters?.month;
+  const month = requestedMonth || getCurrentMonthPrefix();
   const pkValue = `MONTH#${month}`;
 
   const params = {
