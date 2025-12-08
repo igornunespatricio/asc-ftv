@@ -8,7 +8,7 @@ resource "aws_lambda_function" "add_game" {
   source_code_hash = filebase64sha256("${path.module}/../backend/add_game/add_game.zip")
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.games_v2.name
+      DYNAMODB_TABLE = aws_dynamodb_table.games.name
     }
   }
 }
@@ -32,7 +32,7 @@ resource "aws_lambda_function" "get_games" {
   source_code_hash = filebase64sha256("${path.module}/../backend/get_games/get_games.zip")
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.games_v2.name
+      DYNAMODB_TABLE = aws_dynamodb_table.games.name
     }
   }
 }
@@ -57,7 +57,7 @@ resource "aws_lambda_function" "get_ranking_month" {
 
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.games_v2.name
+      DYNAMODB_TABLE = aws_dynamodb_table.games.name
     }
   }
 }
