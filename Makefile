@@ -35,17 +35,20 @@ lambda:
 	done
 
 # Terraform commands
-terraform-init:
+init:
 	cd $(TERRAFORM_DIR) && terraform init -upgrade
 
-terraform-plan:
+plan:
 	cd $(TERRAFORM_DIR) && terraform plan
 
-terraform-apply:
+apply:
 	cd $(TERRAFORM_DIR) && terraform apply -auto-approve
 
-terraform-destroy:
+destroy:
 	cd $(TERRAFORM_DIR) && terraform destroy -auto-approve
 
 # Convenience target: run init, plan, apply
 terraform: terraform-init terraform-plan terraform-apply
+
+setup: 
+	bash scripts/setup_structure.sh
