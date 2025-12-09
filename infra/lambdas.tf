@@ -16,6 +16,11 @@ resource "aws_lambda_function" "add_game" {
       DYNAMODB_TABLE = aws_dynamodb_table.games.name
     }
   }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-add-game" }
+  )
 }
 
 resource "aws_lambda_permission" "add_game_apigw" {
@@ -44,6 +49,11 @@ resource "aws_lambda_function" "get_games" {
       DYNAMODB_TABLE = aws_dynamodb_table.games.name
     }
   }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-get-games" }
+  )
 }
 
 resource "aws_lambda_permission" "get_games_apigw" {
@@ -72,6 +82,11 @@ resource "aws_lambda_function" "get_ranking_month" {
       DYNAMODB_TABLE = aws_dynamodb_table.games.name
     }
   }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-get-ranking-month" }
+  )
 }
 
 resource "aws_lambda_permission" "get_ranking_apigw" {

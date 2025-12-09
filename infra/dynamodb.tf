@@ -26,7 +26,10 @@ resource "aws_dynamodb_table" "games" {
     projection_type = "ALL"
   }
 
-  tags = {
-    Name = "asc-ftv-${terraform.workspace}-games"
-  }
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "asc-ftv-${terraform.workspace}-games"
+    }
+  )
 }

@@ -1,9 +1,12 @@
 resource "aws_s3_bucket" "website" {
   bucket = "${terraform.workspace}-${var.website_bucket}"
 
-  tags = {
-    Name = "${terraform.workspace}-website-bucket"
-  }
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "${terraform.workspace}-website-bucket"
+    }
+  )
 }
 
 # Ownership (obrigatório)
@@ -86,6 +89,8 @@ resource "aws_s3_object" "frontend" {
   source = "${path.module}/../frontend/${each.value}"
   etag   = filemd5("${path.module}/../frontend/${each.value}")
 
+  tags = local.default_tags
+
   content_type = lookup(
     {
       html = "text/html"
@@ -118,6 +123,8 @@ resource "aws_s3_object" "config_js" {
   source       = "${path.module}/../frontend/config.js"
   content_type = "application/javascript"
   etag         = filemd5("${path.module}/../frontend/config.js")
+
+  tags = local.default_tags
 
   depends_on = [
     local_file.config_js

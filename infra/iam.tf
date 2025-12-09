@@ -16,6 +16,13 @@ resource "aws_iam_role" "lambda_role" {
       }
     ]
   })
+
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "asc-ftv-${terraform.workspace}-lambda-role"
+    }
+  )
 }
 
 # DynamoDB full access (pode ser reduzido futuramente)
@@ -48,6 +55,13 @@ resource "aws_iam_role" "apigw_cloudwatch_role" {
       }
     ]
   })
+
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "asc-ftv-${terraform.workspace}-apigw-cloudwatch-role"
+    }
+  )
 }
 
 resource "aws_iam_role_policy_attachment" "apigw_cloudwatch_role_attach" {

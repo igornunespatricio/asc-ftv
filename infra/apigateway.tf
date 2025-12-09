@@ -1,7 +1,14 @@
-# API Gateway
+# API Gateway REST API
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${terraform.workspace}-futevolei-api"
   description = "API to manage futevolei games"
+
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "${terraform.workspace}-futevolei-api"
+    }
+  )
 }
 
 resource "aws_api_gateway_resource" "games_resource" {
@@ -204,7 +211,7 @@ resource "aws_api_gateway_account" "account" {
   cloudwatch_role_arn = aws_iam_role.apigw_cloudwatch_role.arn
 }
 
-# Stage do API Gateway
+# Stage
 resource "aws_api_gateway_stage" "stage" {
   stage_name    = terraform.workspace
   rest_api_id   = aws_api_gateway_rest_api.api.id
@@ -227,14 +234,28 @@ resource "aws_api_gateway_stage" "stage" {
 
   xray_tracing_enabled = true
 
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "${terraform.workspace}-apigw-stage"
+    }
+  )
+
   depends_on = [
     aws_api_gateway_account.account,
     aws_cloudwatch_log_group.api_gw_logs
   ]
 }
 
-# CloudWatch Logs
+# CloudWatch log group for API Gateway
 resource "aws_cloudwatch_log_group" "api_gw_logs" {
   name              = "/aws/apigateway/${terraform.workspace}-futevolei"
   retention_in_days = 14
+
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "${terraform.workspace}-apigw-logs"
+    }
+  )
 }
