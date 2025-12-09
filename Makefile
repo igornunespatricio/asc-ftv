@@ -1,11 +1,20 @@
-# Path to the Lambda
+# ---------------------------------------------------------
+# Makefile para Lambda + Terraform
+# ---------------------------------------------------------
+
+# Diretórios
 BACKEND_DIR := backend
 LAMBDA_DIRS := $(wildcard $(BACKEND_DIR)/*)
-TERRAFORM_DIR=infra
+TERRAFORM_DIR := infra
 
-.PHONY: lambda terraform terraform-init terraform-plan terraform-apply terraform-destroy clean
+# Workspace padrão
+WORKSPACE ?= dev
 
-# Prepare the Lambda: initialize Node.js, install dependencies, and create zip
+.PHONY: lambda terraform terraform-init terraform-plan terraform-apply terraform-destroy clean dev prod dev-plan prod-plan dev-destroy prod-destroy setup
+
+# ---------------------------------------------------------
+# Preparar Lambdas
+# ---------------------------------------------------------
 lambda:
 	@for dir in $(LAMBDA_DIRS); do \
 		echo "----------------------------------------"; \
@@ -34,18 +43,50 @@ lambda:
 		echo " Lambda packaged: $$dir"; \
 	done
 
+# ---------------------------------------------------------
 # Terraform commands
-terraform-init:
+# ---------------------------------------------------------
+init:
 	cd $(TERRAFORM_DIR) && terraform init -upgrade
 
-terraform-plan:
+plan:
+	cd $(TERRAFORM_DIR) && terraform workspace select $(WORKSPACE)
 	cd $(TERRAFORM_DIR) && terraform plan
 
-terraform-apply:
+apply:
+	cd $(TERRAFORM_DIR) && terraform workspace select $(WORKSPACE)
 	cd $(TERRAFORM_DIR) && terraform apply -auto-approve
 
-terraform-destroy:
+destroy:
+	cd $(TERRAFORM_DIR) && terraform workspace select $(WORKSPACE)
 	cd $(TERRAFORM_DIR) && terraform destroy -auto-approve
 
-# Convenience target: run init, plan, apply
-terraform: terraform-init terraform-plan terraform-apply
+# Conveniência: init, plan e apply juntos
+terraform: init plan apply
+
+# ---------------------------------------------------------
+# Workspaces específicos
+# ---------------------------------------------------------
+dev:
+	$(MAKE) WORKSPACE=dev apply
+
+prod:
+	$(MAKE) WORKSPACE=prod apply
+
+dev-plan:
+	$(MAKE) WORKSPACE=dev plan
+
+prod-plan:
+	$(MAKE) WORKSPACE=prod plan
+
+dev-destroy:
+	$(MAKE) WORKSPACE=dev destroy
+
+prod-destroy:
+	$(MAKE) WORKSPACE=prod destroy
+
+# ---------------------------------------------------------
+# Setup inicial de diretórios
+# ---------------------------------------------------------
+setup: 
+	bash scripts/setup_structure.sh
