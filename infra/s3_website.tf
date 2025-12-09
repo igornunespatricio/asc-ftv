@@ -106,27 +106,13 @@ resource "aws_s3_object" "frontend" {
 }
 
 # Geração do config.js com URL dinâmica via workspace
-resource "local_file" "config_js" {
-  content = templatefile(
-    "${path.module}/../frontend/config.js.tpl",
-    {
-      api_url = aws_api_gateway_stage.stage.invoke_url
-    }
-  )
-
-  filename = "${path.module}/../frontend/config.js"
-}
-
 resource "aws_s3_object" "config_js" {
-  bucket       = aws_s3_bucket.website.id
-  key          = "config.js"
-  source       = "${path.module}/../frontend/config.js"
+  bucket = aws_s3_bucket.website.id
+  key    = "config.js"
+  content = templatefile("${path.module}/../frontend/config.js.tpl", {
+    api_url = aws_api_gateway_stage.stage.invoke_url
+  })
   content_type = "application/javascript"
-  etag         = filemd5("${path.module}/../frontend/config.js")
-
-  tags = local.default_tags
-
-  depends_on = [
-    local_file.config_js
-  ]
+  tags         = local.default_tags
 }
+
