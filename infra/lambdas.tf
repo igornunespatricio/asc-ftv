@@ -198,3 +198,37 @@ resource "aws_lambda_permission" "delete_player_apigw" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
 }
+
+# ---------------------------------------------------------
+# UPDATE PLAYER
+# ---------------------------------------------------------
+
+resource "aws_lambda_function" "update_player" {
+  function_name = "asc-ftv-${terraform.workspace}-update-player"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "index.handler"
+  runtime = "nodejs18.x"
+
+  filename         = "${path.module}/../backend/update_player/update_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../backend/update_player/update_player.zip")
+
+  environment {
+    variables = {
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
+    }
+  }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-update-player" }
+  )
+}
+
+resource "aws_lambda_permission" "update_player_apigw" {
+  statement_id  = "AllowAPIGatewayInvokeUpdatePlayer"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.update_player.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
+}
