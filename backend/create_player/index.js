@@ -1,13 +1,13 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
-import { v4 as uuidv4 } from "uuid";
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { PutCommand } = require("@aws-sdk/lib-dynamodb");
+const { v4: uuidv4 } = require("uuid");
 
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.PLAYERS_TABLE;
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
-    const body = JSON.parse(event.body);
+    const body = JSON.parse(event.body || "{}");
 
     if (!body.name) {
       return {

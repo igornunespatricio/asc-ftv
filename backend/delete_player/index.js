@@ -1,12 +1,12 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.PLAYERS_TABLE;
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
-    const { id } = event.pathParameters;
+    const { id } = event.pathParameters || {};
 
     if (!id) {
       return {
@@ -23,7 +23,7 @@ export const handler = async (event) => {
     );
 
     return {
-      statusCode: 204,
+      statusCode: 204, // No content
       body: "",
     };
   } catch (err) {
