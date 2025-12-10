@@ -27,7 +27,7 @@ exports.handler = async (event) => {
     const values = {};
 
     if (body.name) {
-      updates.push("name = :name");
+      updates.push("#name = :name");
       values[":name"] = body.name;
     }
 
@@ -39,19 +39,25 @@ exports.handler = async (event) => {
     updates.push("updatedAt = :updatedAt");
     values[":updatedAt"] = Date.now();
 
-    await client.send(
+    const result = await client.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { id },
         UpdateExpression: `SET ${updates.join(", ")}`,
         ExpressionAttributeValues: values,
+        ExpressionAttributeNames: { "#name": "name" }, // para evitar reserved keyword
         ReturnValues: "ALL_NEW",
       }),
     );
 
+    console.log("Player updated successfully:", result.Attributes); // <-- log do player atualizado
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Player updated." }),
+      body: JSON.stringify({
+        message: "Player updated.",
+        player: result.Attributes,
+      }),
     };
   } catch (err) {
     console.error("Error updating player:", err);
