@@ -8,7 +8,14 @@ exports.handler = async (event) => {
   try {
     const { id } = event.pathParameters || {};
 
+    console.log("DELETE PLAYER REQUEST:", {
+      id,
+      table: TABLE_NAME,
+      rawEvent: event,
+    });
+
     if (!id) {
+      console.log("Delete aborted — missing ID in the pathParameters");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "Missing ID" }),
@@ -21,6 +28,8 @@ exports.handler = async (event) => {
         Key: { id },
       }),
     );
+
+    console.log(`Player deleted successfully: ${id}`);
 
     return {
       statusCode: 204, // No content
