@@ -113,7 +113,7 @@ resource "aws_lambda_function" "create_player" {
 
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.players.name
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
     }
   }
 
@@ -147,7 +147,7 @@ resource "aws_lambda_function" "list_players" {
 
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.players.name
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
     }
   }
 
@@ -181,7 +181,7 @@ resource "aws_lambda_function" "delete_player" {
 
   environment {
     variables = {
-      DYNAMODB_TABLE = aws_dynamodb_table.players.name
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
     }
   }
 
