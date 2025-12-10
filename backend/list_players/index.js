@@ -4,6 +4,16 @@ const { ScanCommand } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.PLAYERS_TABLE;
 
+// -------------------------
+// CORS headers
+// -------------------------
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+};
+
 exports.handler = async () => {
   try {
     const result = await client.send(
@@ -14,12 +24,14 @@ exports.handler = async () => {
 
     return {
       statusCode: 200,
+      headers: CORS_HEADERS,
       body: JSON.stringify(result.Items || []),
     };
   } catch (err) {
     console.error("Error listing players:", err);
     return {
       statusCode: 500,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ message: "Internal server error." }),
     };
   }

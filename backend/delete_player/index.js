@@ -4,6 +4,16 @@ const { DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.PLAYERS_TABLE;
 
+// -------------------------
+// CORS headers
+// -------------------------
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+};
+
 exports.handler = async (event) => {
   try {
     const { id } = event.pathParameters || {};
@@ -18,6 +28,7 @@ exports.handler = async (event) => {
       console.log("Delete aborted — missing ID in the pathParameters");
       return {
         statusCode: 400,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ message: "Missing ID" }),
       };
     }
@@ -33,12 +44,14 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 204, // No content
+      headers: CORS_HEADERS,
       body: "",
     };
   } catch (err) {
     console.error("Error deleting player:", err);
     return {
       statusCode: 500,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ message: "Internal server error." }),
     };
   }

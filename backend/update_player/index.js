@@ -4,6 +4,16 @@ const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.PLAYERS_TABLE;
 
+// -------------------------
+// CORS headers
+// -------------------------
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+};
+
 exports.handler = async (event) => {
   try {
     const { id } = event.pathParameters;
@@ -12,6 +22,7 @@ exports.handler = async (event) => {
     if (!id) {
       return {
         statusCode: 400,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ message: "Missing ID" }),
       };
     }
@@ -19,6 +30,7 @@ exports.handler = async (event) => {
     if (!body.name && body.nickname === undefined) {
       return {
         statusCode: 400,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ message: "Nothing to update." }),
       };
     }
@@ -45,15 +57,16 @@ exports.handler = async (event) => {
         Key: { id },
         UpdateExpression: `SET ${updates.join(", ")}`,
         ExpressionAttributeValues: values,
-        ExpressionAttributeNames: { "#name": "name" }, // para evitar reserved keyword
+        ExpressionAttributeNames: { "#name": "name" },
         ReturnValues: "ALL_NEW",
       }),
     );
 
-    console.log("Player updated successfully:", result.Attributes); // <-- log do player atualizado
+    console.log("Player updated successfully:", result.Attributes);
 
     return {
       statusCode: 200,
+      headers: CORS_HEADERS,
       body: JSON.stringify({
         message: "Player updated.",
         player: result.Attributes,
@@ -63,6 +76,7 @@ exports.handler = async (event) => {
     console.error("Error updating player:", err);
     return {
       statusCode: 500,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ message: "Internal server error." }),
     };
   }

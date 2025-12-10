@@ -358,35 +358,6 @@ resource "aws_api_gateway_integration" "post_players_integration" {
   uri                     = aws_lambda_function.create_player.invoke_arn
 }
 
-resource "aws_api_gateway_integration_response" "post_players_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.players_resource.id
-  http_method = aws_api_gateway_method.post_players.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  }
-
-  response_templates = {
-    "application/json" = ""
-  }
-}
-
-resource "aws_api_gateway_method_response" "post_players_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.players_resource.id
-  http_method = aws_api_gateway_method.post_players.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-  }
-}
-
-
 # ---------------------------------------------------------
 # GET /players (List Players)
 # ---------------------------------------------------------
@@ -406,35 +377,6 @@ resource "aws_api_gateway_integration" "get_players_integration" {
   integration_http_method = "POST"
   uri                     = aws_lambda_function.list_players.invoke_arn
 }
-
-resource "aws_api_gateway_integration_response" "get_players_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.players_resource.id
-  http_method = aws_api_gateway_method.get_players.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  }
-
-  response_templates = {
-    "application/json" = ""
-  }
-}
-
-resource "aws_api_gateway_method_response" "get_players_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.players_resource.id
-  http_method = aws_api_gateway_method.get_players.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-  }
-}
-
 
 # ---------------------------------------------------------
 # /players/{id} for DELETE
@@ -462,37 +404,6 @@ resource "aws_api_gateway_integration" "delete_player_integration" {
   uri                     = aws_lambda_function.delete_player.invoke_arn
 }
 
-# Method Response
-resource "aws_api_gateway_method_response" "delete_player_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.player_id_resource.id
-  http_method = aws_api_gateway_method.delete_player.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-  }
-}
-
-# Integration Response
-resource "aws_api_gateway_integration_response" "delete_player_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.player_id_resource.id
-  http_method = aws_api_gateway_method.delete_player.http_method
-  status_code = aws_api_gateway_method_response.delete_player_response.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  }
-
-  response_templates = {
-    "application/json" = ""
-  }
-}
-
-
 # ---------------------------------------------------------
 # PUT /players/{id} (Update Player)
 # ---------------------------------------------------------
@@ -512,34 +423,3 @@ resource "aws_api_gateway_integration" "put_player_integration" {
   integration_http_method = "POST"
   uri                     = aws_lambda_function.update_player.invoke_arn
 }
-
-# Method Response
-resource "aws_api_gateway_method_response" "put_player_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.player_id_resource.id
-  http_method = aws_api_gateway_method.put_player.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-  }
-}
-
-# Integration Response
-resource "aws_api_gateway_integration_response" "put_player_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.player_id_resource.id
-  http_method = aws_api_gateway_method.put_player.http_method
-  status_code = aws_api_gateway_method_response.put_player_response.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  }
-
-  response_templates = {
-    "application/json" = ""
-  }
-}
-

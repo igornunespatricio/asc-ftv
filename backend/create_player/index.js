@@ -5,6 +5,16 @@ const { v4: uuidv4 } = require("uuid");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.PLAYERS_TABLE;
 
+// -------------------------
+// CORS headers
+// -------------------------
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+};
+
 exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
@@ -12,6 +22,7 @@ exports.handler = async (event) => {
     if (!body.name) {
       return {
         statusCode: 400,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ message: "Field 'name' is required." }),
       };
     }
@@ -33,12 +44,14 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 201,
+      headers: CORS_HEADERS,
       body: JSON.stringify(item),
     };
   } catch (err) {
     console.error("Error creating player:", err);
     return {
       statusCode: 500,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ message: "Internal server error." }),
     };
   }
