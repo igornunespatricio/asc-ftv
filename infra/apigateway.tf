@@ -188,6 +188,8 @@ resource "aws_api_gateway_deployment" "api_deployment" {
         aws_api_gateway_method.options_players.http_method,
         aws_api_gateway_method.delete_player.http_method,
         aws_api_gateway_method.put_player.http_method,
+
+        aws_api_gateway_method.options_player_id.http_method,
       ]
       integrations = [
         aws_api_gateway_integration.post_games_integration.id,
@@ -201,6 +203,8 @@ resource "aws_api_gateway_deployment" "api_deployment" {
         aws_api_gateway_integration.options_players_integration.id,
         aws_api_gateway_integration.delete_player_integration.id,
         aws_api_gateway_integration.put_player_integration.id,
+
+        aws_api_gateway_integration.options_player_id_integration.id,
       ]
     }))
   }
@@ -215,7 +219,15 @@ resource "aws_api_gateway_deployment" "api_deployment" {
     aws_api_gateway_integration.options_games_integration,
     aws_api_gateway_integration.get_games_integration,
     aws_api_gateway_integration.get_ranking_integration,
-    aws_api_gateway_integration.options_ranking_integration
+    aws_api_gateway_integration.options_ranking_integration,
+
+    aws_api_gateway_integration.post_players_integration,
+    aws_api_gateway_integration.get_players_integration,
+    aws_api_gateway_integration.options_players_integration,
+    aws_api_gateway_integration.delete_player_integration,
+    aws_api_gateway_integration.put_player_integration,
+
+    aws_api_gateway_integration.options_player_id_integration,
   ]
 }
 
@@ -327,8 +339,8 @@ resource "aws_api_gateway_integration_response" "options_players_integration_res
   status_code = aws_api_gateway_method_response.options_players_response.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
 
@@ -422,4 +434,58 @@ resource "aws_api_gateway_integration" "put_player_integration" {
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
   uri                     = aws_lambda_function.update_player.invoke_arn
+}
+
+# ---------------------------------------------------------
+# OPTIONS /players/{id}  (Required for CORS on PUT/DELETE)
+# ---------------------------------------------------------
+
+resource "aws_api_gateway_method" "options_player_id" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.player_id_resource.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_player_id_integration" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.player_id_resource.id
+  http_method = aws_api_gateway_method.options_player_id.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+
+  passthrough_behavior = "WHEN_NO_MATCH"
+}
+
+resource "aws_api_gateway_method_response" "options_player_id_response" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.player_id_resource.id
+  http_method = aws_api_gateway_method.options_player_id.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options_player_id_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.player_id_resource.id
+  http_method = aws_api_gateway_method.options_player_id.http_method
+  status_code = aws_api_gateway_method_response.options_player_id_response.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  response_templates = {
+    "application/json" = ""
+  }
 }
