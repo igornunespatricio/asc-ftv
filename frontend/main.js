@@ -1,6 +1,7 @@
 const baseUrl = window.APP_CONFIG.apiUrl;
 const gamesUrl = `${baseUrl}/games`;
 const rankingUrl = `${baseUrl}/ranking`;
+const playersUrl = `${baseUrl}/players`;
 
 /* ============================================================
    CARREGAR OPÇÕES DE MESES
@@ -130,11 +131,49 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
 });
 
 /* ============================================================
+   CARREGAR JOGADORES NOS SELECTS DO FORMULÁRIO
+   ============================================================ */
+async function loadPlayersForSelects() {
+  const selects = [
+    document.getElementById("winner1"),
+    document.getElementById("winner2"),
+    document.getElementById("loser1"),
+    document.getElementById("loser2"),
+  ];
+
+  try {
+    const response = await fetch(playersUrl);
+    let players = await response.json();
+
+    // Ordenar
+    players.sort((a, b) => a.name.localeCompare(b.name));
+
+    // Limpar selects
+    selects.forEach(
+      (sel) => (sel.innerHTML = '<option value="">Selecione</option>'),
+    );
+
+    // Preencher
+    players.forEach((player) => {
+      selects.forEach((select) => {
+        const opt = document.createElement("option");
+        opt.value = player.name; // mantém compatibilidade com backend atual
+        opt.textContent = player.name; // exibe o nome
+        select.appendChild(opt);
+      });
+    });
+  } catch (err) {
+    console.error("Erro ao carregar jogadores nos selects:", err);
+  }
+}
+
+/* ============================================================
    AO CARREGAR A PÁGINA
    ============================================================ */
 window.addEventListener("DOMContentLoaded", () => {
   generateMonthOptions();
   const currentMonth = document.getElementById("month-selector").value;
+  loadPlayersForSelects();
   loadGames(currentMonth);
   loadRanking(currentMonth);
 });

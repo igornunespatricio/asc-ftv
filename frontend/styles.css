@@ -305,3 +305,186 @@ button {
   border: 1px solid #ccc;
   flex: 1;
 }
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+
+.top-bar {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.btn-admin {
+  background-color: #007BFF;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-admin:hover {
+  background-color: #0056b3;
+}
+
+/* ==========================
+   TABLEA DE JOGADORES
+   ========================== */
+
+#players-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Cabeçalho */
+#players-table thead {
+  background: #1e88e5;
+  color: white;
+}
+
+#players-table th {
+  text-align: left;
+  padding: 14px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* Linhas */
+#players-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: 14px;
+}
+
+/* Zebra stripes */
+#players-table tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* Hover highlight */
+#players-table tbody tr:hover {
+  background: #e3f2fd;
+  cursor: pointer;
+}
+
+/* ==========================
+   BOTÕES DE AÇÃO
+   ========================== */
+.btn-edit {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-right: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+
+.btn-edit:hover {
+  background-color: #388e3c;
+}
+
+.btn-delete {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+
+.btn-delete:hover {
+  background-color: #b71c1c;
+}
+
+/* ==========================
+   RESPONSIVIDADE MOBILE
+   ========================== */
+@media (max-width: 600px) {
+  #players-table thead {
+    display: none;
+  }
+
+  #players-table tr {
+    display: block;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  #players-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+  }
+
+  #players-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #444;
+  }
+
+  #players-table td:last-child {
+    border-bottom: none;
+  }
+}
+
+/* ==========================
+   SELECT STYLES
+   ========================== */
+
+/* Estilo base para selects */
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  appearance: none; /* remove estilo nativo */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+/* Hover */
+select:hover {
+  border-color: #999;
+}
+
+/* Focus (quando clica no select) */
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
+  outline: none;
+}
+
+/* Form-group spacing */
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 600;
+}

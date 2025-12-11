@@ -96,3 +96,139 @@ resource "aws_lambda_permission" "get_ranking_apigw" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
 }
+
+# ---------------------------------------------------------
+# CREATE PLAYER
+# ---------------------------------------------------------
+
+resource "aws_lambda_function" "create_player" {
+  function_name = "asc-ftv-${terraform.workspace}-create-player"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "index.handler"
+  runtime = "nodejs18.x"
+
+  filename         = "${path.module}/../backend/create_player/create_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../backend/create_player/create_player.zip")
+
+  environment {
+    variables = {
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
+    }
+  }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-create-player" }
+  )
+}
+
+resource "aws_lambda_permission" "create_player_apigw" {
+  statement_id  = "AllowAPIGatewayInvokeCreatePlayer"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.create_player.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
+}
+
+# ---------------------------------------------------------
+# LIST PLAYERS
+# ---------------------------------------------------------
+
+resource "aws_lambda_function" "list_players" {
+  function_name = "asc-ftv-${terraform.workspace}-list-players"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "index.handler"
+  runtime = "nodejs18.x"
+
+  filename         = "${path.module}/../backend/list_players/list_players.zip"
+  source_code_hash = filebase64sha256("${path.module}/../backend/list_players/list_players.zip")
+
+  environment {
+    variables = {
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
+    }
+  }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-list-players" }
+  )
+}
+
+resource "aws_lambda_permission" "list_players_apigw" {
+  statement_id  = "AllowAPIGatewayInvokeListPlayers"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_players.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
+}
+
+# ---------------------------------------------------------
+# DELETE PLAYER
+# ---------------------------------------------------------
+
+resource "aws_lambda_function" "delete_player" {
+  function_name = "asc-ftv-${terraform.workspace}-delete-player"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "index.handler"
+  runtime = "nodejs18.x"
+
+  filename         = "${path.module}/../backend/delete_player/delete_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../backend/delete_player/delete_player.zip")
+
+  environment {
+    variables = {
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
+    }
+  }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-delete-player" }
+  )
+}
+
+resource "aws_lambda_permission" "delete_player_apigw" {
+  statement_id  = "AllowAPIGatewayInvokeDeletePlayer"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_player.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
+}
+
+# ---------------------------------------------------------
+# UPDATE PLAYER
+# ---------------------------------------------------------
+
+resource "aws_lambda_function" "update_player" {
+  function_name = "asc-ftv-${terraform.workspace}-update-player"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "index.handler"
+  runtime = "nodejs18.x"
+
+  filename         = "${path.module}/../backend/update_player/update_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../backend/update_player/update_player.zip")
+
+  environment {
+    variables = {
+      PLAYERS_TABLE = aws_dynamodb_table.players.name
+    }
+  }
+
+  tags = merge(
+    local.default_tags,
+    { Name = "asc-ftv-${terraform.workspace}-update-player" }
+  )
+}
+
+resource "aws_lambda_permission" "update_player_apigw" {
+  statement_id  = "AllowAPIGatewayInvokeUpdatePlayer"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.update_player.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${terraform.workspace}/*"
+}

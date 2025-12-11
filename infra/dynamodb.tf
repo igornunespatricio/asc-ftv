@@ -33,3 +33,22 @@ resource "aws_dynamodb_table" "games" {
     }
   )
 }
+
+resource "aws_dynamodb_table" "players" {
+  name         = "asc-ftv-${terraform.workspace}-players"
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "asc-ftv-${terraform.workspace}-players"
+    }
+  )
+}
