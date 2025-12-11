@@ -168,12 +168,56 @@ async function loadPlayersForSelects() {
 }
 
 /* ============================================================
+   EVITAR SELEÇÃO DUPLICADA DE JOGADORES
+   ============================================================ */
+
+// IDs dos selects de jogadores
+const playerSelectIds = ["winner1", "winner2", "loser1", "loser2"];
+
+// Adiciona listeners após carregar as opções dos jogadores
+function setupPlayerDuplicateBlocking() {
+  playerSelectIds.forEach((id) => {
+    const select = document.getElementById(id);
+    select.addEventListener("change", updatePlayerOptions);
+  });
+
+  // Atualiza estado inicial
+  updatePlayerOptions();
+}
+
+function updatePlayerOptions() {
+  // Coletar todos os jogadores já selecionados
+  const selectedValues = playerSelectIds
+    .map((id) => document.getElementById(id).value)
+    .filter((v) => v !== "");
+
+  // Atualiza cada select
+  playerSelectIds.forEach((id) => {
+    const select = document.getElementById(id);
+
+    Array.from(select.options).forEach((option) => {
+      if (option.value === "") return; // deixa o "Selecione" livre
+
+      // Se este option é o próprio selecionado, mantenha habilitado
+      if (option.value === select.value) {
+        option.disabled = false;
+        return;
+      }
+
+      // Desabilita se já foi escolhido em outro select
+      option.disabled = selectedValues.includes(option.value);
+    });
+  });
+}
+
+/* ============================================================
    AO CARREGAR A PÁGINA
    ============================================================ */
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   generateMonthOptions();
   const currentMonth = document.getElementById("month-selector").value;
-  loadPlayersForSelects();
+  await loadPlayersForSelects();
+  setupPlayerDuplicateBlocking();
   loadGames(currentMonth);
   loadRanking(currentMonth);
 });
