@@ -186,28 +186,47 @@ function setupPlayerDuplicateBlocking() {
 }
 
 function updatePlayerOptions() {
+  // Pega referência ao botão de submit (classe .btn-submit)
+  const submitBtn = document.querySelector(".btn-submit");
+  const status = document.getElementById("status");
   // Coletar todos os jogadores já selecionados
   const selectedValues = playerSelectIds
     .map((id) => document.getElementById(id).value)
     .filter((v) => v !== "");
 
+  // Verifica se existem duplicados
+  const hasDuplicates = selectedValues.length !== new Set(selectedValues).size;
+
   // Atualiza cada select
-  playerSelectIds.forEach((id) => {
-    const select = document.getElementById(id);
+  // playerSelectIds.forEach((id) => {
+  //   const select = document.getElementById(id);
 
-    Array.from(select.options).forEach((option) => {
-      if (option.value === "") return; // deixa o "Selecione" livre
+  //   Array.from(select.options).forEach((option) => {
+  //     if (option.value === "") return; // deixa o "Selecione" livre
 
-      // Se este option é o próprio selecionado, mantenha habilitado
-      if (option.value === select.value) {
-        option.disabled = false;
-        return;
-      }
+  //     // Se este option é o próprio selecionado, mantenha habilitado
+  //     if (option.value === select.value) {
+  //       option.disabled = false;
+  //       return;
+  //     }
 
-      // Desabilita se já foi escolhido em outro select
-      option.disabled = selectedValues.includes(option.value);
-    });
-  });
+  //     // Desabilita se já foi escolhido em outro select
+  //     option.disabled = selectedValues.includes(option.value);
+  //   });
+  // });
+
+  // Habilita/desabilita o botão de submit conforme duplicidade
+  if (submitBtn) {
+    submitBtn.disabled = hasDuplicates;
+  }
+  // Mostra ou limpa mensagem
+  if (hasDuplicates) {
+    status.textContent =
+      "⚠️ Erro: um jogador não pode ser selecionado mais de uma vez.";
+    status.style.color = "red";
+  } else {
+    status.textContent = "";
+  }
 }
 
 /* ============================================================

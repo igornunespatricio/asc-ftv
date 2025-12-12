@@ -488,3 +488,9 @@ label {
   display: block;
   font-weight: 600;
 }
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none; /* garante que não clique */
+}
