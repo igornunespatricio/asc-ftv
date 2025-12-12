@@ -92,7 +92,11 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const form = e.target;
-  // --- BLOQUEIO DE SUBMISSÃO SE HÁ JOGADORES DUPLICADOS ---
+  const status = document.getElementById("status");
+
+  // ================================
+  // BLOQUEIO DE SUBMISSÃO SE HÁ DUPLICADOS
+  // ================================
   const picks = [
     form.winner1.value,
     form.winner2.value,
@@ -100,16 +104,16 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     form.loser2.value,
   ];
 
-  const duplicatesExist =
-    new Set(picks.filter((v) => v !== "")).size !==
-    picks.filter((v) => v !== "").length;
+  const filled = picks.filter((v) => v !== "");
+  const duplicatesExist = new Set(filled).size !== filled.length;
 
   if (duplicatesExist) {
-    document.getElementById("status").textContent =
-      "Erro: Existem jogadores duplicados. Ajuste os seletores antes de enviar.";
-    return; // impede o envio
+    status.textContent =
+      "⚠️ Existem jogadores duplicados — revise os seletores.";
+    status.className = "status-message error";
+    return;
   }
-  // ---------------------------------------------------------
+  // ================================
 
   const data = {
     match_date: form.match_date.value,
@@ -131,21 +135,25 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (response.ok) {
-      document.getElementById("status").textContent =
-        `Jogo adicionado com sucesso! ID: ${result.id}`;
+      status.textContent = `Jogo adicionado com sucesso! ID: ${result.id}`;
+      status.className = "status-message success";
 
       form.reset();
+
+      // limpa bloqueio visual após reset
+      updatePlayerOptions();
 
       // Recarrega tabelas
       const selectedMonth = document.getElementById("month-selector").value;
       loadGames(selectedMonth);
       loadRanking(selectedMonth);
     } else {
-      document.getElementById("status").textContent = `Erro: ${result.message}`;
+      status.textContent = `Erro: ${result.message}`;
+      status.className = "status-message error";
     }
   } catch (err) {
-    document.getElementById("status").textContent =
-      `Erro de rede: ${err.message}`;
+    status.textContent = `Erro de rede: ${err.message}`;
+    status.className = "status-message error";
   }
 });
 
