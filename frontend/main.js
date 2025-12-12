@@ -225,35 +225,40 @@ function updatePlayerOptions() {
   const hasDuplicates = selectedValues.length !== new Set(selectedValues).size;
 
   // Atualiza cada select
-  // playerSelectIds.forEach((id) => {
-  //   const select = document.getElementById(id);
+  playerSelectIds.forEach((id) => {
+    const select = document.getElementById(id);
 
-  //   Array.from(select.options).forEach((option) => {
-  //     if (option.value === "") return; // deixa o "Selecione" livre
+    Array.from(select.options).forEach((option) => {
+      if (option.value === "") return; // deixa o "Selecione" livre
 
-  //     // Se este option é o próprio selecionado, mantenha habilitado
-  //     if (option.value === select.value) {
-  //       option.disabled = false;
-  //       return;
-  //     }
+      // Se este option é o próprio selecionado, mantenha habilitado
+      if (option.value === select.value) {
+        option.disabled = false;
+        return;
+      }
 
-  //     // Desabilita se já foi escolhido em outro select
-  //     option.disabled = selectedValues.includes(option.value);
-  //   });
-  // });
+      // Desabilita se já foi escolhido em outro select
+      option.disabled = selectedValues.includes(option.value);
+    });
+  });
 
   // Habilita/desabilita o botão de submit conforme duplicidade
-  // if (submitBtn) {
-  //   submitBtn.disabled = hasDuplicates;
-  // }
-  // // Mostra ou limpa mensagem
-  // if (hasDuplicates) {
-  //   status.textContent =
-  //     "⚠️ Erro: um jogador não pode ser selecionado mais de uma vez.";
-  //   status.style.color = "red";
-  // } else {
-  //   status.textContent = "";
-  // }
+  if (submitBtn) {
+    submitBtn.disabled = hasDuplicates;
+  }
+  // Mostra ou limpa mensagem
+  // Atualiza mensagem visual de duplicidade
+  if (hasDuplicates) {
+    status.textContent =
+      "⚠️ Existem jogadores duplicados — revise os seletores.";
+    status.className = "status-message error";
+  } else {
+    // Só apaga mensagem se o status atual for de erro
+    if (status.classList.contains("error")) {
+      status.textContent = "";
+      status.className = "";
+    }
+  }
 }
 
 /* ============================================================
