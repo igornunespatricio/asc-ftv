@@ -108,9 +108,10 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
   const duplicatesExist = new Set(filled).size !== filled.length;
 
   if (duplicatesExist) {
-    status.textContent =
-      "⚠️ Existem jogadores duplicados — revise os seletores.";
-    status.className = "status-message error";
+    showStatusMessage(
+      "⚠️ Existem jogadores duplicados — revise os seletores.",
+      "error",
+    );
     return;
   }
   // ================================
@@ -135,8 +136,10 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (response.ok) {
-      status.textContent = `Jogo adicionado com sucesso! ID: ${result.id}`;
-      status.className = "status-message success";
+      showStatusMessage(
+        `Jogo adicionado com sucesso! ID: ${result.id}`,
+        "success",
+      );
 
       form.reset();
 
@@ -148,12 +151,10 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
       loadGames(selectedMonth);
       loadRanking(selectedMonth);
     } else {
-      status.textContent = `Erro: ${result.message}`;
-      status.className = "status-message error";
+      showStatusMessage(`Erro: ${result.message}`, "error");
     }
   } catch (err) {
-    status.textContent = `Erro de rede: ${err.message}`;
-    status.className = "status-message error";
+    showStatusMessage(`Erro de rede: ${err.message}`, "error");
   }
 });
 
@@ -249,15 +250,31 @@ function updatePlayerOptions() {
   // Mostra ou limpa mensagem
   // Atualiza mensagem visual de duplicidade
   if (hasDuplicates) {
-    status.textContent =
-      "⚠️ Existem jogadores duplicados — revise os seletores.";
-    status.className = "status-message error";
+    showStatusMessage(
+      "⚠️ Existem jogadores duplicados — revise os seletores.",
+      "error",
+      false, // <-- NÃO auto-limpar (diferente do submit)
+    );
   } else {
     // Só apaga mensagem se o status atual for de erro
     if (status.classList.contains("error")) {
       status.textContent = "";
       status.className = "";
     }
+  }
+}
+
+function showStatusMessage(message, type, autoClear = true) {
+  const status = document.getElementById("status");
+
+  status.textContent = message;
+  status.className = `status-message ${type}`;
+
+  if (autoClear) {
+    setTimeout(() => {
+      status.textContent = "";
+      status.className = "";
+    }, 10000);
   }
 }
 
