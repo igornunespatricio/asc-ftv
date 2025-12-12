@@ -92,6 +92,25 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const form = e.target;
+  // --- BLOQUEIO DE SUBMISSÃO SE HÁ JOGADORES DUPLICADOS ---
+  const picks = [
+    form.winner1.value,
+    form.winner2.value,
+    form.loser1.value,
+    form.loser2.value,
+  ];
+
+  const duplicatesExist =
+    new Set(picks.filter((v) => v !== "")).size !==
+    picks.filter((v) => v !== "").length;
+
+  if (duplicatesExist) {
+    document.getElementById("status").textContent =
+      "Erro: Existem jogadores duplicados. Ajuste os seletores antes de enviar.";
+    return; // impede o envio
+  }
+  // ---------------------------------------------------------
+
   const data = {
     match_date: form.match_date.value,
     winner1: form.winner1.value,
@@ -216,17 +235,17 @@ function updatePlayerOptions() {
   // });
 
   // Habilita/desabilita o botão de submit conforme duplicidade
-  if (submitBtn) {
-    submitBtn.disabled = hasDuplicates;
-  }
-  // Mostra ou limpa mensagem
-  if (hasDuplicates) {
-    status.textContent =
-      "⚠️ Erro: um jogador não pode ser selecionado mais de uma vez.";
-    status.style.color = "red";
-  } else {
-    status.textContent = "";
-  }
+  // if (submitBtn) {
+  //   submitBtn.disabled = hasDuplicates;
+  // }
+  // // Mostra ou limpa mensagem
+  // if (hasDuplicates) {
+  //   status.textContent =
+  //     "⚠️ Erro: um jogador não pode ser selecionado mais de uma vez.";
+  //   status.style.color = "red";
+  // } else {
+  //   status.textContent = "";
+  // }
 }
 
 /* ============================================================
