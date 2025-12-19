@@ -3,7 +3,7 @@
 # ---------------------------------------------------------
 
 # Diretórios
-BACKEND_DIR := backend
+BACKEND_DIR := lambdas
 LAMBDA_DIRS := $(wildcard $(BACKEND_DIR)/*)
 TERRAFORM_DIR := infra
 

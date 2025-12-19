@@ -8,8 +8,8 @@ resource "aws_lambda_function" "add_game" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/add_game/add_game.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/add_game/add_game.zip")
+  filename         = "${path.module}/../lambdas/add_game/add_game.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/add_game/add_game.zip")
 
   environment {
     variables = {
@@ -41,8 +41,8 @@ resource "aws_lambda_function" "get_games" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/get_games/get_games.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/get_games/get_games.zip")
+  filename         = "${path.module}/../lambdas/get_games/get_games.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/get_games/get_games.zip")
 
   environment {
     variables = {
@@ -74,8 +74,8 @@ resource "aws_lambda_function" "get_ranking_month" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/get_ranking_month/get_ranking_month.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/get_ranking_month/get_ranking_month.zip")
+  filename         = "${path.module}/../lambdas/get_ranking_month/get_ranking_month.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/get_ranking_month/get_ranking_month.zip")
 
   environment {
     variables = {
@@ -108,8 +108,8 @@ resource "aws_lambda_function" "create_player" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/create_player/create_player.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/create_player/create_player.zip")
+  filename         = "${path.module}/../lambdas/create_player/create_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/create_player/create_player.zip")
 
   environment {
     variables = {
@@ -142,8 +142,8 @@ resource "aws_lambda_function" "list_players" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/list_players/list_players.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/list_players/list_players.zip")
+  filename         = "${path.module}/../lambdas/list_players/list_players.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/list_players/list_players.zip")
 
   environment {
     variables = {
@@ -176,8 +176,8 @@ resource "aws_lambda_function" "delete_player" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/delete_player/delete_player.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/delete_player/delete_player.zip")
+  filename         = "${path.module}/../lambdas/delete_player/delete_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/delete_player/delete_player.zip")
 
   environment {
     variables = {
@@ -210,8 +210,8 @@ resource "aws_lambda_function" "update_player" {
   handler = "index.handler"
   runtime = "nodejs18.x"
 
-  filename         = "${path.module}/../backend/update_player/update_player.zip"
-  source_code_hash = filebase64sha256("${path.module}/../backend/update_player/update_player.zip")
+  filename         = "${path.module}/../lambdas/update_player/update_player.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/update_player/update_player.zip")
 
   environment {
     variables = {
