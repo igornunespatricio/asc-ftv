@@ -1,92 +1,103 @@
 # ---------------------------------------------------------
-# Makefile para Lambda + Terraform
+# Configurações padrão
 # ---------------------------------------------------------
-
-# Diretórios
-BACKEND_DIR := lambdas
-LAMBDA_DIRS := $(wildcard $(BACKEND_DIR)/*)
-TERRAFORM_DIR := infra
-
-# Workspace padrão
-WORKSPACE ?= dev
-
-.PHONY: lambda terraform terraform-init terraform-plan terraform-apply terraform-destroy clean dev prod dev-plan prod-plan dev-destroy prod-destroy setup
+TERRAFORM_DIR ?= infra
+WORKSPACE     ?= dev
+TF            ?= terraform
 
 # ---------------------------------------------------------
-# Preparar Lambdas
+# Targets que não geram arquivos
 # ---------------------------------------------------------
-lambda:
-	@for dir in $(LAMBDA_DIRS); do \
-		echo "----------------------------------------"; \
-		echo " Processing Lambda in directory: $$dir"; \
-		echo "----------------------------------------"; \
-		\
-		if [ -f "$$dir/package.json" ]; then \
-			echo "Removing old package.json..."; \
-			rm "$$dir/package.json"; \
-		fi; \
-		if [ -d "$$dir/node_modules" ]; then \
-			echo "Removing old node_modules..."; \
-			rm -rf "$$dir/node_modules"; \
-		fi; \
-		\
-		echo "Initializing npm project..."; \
-		(cd $$dir && npm init -y >/dev/null); \
-		\
-		echo "Installing dependencies..."; \
-		(cd $$dir && npm install aws-sdk uuid@8 >/dev/null); \
-		\
-		ZIP_NAME="$$(basename $$dir).zip"; \
-		echo "Creating zip: $$ZIP_NAME"; \
-		(cd $$dir && zip -r "$$ZIP_NAME" . >/dev/null); \
-		\
-		echo " Lambda packaged: $$dir"; \
-	done
+.PHONY: init fmt validate workspace plan apply destroy \
+        dev dev-plan dev-apply dev-destroy \
+        prod prod-plan prod-apply prod-destroy \
+        check terraform docs
 
 # ---------------------------------------------------------
-# Terraform commands
+# Qualidade e validação
 # ---------------------------------------------------------
+
+fmt:
+	cd $(TERRAFORM_DIR) && $(TF) fmt -recursive
+
+validate:
+	cd $(TERRAFORM_DIR) && $(TF) validate
+
+docs:
+	cd $(TERRAFORM_DIR) && terraform-docs markdown table --output-file README.md --output-mode inject .
+
+check: fmt validate docs
+	@echo "✔ Terraform fmt e validate concluídos com sucesso"
+
+# ---------------------------------------------------------
+# Workspace
+# ---------------------------------------------------------
+
+workspace:
+	cd $(TERRAFORM_DIR) && \
+	$(TF) workspace select $(WORKSPACE) || \
+	$(TF) workspace new $(WORKSPACE)
+
+# ---------------------------------------------------------
+# Terraform base
+# ---------------------------------------------------------
+
 init:
-	cd $(TERRAFORM_DIR) && terraform init -upgrade
+	cd $(TERRAFORM_DIR) && $(TF) init -upgrade
 
-plan:
-	cd $(TERRAFORM_DIR) && terraform workspace select $(WORKSPACE)
-	cd $(TERRAFORM_DIR) && terraform plan
-
-apply:
-	cd $(TERRAFORM_DIR) && terraform workspace select $(WORKSPACE)
-	cd $(TERRAFORM_DIR) && terraform apply -auto-approve
-
-destroy:
-	cd $(TERRAFORM_DIR) && terraform workspace select $(WORKSPACE)
-	cd $(TERRAFORM_DIR) && terraform destroy -auto-approve
-
-# Conveniência: init, plan e apply juntos
-terraform: init plan apply
+plan: workspace
+	cd $(TERRAFORM_DIR) && $(TF) plan
 
 # ---------------------------------------------------------
-# Workspaces específicos
+# Apply / Destroy (com proteção para prod)
 # ---------------------------------------------------------
-dev:
-	$(MAKE) WORKSPACE=dev apply
 
-prod:
-	$(MAKE) WORKSPACE=prod apply
+apply: workspace
+ifeq ($(WORKSPACE),prod)
+	cd $(TERRAFORM_DIR) && $(TF) apply
+else
+	cd $(TERRAFORM_DIR) && $(TF) apply -auto-approve
+endif
 
-dev-plan:
-	$(MAKE) WORKSPACE=dev plan
-
-prod-plan:
-	$(MAKE) WORKSPACE=prod plan
-
-dev-destroy:
-	$(MAKE) WORKSPACE=dev destroy
-
-prod-destroy:
-	$(MAKE) WORKSPACE=prod destroy
+destroy: workspace
+ifeq ($(WORKSPACE),prod)
+	cd $(TERRAFORM_DIR) && $(TF) destroy
+else
+	cd $(TERRAFORM_DIR) && $(TF) destroy -auto-approve
+endif
 
 # ---------------------------------------------------------
-# Setup inicial de diretórios
+# Pipeline completo (dev only)
 # ---------------------------------------------------------
-setup: 
-	bash scripts/setup_structure.sh
+
+terraform: init check plan apply
+
+# ---------------------------------------------------------
+# Atalhos por ambiente
+# ---------------------------------------------------------
+
+# DEV
+dev: WORKSPACE=dev
+dev: apply
+
+dev-plan: WORKSPACE=dev
+dev-plan: plan
+
+dev-apply: WORKSPACE=dev
+dev-apply: apply
+
+dev-destroy: WORKSPACE=dev
+dev-destroy: destroy
+
+# PROD
+prod: WORKSPACE=prod
+prod: apply
+
+prod-plan: WORKSPACE=prod
+prod-plan: plan
+
+prod-apply: WORKSPACE=prod
+prod-apply: apply
+
+prod-destroy: WORKSPACE=prod
+prod-destroy: destroy
