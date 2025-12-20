@@ -33,8 +33,3 @@ variable "jwt_secret" {
   description = "JWT secret used by authorizer lambda"
   sensitive   = true
 }
-
-variable "lambda_role_arn" {
-  description = "IAM Role ARN used by all Lambda functions"
-  type        = string
-}
