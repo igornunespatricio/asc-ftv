@@ -27,3 +27,14 @@ variable "base_tags" {
     ManagedBy = "terraform"
   }
 }
+
+variable "jwt_secret" {
+  type        = string
+  description = "JWT secret used by authorizer lambda"
+  sensitive   = true
+}
+
+variable "lambda_role_arn" {
+  description = "IAM Role ARN used by all Lambda functions"
+  type        = string
+}

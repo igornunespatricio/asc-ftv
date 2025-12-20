@@ -9,23 +9,21 @@ resource "aws_s3_bucket" "website" {
   )
 }
 
-# Ownership (obrigatório)
 resource "aws_s3_bucket_ownership_controls" "website" {
   bucket = aws_s3_bucket.website.id
 
   rule {
-    object_ownership = "ObjectWriter"
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
-# Liberação de ACLs (necessário para website)
 resource "aws_s3_bucket_public_access_block" "website" {
   bucket = aws_s3_bucket.website.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 # Política pública do bucket
@@ -89,8 +87,6 @@ resource "aws_s3_object" "frontend" {
   source = "${path.module}/../frontend/${each.value}"
   etag   = filemd5("${path.module}/../frontend/${each.value}")
 
-  tags = local.default_tags
-
   content_type = lookup(
     {
       html = "text/html"
@@ -103,16 +99,28 @@ resource "aws_s3_object" "frontend" {
     split(".", each.value)[length(split(".", each.value)) - 1],
     "text/plain"
   )
+
+  tags = local.default_tags
+
+  depends_on = [
+    aws_s3_bucket_public_access_block.website
+  ]
 }
 
-# Geração do config.js com URL dinâmica via workspace
 resource "aws_s3_object" "config_js" {
   bucket = aws_s3_bucket.website.id
   key    = "config.js"
+
   content = templatefile("${path.module}/../frontend/config.js.tpl", {
-    api_url = aws_api_gateway_stage.stage.invoke_url
+    api_url = module.apigateway.invoke_url
   })
+
   content_type = "application/javascript"
   tags         = local.default_tags
+
+  depends_on = [
+    aws_s3_bucket_public_access_block.website
+  ]
 }
+
 
