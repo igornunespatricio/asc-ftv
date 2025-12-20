@@ -59,7 +59,6 @@ Infrastructure as a code using Terraform and AWS services.
 | <a name="input_base_tags"></a> [base\_tags](#input\_base\_tags) | Base tags applied to all resources | `map(string)` | <pre>{<br/>  "ManagedBy": "terraform",<br/>  "Owner": "asc-ftv",<br/>  "Project": "futevolei"<br/>}</pre> | no |
 | <a name="input_dynamodb_table_name"></a> [dynamodb\_table\_name](#input\_dynamodb\_table\_name) | Base name for DynamoDB table (workspace prefix will be added automatically) | `string` | `"futevolei-games"` | no |
 | <a name="input_jwt_secret"></a> [jwt\_secret](#input\_jwt\_secret) | JWT secret used by authorizer lambda | `string` | n/a | yes |
-| <a name="input_lambda_role_arn"></a> [lambda\_role\_arn](#input\_lambda\_role\_arn) | IAM Role ARN used by all Lambda functions | `string` | n/a | yes |
 | <a name="input_website_bucket"></a> [website\_bucket](#input\_website\_bucket) | Base name for website hosting bucket (workspace prefix will be added automatically) | `string` | `"futevolei-website"` | no |
 
 ## Outputs
