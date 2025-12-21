@@ -61,10 +61,16 @@ module "players_table" {
 }
 
 module "apigateway" {
-  source = "./modules/apigateway"
+  source     = "./modules/apigateway"
+  aws_region = var.aws_region
 
   default_tags        = local.default_tags
   cloudwatch_role_arn = aws_iam_role.apigw_cloudwatch_role.arn
 
   lambdas = local.lambda_arns
+
+  depends_on = [
+    aws_lambda_permission.apigw
+  ]
+
 }

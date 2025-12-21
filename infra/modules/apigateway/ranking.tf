@@ -17,7 +17,7 @@ resource "aws_api_gateway_integration" "ranking_get" {
   http_method             = aws_api_gateway_method.ranking_get.http_method
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.lambdas["get_ranking_month"]
+  uri                     = local.lambda_invoke_uris["get_ranking_month"]
 
 }
 resource "aws_api_gateway_method" "ranking_options" {

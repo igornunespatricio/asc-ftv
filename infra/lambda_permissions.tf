@@ -1,10 +1,11 @@
 resource "aws_lambda_permission" "apigw" {
   for_each = module.lambdas
 
-  statement_id  = "AllowAPIGatewayInvoke-${each.key}"
+  statement_id  = "AllowAPIGatewayInvoke-${each.key}-${terraform.workspace}"
   action        = "lambda:InvokeFunction"
   function_name = each.value.lambda_arn
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${module.apigateway.execution_arn}/*/*"
+  source_arn = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:*/*/*"
+
 }

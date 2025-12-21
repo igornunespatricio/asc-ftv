@@ -19,7 +19,7 @@ resource "aws_api_gateway_integration" "games_get" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
 
-  uri = var.lambdas["get_games"]
+  uri = local.lambda_invoke_uris["get_games"]
 }
 
 
@@ -38,7 +38,7 @@ resource "aws_api_gateway_integration" "games_post" {
   http_method             = aws_api_gateway_method.games_post.http_method
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.lambdas["get_games"]
+  uri                     = local.lambda_invoke_uris["get_games"]
 }
 
 resource "aws_api_gateway_method" "games_options" {

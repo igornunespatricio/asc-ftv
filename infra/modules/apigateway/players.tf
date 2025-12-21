@@ -25,7 +25,7 @@ resource "aws_api_gateway_integration" "players_get" {
   http_method             = aws_api_gateway_method.players_get.http_method
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.lambdas["list_players"]
+  uri                     = local.lambda_invoke_uris["list_players"]
 }
 
 # ---------------------------------------------------------
@@ -46,7 +46,7 @@ resource "aws_api_gateway_integration" "players_post" {
   http_method             = aws_api_gateway_method.players_post.http_method
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.lambdas["create_player"]
+  uri                     = local.lambda_invoke_uris["create_player"]
 }
 
 # ---------------------------------------------------------
@@ -77,7 +77,7 @@ resource "aws_api_gateway_integration" "player_put" {
   http_method             = aws_api_gateway_method.player_put.http_method
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.lambdas["update_player"]
+  uri                     = local.lambda_invoke_uris["update_player"]
 }
 
 # ---------------------------------------------------------
@@ -98,7 +98,7 @@ resource "aws_api_gateway_integration" "player_delete" {
   http_method             = aws_api_gateway_method.player_delete.http_method
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.lambdas["delete_player"]
+  uri                     = local.lambda_invoke_uris["delete_player"]
 }
 
 resource "aws_api_gateway_method" "players_options" {

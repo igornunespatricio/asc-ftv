@@ -26,54 +26,6 @@ resource "aws_s3_bucket_public_access_block" "website" {
   restrict_public_buckets = true
 }
 
-# Política pública do bucket
-resource "aws_s3_bucket_policy" "website" {
-  bucket = aws_s3_bucket.website.id
-  policy = data.aws_iam_policy_document.website_public.json
-}
-
-data "aws_iam_policy_document" "website_public" {
-  statement {
-    sid     = "AllowPublicRead"
-    effect  = "Allow"
-    actions = ["s3:GetObject"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-
-    resources = [
-      "${aws_s3_bucket.website.arn}/*"
-    ]
-  }
-}
-
-# Website Hosting
-resource "aws_s3_bucket_website_configuration" "website" {
-  bucket = aws_s3_bucket.website.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-}
-
-# CORS para frontend
-resource "aws_s3_bucket_cors_configuration" "website" {
-  bucket = aws_s3_bucket.website.id
-
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET"]
-    allowed_origins = ["*"]
-    max_age_seconds = 3000
-  }
-}
-
 # Upload de todos os arquivos do frontend
 locals {
   frontend_files = fileset("${path.module}/../frontend", "**")

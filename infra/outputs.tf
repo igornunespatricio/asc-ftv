@@ -20,3 +20,11 @@ output "lambda_invoke_arns" {
     k => m.invoke_arn
   }
 }
+
+output "cloudfront_domain" {
+  value = aws_cloudfront_distribution.website.domain_name
+}
+
+output "frontend_url" {
+  value = "https://${aws_cloudfront_distribution.website.domain_name}"
+}
