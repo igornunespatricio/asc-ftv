@@ -11,6 +11,36 @@ resource "aws_cloudfront_distribution" "website" {
     origin_access_control_id = aws_cloudfront_origin_access_control.s3.id
   }
 
+  origin {
+    domain_name = module.apigateway.invoke_domain
+    origin_id   = "api-gateway"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  dynamic "ordered_cache_behavior" {
+    for_each = local.api_cache_behaviors
+
+    content {
+      path_pattern     = ordered_cache_behavior.value
+      target_origin_id = "api-gateway"
+
+      allowed_methods = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+      cached_methods  = ["GET", "HEAD"]
+
+      viewer_protocol_policy = "redirect-to-https"
+      compress               = true
+
+      cache_policy_id          = aws_cloudfront_cache_policy.api_disabled.id
+      origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3" # AllViewer
+    }
+  }
+
   default_cache_behavior {
     target_origin_id = "s3-frontend"
 
@@ -35,13 +65,6 @@ resource "aws_cloudfront_distribution" "website" {
     geo_restriction {
       restriction_type = "none"
     }
-  }
-
-  # SPA fallback
-  custom_error_response {
-    error_code         = 403
-    response_code      = 200
-    response_page_path = "/index.html"
   }
 
   custom_error_response {

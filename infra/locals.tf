@@ -9,6 +9,18 @@ locals {
     name => mod.lambda_arn
   }
 
+  api_cache_behaviors = {
+    players       = "/players"
+    players_proxy = "/players/*"
+
+    games       = "/games"
+    games_proxy = "/games/*"
+
+    ranking       = "/ranking"
+    ranking_proxy = "/ranking/*"
+  }
+
+
   lambda_configs = {
     add_game = {
       function_name = "asc-ftv-${terraform.workspace}-add-game"
