@@ -1,8 +1,9 @@
 resource "aws_api_gateway_resource" "ranking" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  parent_id   = aws_api_gateway_rest_api.this.root_resource_id
+  parent_id   = aws_api_gateway_resource.api.id
   path_part   = "ranking"
 }
+
 
 resource "aws_api_gateway_method" "ranking_get" {
   rest_api_id   = aws_api_gateway_rest_api.this.id

@@ -10,15 +10,9 @@ locals {
   }
 
   api_cache_behaviors = {
-    players       = "/players"
-    players_proxy = "/players/*"
-
-    games       = "/games"
-    games_proxy = "/games/*"
-
-    ranking       = "/ranking"
-    ranking_proxy = "/ranking/*"
+    api = "/api/*"
   }
+
 
 
   lambda_configs = {
