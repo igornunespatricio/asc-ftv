@@ -8,6 +8,7 @@ resource "aws_api_gateway_deployment" "this" {
       aws_api_gateway_resource.players.id,
       aws_api_gateway_resource.player_id.id,
       aws_api_gateway_resource.ranking.id,
+      aws_api_gateway_resource.login.id,
     ]))
   }
 
@@ -34,5 +35,9 @@ resource "aws_api_gateway_deployment" "this" {
     # ---------- /ranking ----------
     aws_api_gateway_integration.ranking_get,
     aws_api_gateway_integration.ranking_options,
+
+    # ---------- /login ----------
+    aws_api_gateway_integration.login_post,
+    aws_api_gateway_integration.login_options,
   ]
 }
