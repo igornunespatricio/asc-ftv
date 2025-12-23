@@ -1,4 +1,4 @@
-const baseUrl = window.APP_CONFIG.apiUrl;
+// const baseUrl = window.APP_CONFIG.apiUrl;
 const playersUrl = `${baseUrl}/players`;
 
 /* ============================================================
@@ -8,7 +8,7 @@ async function loadPlayers() {
   const tableBody = document.querySelector("#players-table tbody");
 
   try {
-    const response = await fetch(playersUrl);
+    const response = await authFetch(`/players`);
     const players = await response.json();
 
     tableBody.innerHTML = "";
@@ -49,7 +49,7 @@ document.getElementById("player-form").addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await fetch(id ? `${playersUrl}/${id}` : playersUrl, {
+    const response = await authFetch(id ? `/players/${id}` : `/players`, {
       method: id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -95,7 +95,7 @@ function attachPlayerButtons() {
       const id = btn.dataset.id;
 
       try {
-        const response = await fetch(`${playersUrl}/${id}`, {
+        const response = await authFetch(`/players/${id}`, {
           method: "DELETE",
         });
         if (response.ok) {

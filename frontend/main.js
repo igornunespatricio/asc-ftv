@@ -1,4 +1,4 @@
-const baseUrl = window.APP_CONFIG.apiUrl;
+// const baseUrl = window.APP_CONFIG.apiUrl;
 const gamesUrl = `${baseUrl}/games`;
 const rankingUrl = `${baseUrl}/ranking`;
 const playersUrl = `${baseUrl}/players`;
@@ -31,7 +31,7 @@ async function loadGames(month) {
   const tableBody = document.querySelector("#games-table tbody");
   const url = `${gamesUrl}?month=${month}`;
   try {
-    const response = await fetch(url);
+    const response = await authFetch(`/games?month=${month}`);
     const games = await response.json();
 
     tableBody.innerHTML = "";
@@ -60,7 +60,7 @@ async function loadRanking(month) {
   const tableBody = document.querySelector("#ranking-table tbody");
   const url = `${rankingUrl}?month=${month}`;
   try {
-    const response = await fetch(url);
+    const response = await authFetch(`/ranking?month=${month}`);
     const ranking = await response.json();
 
     tableBody.innerHTML = "";
@@ -127,7 +127,7 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await fetch(gamesUrl, {
+    const response = await authFetch(`/games`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -170,7 +170,7 @@ async function loadPlayersForSelects() {
   ];
 
   try {
-    const response = await fetch(playersUrl);
+    const response = await authFetch(`/players`);
     let players = await response.json();
 
     // Ordenar
