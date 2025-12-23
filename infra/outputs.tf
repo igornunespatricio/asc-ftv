@@ -28,3 +28,15 @@ output "cloudfront_domain" {
 output "frontend_url" {
   value = "https://${aws_cloudfront_distribution.website.domain_name}"
 }
+
+output "users_table_name" {
+  value = module.users_table.table_name
+}
+
+output "games_table_name" {
+  value = module.games_table.table_name
+}
+
+output "players_table_name" {
+  value = module.players_table.table_name
+}

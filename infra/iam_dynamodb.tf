@@ -18,7 +18,9 @@ resource "aws_iam_policy" "lambda_dynamodb" {
           module.games_table.table_arn,
           "${module.games_table.table_arn}/index/*",
 
-          module.players_table.table_arn
+          module.players_table.table_arn,
+
+          module.users_table.table_arn
         ]
       }
     ]

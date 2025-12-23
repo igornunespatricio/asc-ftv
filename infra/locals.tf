@@ -13,9 +13,16 @@ locals {
     api = "/api/*"
   }
 
-
-
   lambda_configs = {
+    login_user = {
+      function_name = "asc-ftv-${terraform.workspace}-login-user"
+      source_dir    = "${path.root}/../lambdas/login_user"
+      env = {
+        USERS_TABLE = module.users_table.table_name
+        JWT_SECRET  = var.jwt_secret
+      }
+    }
+
     add_game = {
       function_name = "asc-ftv-${terraform.workspace}-add-game"
       source_dir    = "${path.root}/../lambdas/add_game"
