@@ -60,6 +60,24 @@ module "players_table" {
   )
 }
 
+module "users_table" {
+  source = "./modules/dynamodb-table"
+
+  name     = "asc-ftv-${terraform.workspace}-users"
+  hash_key = "email"
+
+  attributes = [
+    { name = "email", type = "S" }
+  ]
+
+  tags = merge(
+    local.default_tags,
+    {
+      Name = "asc-ftv-${terraform.workspace}-users"
+    }
+  )
+}
+
 module "apigateway" {
   source     = "./modules/apigateway"
   aws_region = var.aws_region
