@@ -159,7 +159,7 @@ async function loadUsersForSelects() {
     const response = await authFetch(`/users`);
     let users = await response.json();
 
-    users.sort((a, b) => a.name.localeCompare(b.name));
+    users.sort((a, b) => a.username.localeCompare(b.username));
 
     selects.forEach(
       (sel) => (sel.innerHTML = '<option value="">Selecione</option>'),
@@ -168,8 +168,8 @@ async function loadUsersForSelects() {
     users.forEach((user) => {
       selects.forEach((select) => {
         const opt = document.createElement("option");
-        opt.value = user.name;
-        opt.textContent = user.name;
+        opt.value = user.username;
+        opt.textContent = user.username;
         select.appendChild(opt);
       });
     });
