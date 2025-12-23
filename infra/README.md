@@ -28,12 +28,14 @@ Infrastructure as a code using Terraform and AWS services.
 | <a name="module_games_table"></a> [games\_table](#module\_games\_table) | ./modules/dynamodb-table | n/a |
 | <a name="module_lambdas"></a> [lambdas](#module\_lambdas) | ./modules/lambda | n/a |
 | <a name="module_players_table"></a> [players\_table](#module\_players\_table) | ./modules/dynamodb-table | n/a |
+| <a name="module_users_table"></a> [users\_table](#module\_users\_table) | ./modules/dynamodb-table | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [aws_cloudfront_cache_policy.api_disabled](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_cache_policy) | resource |
+| [aws_cloudfront_cache_policy.html_no_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_cache_policy) | resource |
 | [aws_cloudfront_distribution.website](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
 | [aws_cloudfront_origin_access_control.s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_control) | resource |
 | [aws_iam_policy.lambda_dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
@@ -73,7 +75,10 @@ Infrastructure as a code using Terraform and AWS services.
 | <a name="output_api_http_url"></a> [api\_http\_url](#output\_api\_http\_url) | n/a |
 | <a name="output_cloudfront_domain"></a> [cloudfront\_domain](#output\_cloudfront\_domain) | n/a |
 | <a name="output_frontend_url"></a> [frontend\_url](#output\_frontend\_url) | n/a |
+| <a name="output_games_table_name"></a> [games\_table\_name](#output\_games\_table\_name) | n/a |
 | <a name="output_invoke_url"></a> [invoke\_url](#output\_invoke\_url) | n/a |
 | <a name="output_lambda_invoke_arns"></a> [lambda\_invoke\_arns](#output\_lambda\_invoke\_arns) | n/a |
+| <a name="output_players_table_name"></a> [players\_table\_name](#output\_players\_table\_name) | n/a |
+| <a name="output_users_table_name"></a> [users\_table\_name](#output\_users\_table\_name) | n/a |
 | <a name="output_workspace"></a> [workspace](#output\_workspace) | Current Terraform workspace |
 <!-- END_TF_DOCS -->
