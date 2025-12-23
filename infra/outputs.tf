@@ -36,7 +36,3 @@ output "users_table_name" {
 output "games_table_name" {
   value = module.games_table.table_name
 }
-
-output "players_table_name" {
-  value = module.players_table.table_name
-}

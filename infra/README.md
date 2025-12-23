@@ -27,7 +27,6 @@ Infrastructure as a code using Terraform and AWS services.
 | <a name="module_apigateway"></a> [apigateway](#module\_apigateway) | ./modules/apigateway | n/a |
 | <a name="module_games_table"></a> [games\_table](#module\_games\_table) | ./modules/dynamodb-table | n/a |
 | <a name="module_lambdas"></a> [lambdas](#module\_lambdas) | ./modules/lambda | n/a |
-| <a name="module_players_table"></a> [players\_table](#module\_players\_table) | ./modules/dynamodb-table | n/a |
 | <a name="module_users_table"></a> [users\_table](#module\_users\_table) | ./modules/dynamodb-table | n/a |
 
 ## Resources
@@ -78,7 +77,6 @@ Infrastructure as a code using Terraform and AWS services.
 | <a name="output_games_table_name"></a> [games\_table\_name](#output\_games\_table\_name) | n/a |
 | <a name="output_invoke_url"></a> [invoke\_url](#output\_invoke\_url) | n/a |
 | <a name="output_lambda_invoke_arns"></a> [lambda\_invoke\_arns](#output\_lambda\_invoke\_arns) | n/a |
-| <a name="output_players_table_name"></a> [players\_table\_name](#output\_players\_table\_name) | n/a |
 | <a name="output_users_table_name"></a> [users\_table\_name](#output\_users\_table\_name) | n/a |
 | <a name="output_workspace"></a> [workspace](#output\_workspace) | Current Terraform workspace |
 <!-- END_TF_DOCS -->

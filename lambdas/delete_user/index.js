@@ -2,7 +2,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.PLAYERS_TABLE;
+const TABLE_NAME = process.env.USERS_TABLE;
 
 // -------------------------
 // CORS headers

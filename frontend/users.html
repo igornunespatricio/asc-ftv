@@ -2,59 +2,59 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Gerenciamento de Jogadores de Futevôlei</title>
+    <title>Gerenciamento de Usuários de Futevôlei</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="top-bar">
       <a href="index.html" class="btn-admin">🏐 Voltar para Jogos</a>
     </div>
-    <h1 class="page-title">Gerenciamento de Jogadores</h1>
+    <h1 class="page-title">Gerenciamento de Usuários</h1>
 
     <div class="main-layout">
-      <!-- LEFT PANEL - FORM PARA ADICIONAR/EDITAR PLAYER -->
+      <!-- LEFT PANEL - FORM PARA ADICIONAR/EDITAR USER -->
       <div class="left-panel">
         <div class="form-container">
-          <h2>Adicionar Jogador</h2>
+          <h2>Adicionar Usuário</h2>
 
-          <form id="player-form">
+          <form id="user-form">
             <div class="form-group">
-              <label for="player_name">Nome</label>
+              <label for="user_name">Nome</label>
               <input
                 type="text"
-                id="player_name"
-                name="player_name"
+                id="user_name"
+                name="user_name"
                 placeholder="Ex: João"
                 required
               />
             </div>
 
             <div class="form-group">
-              <label for="player_nickname">Apelido</label>
+              <label for="user_nickname">Apelido</label>
               <input
                 type="text"
-                id="player_nickname"
-                name="player_nickname"
+                id="user_nickname"
+                name="user_nickname"
                 placeholder="Ex: Jota"
               />
             </div>
 
-            <input type="hidden" id="player_id" name="player_id" />
+            <input type="hidden" id="user_id" name="user_id" />
 
-            <button type="submit" class="btn-submit">Salvar Jogador</button>
+            <button type="submit" class="btn-submit">Salvar Usuário</button>
           </form>
         </div>
 
         <p id="status"></p>
       </div>
 
-      <!-- RIGHT PANEL - LISTA DE PLAYERS -->
+      <!-- RIGHT PANEL - LISTA DE USERS -->
       <div class="right-panel">
         <div class="table-container">
-          <table id="players-table">
+          <table id="users-table">
             <thead>
               <tr>
-                <th colspan="4" class="table-title">Lista de Jogadores</th>
+                <th colspan="4" class="table-title">Lista de Usuários</th>
               </tr>
               <tr>
                 <th>Nome</th>
@@ -64,7 +64,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Preenchido via players.js -->
+              <!-- Preenchido via users.js -->
             </tbody>
           </table>
         </div>
@@ -74,6 +74,6 @@
     <script src="config.js"></script>
     <script src="auth.js"></script>
     <script src="utils.js"></script>
-    <script src="players.js"></script>
+    <script src="users.js"></script>
   </body>
 </html>

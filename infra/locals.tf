@@ -35,28 +35,28 @@ locals {
       env           = { GAMES_TABLE = module.games_table.table_name }
     }
 
-    create_player = {
-      function_name = "asc-ftv-${terraform.workspace}-create-player"
-      source_dir    = "${path.root}/../lambdas/create_player"
-      env           = { PLAYERS_TABLE = module.players_table.table_name }
+    create_user = {
+      function_name = "asc-ftv-${terraform.workspace}-create-user"
+      source_dir    = "${path.root}/../lambdas/create_user"
+      env           = { USERS_TABLE = module.users_table.table_name }
     }
 
-    delete_player = {
-      function_name = "asc-ftv-${terraform.workspace}-delete-player"
-      source_dir    = "${path.root}/../lambdas/delete_player"
-      env           = { PLAYERS_TABLE = module.players_table.table_name }
+    delete_user = {
+      function_name = "asc-ftv-${terraform.workspace}-delete-user"
+      source_dir    = "${path.root}/../lambdas/delete_user"
+      env           = { USERS_TABLE = module.users_table.table_name }
     }
 
-    update_player = {
-      function_name = "asc-ftv-${terraform.workspace}-update-player"
-      source_dir    = "${path.root}/../lambdas/update_player"
-      env           = { PLAYERS_TABLE = module.players_table.table_name }
+    update_user = {
+      function_name = "asc-ftv-${terraform.workspace}-update-user"
+      source_dir    = "${path.root}/../lambdas/update_user"
+      env           = { USERS_TABLE = module.users_table.table_name }
     }
 
-    list_players = {
-      function_name = "asc-ftv-${terraform.workspace}-list-players"
-      source_dir    = "${path.root}/../lambdas/list_players"
-      env           = { PLAYERS_TABLE = module.players_table.table_name }
+    list_users = {
+      function_name = "asc-ftv-${terraform.workspace}-list-users"
+      source_dir    = "${path.root}/../lambdas/list_users"
+      env           = { USERS_TABLE = module.users_table.table_name }
     }
 
     get_ranking_month = {

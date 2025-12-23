@@ -1,14 +1,13 @@
 // const baseUrl = window.APP_CONFIG.apiUrl;
 const gamesUrl = `${baseUrl}/games`;
 const rankingUrl = `${baseUrl}/ranking`;
-const playersUrl = `${baseUrl}/players`;
+const usersUrl = `${baseUrl}/users`;
 
 /* ============================================================
    CARREGAR OPÇÕES DE MESES
    ============================================================ */
 function generateMonthOptions() {
   const select = document.getElementById("month-selector");
-
   const today = new Date();
 
   for (let i = 0; i < 12; i++) {
@@ -18,7 +17,7 @@ function generateMonthOptions() {
     const option = document.createElement("option");
     option.value = value;
     option.textContent = value;
-    if (i === 0) option.selected = true; // mês atual
+    if (i === 0) option.selected = true;
 
     select.appendChild(option);
   }
@@ -29,7 +28,7 @@ function generateMonthOptions() {
    ============================================================ */
 async function loadGames(month) {
   const tableBody = document.querySelector("#games-table tbody");
-  const url = `${gamesUrl}?month=${month}`;
+
   try {
     const response = await authFetch(`/games?month=${month}`);
     const games = await response.json();
@@ -38,14 +37,12 @@ async function loadGames(month) {
 
     games.forEach((game) => {
       const row = document.createElement("tr");
-
       row.innerHTML = `
         <td data-label="Data">${game.match_date}</td>
         <td data-label="Vencedores">${game.winner1} / ${game.winner2}</td>
         <td data-label="Perdedores">${game.loser1} / ${game.loser2}</td>
         <td data-label="Placar">${game.score_winner} x ${game.score_loser}</td>
       `;
-
       tableBody.appendChild(row);
     });
   } catch (err) {
@@ -58,7 +55,7 @@ async function loadGames(month) {
    ============================================================ */
 async function loadRanking(month) {
   const tableBody = document.querySelector("#ranking-table tbody");
-  const url = `${rankingUrl}?month=${month}`;
+
   try {
     const response = await authFetch(`/ranking?month=${month}`);
     const ranking = await response.json();
@@ -67,7 +64,6 @@ async function loadRanking(month) {
 
     ranking.forEach((player) => {
       const row = document.createElement("tr");
-
       row.innerHTML = `
         <td data-label="Position">${player.position}</td>
         <td data-label="Player">${player.player}</td>
@@ -77,7 +73,6 @@ async function loadRanking(month) {
         <td data-label="Losses">${player.losses}</td>
         <td data-label="Efficiency">${player.efficiency}%</td>
       `;
-
       tableBody.appendChild(row);
     });
   } catch (err) {
@@ -90,13 +85,9 @@ async function loadRanking(month) {
    ============================================================ */
 document.getElementById("game-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const form = e.target;
   const status = document.getElementById("status");
 
-  // ================================
-  // BLOQUEIO DE SUBMISSÃO SE HÁ DUPLICADOS
-  // ================================
   const picks = [
     form.winner1.value,
     form.winner2.value,
@@ -114,7 +105,6 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
     );
     return;
   }
-  // ================================
 
   const data = {
     match_date: form.match_date.value,
@@ -140,13 +130,9 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
         `Jogo adicionado com sucesso! ID: ${result.id}`,
         "success",
       );
-
       form.reset();
+      updateUserOptions();
 
-      // limpa bloqueio visual após reset
-      updatePlayerOptions();
-
-      // Recarrega tabelas
       const selectedMonth = document.getElementById("month-selector").value;
       loadGames(selectedMonth);
       loadRanking(selectedMonth);
@@ -159,9 +145,9 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
 });
 
 /* ============================================================
-   CARREGAR JOGADORES NOS SELECTS DO FORMULÁRIO
+   CARREGAR USERS NOS SELECTS DO FORMULÁRIO
    ============================================================ */
-async function loadPlayersForSelects() {
+async function loadUsersForSelects() {
   const selects = [
     document.getElementById("winner1"),
     document.getElementById("winner2"),
@@ -170,106 +156,81 @@ async function loadPlayersForSelects() {
   ];
 
   try {
-    const response = await authFetch(`/players`);
-    let players = await response.json();
+    const response = await authFetch(`/users`);
+    let users = await response.json();
 
-    // Ordenar
-    players.sort((a, b) => a.name.localeCompare(b.name));
+    users.sort((a, b) => a.name.localeCompare(b.name));
 
-    // Limpar selects
     selects.forEach(
       (sel) => (sel.innerHTML = '<option value="">Selecione</option>'),
     );
 
-    // Preencher
-    players.forEach((player) => {
+    users.forEach((user) => {
       selects.forEach((select) => {
         const opt = document.createElement("option");
-        opt.value = player.name; // mantém compatibilidade com backend atual
-        opt.textContent = player.name; // exibe o nome
+        opt.value = user.name;
+        opt.textContent = user.name;
         select.appendChild(opt);
       });
     });
   } catch (err) {
-    console.error("Erro ao carregar jogadores nos selects:", err);
+    console.error("Erro ao carregar usuários nos selects:", err);
   }
 }
 
 /* ============================================================
-   EVITAR SELEÇÃO DUPLICADA DE JOGADORES
+   EVITAR SELEÇÃO DUPLICADA DE USERS
    ============================================================ */
+const userSelectIds = ["winner1", "winner2", "loser1", "loser2"];
 
-// IDs dos selects de jogadores
-const playerSelectIds = ["winner1", "winner2", "loser1", "loser2"];
-
-// Adiciona listeners após carregar as opções dos jogadores
-function setupPlayerDuplicateBlocking() {
-  playerSelectIds.forEach((id) => {
+function setupUserDuplicateBlocking() {
+  userSelectIds.forEach((id) => {
     const select = document.getElementById(id);
-    select.addEventListener("change", updatePlayerOptions);
+    select.addEventListener("change", updateUserOptions);
   });
-
-  // Atualiza estado inicial
-  updatePlayerOptions();
+  updateUserOptions();
 }
 
-function updatePlayerOptions() {
-  // Pega referência ao botão de submit (classe .btn-submit)
+function updateUserOptions() {
   const submitBtn = document.querySelector(".btn-submit");
   const status = document.getElementById("status");
-  // Coletar todos os jogadores já selecionados
-  const selectedValues = playerSelectIds
+
+  const selectedValues = userSelectIds
     .map((id) => document.getElementById(id).value)
     .filter((v) => v !== "");
 
-  // Verifica se existem duplicados
   const hasDuplicates = selectedValues.length !== new Set(selectedValues).size;
 
-  // Atualiza cada select
-  playerSelectIds.forEach((id) => {
+  userSelectIds.forEach((id) => {
     const select = document.getElementById(id);
-
     Array.from(select.options).forEach((option) => {
-      if (option.value === "") return; // deixa o "Selecione" livre
-
-      // Se este option é o próprio selecionado, mantenha habilitado
+      if (option.value === "") return;
       if (option.value === select.value) {
         option.disabled = false;
         return;
       }
-
-      // Desabilita se já foi escolhido em outro select
       option.disabled = selectedValues.includes(option.value);
     });
   });
 
-  // Habilita/desabilita o botão de submit conforme duplicidade
-  if (submitBtn) {
-    submitBtn.disabled = hasDuplicates;
-  }
-  // Mostra ou limpa mensagem
-  // Atualiza mensagem visual de duplicidade
+  if (submitBtn) submitBtn.disabled = hasDuplicates;
+
   if (hasDuplicates) {
     showStatusMessage(
       "⚠️ Existem jogadores duplicados — revise os seletores.",
       "error",
-      false, // <-- NÃO auto-limpar (diferente do submit)
+      false,
     );
-  } else {
-    // Só apaga mensagem se o status atual for de erro
-    if (status.classList.contains("error")) {
-      status.textContent = "";
-      status.className = "";
-    }
+  } else if (status.classList.contains("error")) {
+    status.textContent = "";
+    status.className = "";
   }
 }
 
 function showStatusMessage(message, type, autoClear = true) {
   const status = document.getElementById("status");
-
   status.textContent = message;
   status.className = `status-message ${type}`;
-
   if (autoClear) {
     setTimeout(() => {
       status.textContent = "";
@@ -284,8 +245,8 @@ function showStatusMessage(message, type, autoClear = true) {
 window.addEventListener("DOMContentLoaded", async () => {
   generateMonthOptions();
   const currentMonth = document.getElementById("month-selector").value;
-  await loadPlayersForSelects();
-  setupPlayerDuplicateBlocking();
+  await loadUsersForSelects();
+  setupUserDuplicateBlocking();
   loadGames(currentMonth);
   loadRanking(currentMonth);
 });

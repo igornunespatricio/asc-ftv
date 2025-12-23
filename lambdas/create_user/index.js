@@ -3,7 +3,7 @@ const { PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { v4: uuidv4 } = require("uuid");
 
 const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.PLAYERS_TABLE;
+const TABLE_NAME = process.env.USERS_TABLE;
 
 // -------------------------
 // CORS headers

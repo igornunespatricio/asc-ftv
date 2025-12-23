@@ -42,24 +42,6 @@ module "games_table" {
   )
 }
 
-module "players_table" {
-  source = "./modules/dynamodb-table"
-
-  name     = "asc-ftv-${terraform.workspace}-players"
-  hash_key = "id"
-
-  attributes = [
-    { name = "id", type = "S" }
-  ]
-
-  tags = merge(
-    local.default_tags,
-    {
-      Name = "asc-ftv-${terraform.workspace}-players"
-    }
-  )
-}
-
 module "users_table" {
   source = "./modules/dynamodb-table"
 

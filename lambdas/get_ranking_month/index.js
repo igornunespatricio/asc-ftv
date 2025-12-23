@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 const dynamo = new AWS.DynamoDB.DocumentClient();
-const TABLE = process.env.DYNAMODB_TABLE;
+const TABLE = process.env.GAMES_TABLE;
 
 // Retorna "YYYY-MM"
 function getCurrentMonthPrefix() {

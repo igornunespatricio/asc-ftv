@@ -10,7 +10,7 @@ locals {
   }
 
   cors_integration_headers = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
+    "method.response.header.Access-Control-Allow-Headers" = "'content-type,authorization'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
 }

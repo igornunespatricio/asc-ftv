@@ -1,55 +1,54 @@
-// const baseUrl = window.APP_CONFIG.apiUrl;
-const playersUrl = `${baseUrl}/players`;
+const usersUrl = `${baseUrl}/users`;
 
 /* ============================================================
-   FUNÇÃO: LISTAR PLAYERS
+   FUNÇÃO: LISTAR USERS
    ============================================================ */
-async function loadPlayers() {
-  const tableBody = document.querySelector("#players-table tbody");
+async function loadUsers() {
+  const tableBody = document.querySelector("#users-table tbody");
 
   try {
-    const response = await authFetch(`/players`);
-    const players = await response.json();
+    const response = await authFetch(`/users`);
+    const users = await response.json();
 
     tableBody.innerHTML = "";
 
-    players.forEach((player) => {
+    users.forEach((user) => {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td data-label="Nome">${player.name}</td>
-        <td data-label="Apelido">${player.nickname || ""}</td>
-        <td data-label="Criado em">${new Date(player.createdAt).toLocaleString()}</td>
+        <td data-label="Nome">${user.name}</td>
+        <td data-label="Apelido">${user.nickname || ""}</td>
+        <td data-label="Criado em">${new Date(user.createdAt).toLocaleString()}</td>
         <td data-label="Ações">
-          <button class="btn-edit" data-id="${player.id}" data-name="${player.name}" data-nickname="${player.nickname || ""}">Editar</button>
-          <button class="btn-delete" data-id="${player.id}">Deletar</button>
+          <button class="btn-edit" data-id="${user.id}" data-name="${user.name}" data-nickname="${user.nickname || ""}">Editar</button>
+          <button class="btn-delete" data-id="${user.id}">Deletar</button>
         </td>
       `;
 
       tableBody.appendChild(row);
     });
 
-    attachPlayerButtons();
+    attachUserButtons();
   } catch (err) {
-    console.error("Erro ao carregar players:", err);
+    console.error("Erro ao carregar users:", err);
   }
 }
 
 /* ============================================================
-   FUNÇÃO: ADICIONAR OU ATUALIZAR PLAYER
+   FUNÇÃO: ADICIONAR OU ATUALIZAR USER
    ============================================================ */
-document.getElementById("player-form").addEventListener("submit", async (e) => {
+document.getElementById("user-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const form = e.target;
-  const id = form.player_id.value;
+  const id = form.user_id.value;
   const data = {
-    name: form.player_name.value,
-    nickname: form.player_nickname.value || undefined,
+    name: form.user_name.value,
+    nickname: form.user_nickname.value || undefined,
   };
 
   try {
-    const response = await authFetch(id ? `/players/${id}` : `/players`, {
+    const response = await authFetch(id ? `/users/${id}` : `/users`, {
       method: id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -59,13 +58,13 @@ document.getElementById("player-form").addEventListener("submit", async (e) => {
 
     if (response.ok) {
       document.getElementById("status").textContent = id
-        ? `Jogador atualizado!`
-        : `Jogador criado! ID: ${result.id}`;
+        ? `Usuário atualizado!`
+        : `Usuário criado! ID: ${result.id}`;
 
       form.reset();
-      form.player_id.value = "";
+      form.user_id.value = "";
 
-      loadPlayers();
+      loadUsers();
     } else {
       document.getElementById("status").textContent = `Erro: ${result.message}`;
     }
@@ -78,29 +77,29 @@ document.getElementById("player-form").addEventListener("submit", async (e) => {
 /* ============================================================
    FUNÇÃO: BOTÕES DE EDITAR E DELETAR
    ============================================================ */
-function attachPlayerButtons() {
+function attachUserButtons() {
   document.querySelectorAll(".btn-edit").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.getElementById("player_id").value = btn.dataset.id;
-      document.getElementById("player_name").value = btn.dataset.name;
-      document.getElementById("player_nickname").value = btn.dataset.nickname;
-      document.getElementById("status").textContent = "Editando jogador...";
+      document.getElementById("user_id").value = btn.dataset.id;
+      document.getElementById("user_name").value = btn.dataset.name;
+      document.getElementById("user_nickname").value = btn.dataset.nickname;
+      document.getElementById("status").textContent = "Editando usuário...";
     });
   });
 
   document.querySelectorAll(".btn-delete").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      if (!confirm("Deseja realmente deletar este jogador?")) return;
+      if (!confirm("Deseja realmente deletar este usuário?")) return;
 
       const id = btn.dataset.id;
 
       try {
-        const response = await authFetch(`/players/${id}`, {
+        const response = await authFetch(`/users/${id}`, {
           method: "DELETE",
         });
         if (response.ok) {
-          document.getElementById("status").textContent = "Jogador deletado!";
-          loadPlayers();
+          document.getElementById("status").textContent = "Usuário deletado!";
+          loadUsers();
         } else {
           const result = await response.json();
           document.getElementById("status").textContent =
@@ -118,5 +117,5 @@ function attachPlayerButtons() {
    INICIALIZAÇÃO
    ============================================================ */
 window.addEventListener("DOMContentLoaded", () => {
-  loadPlayers();
+  loadUsers();
 });
