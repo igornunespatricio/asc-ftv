@@ -5,12 +5,10 @@ const { v4: uuidv4 } = require("uuid");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
 
-// -------------------------
-// CORS headers
-// -------------------------
+// Cabeçalhos CORS
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization",
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
@@ -47,7 +45,7 @@ exports.handler = async (event) => {
       body: JSON.stringify(item),
     };
   } catch (err) {
-    console.error("Error creating player:", err);
+    console.error("Error creating user:", err);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

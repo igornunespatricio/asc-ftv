@@ -4,13 +4,10 @@ const { DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
 
-// -------------------------
-// CORS headers
-// -------------------------
+// Cabeçalhos CORS
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization",
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
@@ -18,14 +15,13 @@ exports.handler = async (event) => {
   try {
     const { id } = event.pathParameters || {};
 
-    console.log("DELETE PLAYER REQUEST:", {
+    console.log("DELETE USER REQUEST:", {
       id,
       table: TABLE_NAME,
       rawEvent: event,
     });
 
     if (!id) {
-      console.log("Delete aborted — missing ID in the pathParameters");
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
@@ -40,7 +36,7 @@ exports.handler = async (event) => {
       }),
     );
 
-    console.log(`Player deleted successfully: ${id}`);
+    console.log(`User deleted successfully: ${id}`);
 
     return {
       statusCode: 204, // No content
@@ -48,7 +44,7 @@ exports.handler = async (event) => {
       body: "",
     };
   } catch (err) {
-    console.error("Error deleting player:", err);
+    console.error("Error deleting user:", err);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

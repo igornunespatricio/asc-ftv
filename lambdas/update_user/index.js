@@ -4,20 +4,17 @@ const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
 
-// -------------------------
-// CORS headers
-// -------------------------
+// Cabeçalhos CORS padronizados
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization",
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
 exports.handler = async (event) => {
   try {
-    const { id } = event.pathParameters;
-    const body = JSON.parse(event.body);
+    const { id } = event.pathParameters || {};
+    const body = JSON.parse(event.body || "{}");
 
     if (!id) {
       return {
@@ -61,8 +58,6 @@ exports.handler = async (event) => {
         ReturnValues: "ALL_NEW",
       }),
     );
-
-    console.log("Player updated successfully:", result.Attributes);
 
     return {
       statusCode: 200,

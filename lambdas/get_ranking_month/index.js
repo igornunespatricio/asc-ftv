@@ -8,11 +8,17 @@ function getCurrentMonthPrefix() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
+// Cabeçalhos CORS padronizados
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+};
+
 exports.handler = async (event) => {
   try {
     const queryMonth = event.queryStringParameters?.month;
     const month = queryMonth || getCurrentMonthPrefix();
-
     const pkValue = `MONTH#${month}`;
 
     // Busca apenas os jogos do mês atual
@@ -87,10 +93,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
-      },
+      headers: CORS_HEADERS,
       body: JSON.stringify(rankingArray),
     };
   } catch (err) {
@@ -98,10 +101,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
-      },
+      headers: CORS_HEADERS,
       body: JSON.stringify({
         message: "Error generating ranking",
         error: err.message,
