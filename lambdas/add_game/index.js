@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const { v4: uuidv4 } = require("uuid");
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.DYNAMODB_TABLE;
+const tableName = process.env.GAMES_TABLE;
 
 // Cabeçalhos CORS
 const corsHeaders = {
