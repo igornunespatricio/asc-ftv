@@ -1,6 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { PutCommand } = require("@aws-sdk/lib-dynamodb");
-const { v4: uuidv4 } = require("uuid");
 
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
@@ -27,7 +26,6 @@ exports.handler = async (event) => {
     }
 
     const item = {
-      id: uuidv4(),
       username: body.username,
       email: body.email,
       role: body.role ?? "viewer",
@@ -40,6 +38,7 @@ exports.handler = async (event) => {
       new PutCommand({
         TableName: TABLE_NAME,
         Item: item,
+        ConditionExpression: "attribute_not_exists(email)",
       }),
     );
 
@@ -49,6 +48,14 @@ exports.handler = async (event) => {
       body: JSON.stringify(item),
     };
   } catch (err) {
+    if (err.name === "ConditionalCheckFailedException") {
+      return {
+        statusCode: 409,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ message: "User already exists." }),
+      };
+    }
+
     console.error("Error creating user:", err);
     return {
       statusCode: 500,
