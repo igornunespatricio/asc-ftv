@@ -12,19 +12,36 @@ const CORS_HEADERS = {
 };
 
 exports.handler = async (event) => {
-  try {
-    const { id } = event.pathParameters || {};
-    const body = JSON.parse(event.body || "{}");
+  console.log("pathParameters:", event.pathParameters);
+  console.log("rawPath:", event.rawPath);
 
-    if (!id) {
+  try {
+    const rawEmail = event.pathParameters?.email;
+
+    if (!rawEmail) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "Missing ID" }),
+        body: JSON.stringify({ message: "Missing email in path." }),
       };
     }
 
-    if (!body.name && body.nickname === undefined) {
+    const email = decodeURIComponent(rawEmail);
+    const body = JSON.parse(event.body || "{}");
+
+    if (!email) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ message: "Missing email." }),
+      };
+    }
+
+    if (
+      body.username === undefined &&
+      body.role === undefined &&
+      body.active === undefined
+    ) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
@@ -34,15 +51,22 @@ exports.handler = async (event) => {
 
     const updates = [];
     const values = {};
+    const names = {};
 
-    if (body.name) {
-      updates.push("#name = :name");
-      values[":name"] = body.name;
+    if (body.username !== undefined) {
+      updates.push("username = :username");
+      values[":username"] = body.username;
     }
 
-    if (body.nickname !== undefined) {
-      updates.push("nickname = :nick");
-      values[":nick"] = body.nickname;
+    if (body.role !== undefined) {
+      updates.push("#role = :role");
+      values[":role"] = body.role;
+      names["#role"] = "role";
+    }
+
+    if (body.active !== undefined) {
+      updates.push("active = :active");
+      values[":active"] = body.active;
     }
 
     updates.push("updatedAt = :updatedAt");
@@ -51,10 +75,11 @@ exports.handler = async (event) => {
     const result = await client.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
-        Key: { id },
+        Key: { email },
         UpdateExpression: `SET ${updates.join(", ")}`,
         ExpressionAttributeValues: values,
-        ExpressionAttributeNames: { "#name": "name" },
+        ExpressionAttributeNames: Object.keys(names).length ? names : undefined,
+        ConditionExpression: "attribute_exists(email)",
         ReturnValues: "ALL_NEW",
       }),
     );
@@ -63,12 +88,21 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: CORS_HEADERS,
       body: JSON.stringify({
-        message: "Player updated.",
-        player: result.Attributes,
+        message: "User updated successfully.",
+        user: result.Attributes,
       }),
     };
   } catch (err) {
-    console.error("Error updating player:", err);
+    console.error("Error updating user:", err);
+
+    if (err.name === "ConditionalCheckFailedException") {
+      return {
+        statusCode: 404,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ message: "User not found." }),
+      };
+    }
+
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
