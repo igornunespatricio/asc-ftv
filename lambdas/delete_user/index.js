@@ -13,38 +13,46 @@ const CORS_HEADERS = {
 
 exports.handler = async (event) => {
   try {
-    const { id } = event.pathParameters || {};
+    console.log("pathParameters:", event.pathParameters);
 
-    console.log("DELETE USER REQUEST:", {
-      id,
-      table: TABLE_NAME,
-      rawEvent: event,
-    });
+    const rawEmail = event.pathParameters?.email;
 
-    if (!id) {
+    if (!rawEmail) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "Missing ID" }),
+        body: JSON.stringify({ message: "Missing email." }),
       };
     }
+
+    const email = decodeURIComponent(rawEmail);
 
     await client.send(
       new DeleteCommand({
         TableName: TABLE_NAME,
-        Key: { id },
+        Key: { email },
+        ConditionExpression: "attribute_exists(email)",
       }),
     );
 
-    console.log(`User deleted successfully: ${id}`);
+    console.log(`User deleted successfully: ${email}`);
 
     return {
-      statusCode: 204, // No content
+      statusCode: 204, // No Content
       headers: CORS_HEADERS,
       body: "",
     };
   } catch (err) {
     console.error("Error deleting user:", err);
+
+    if (err.name === "ConditionalCheckFailedException") {
+      return {
+        statusCode: 404,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ message: "User not found." }),
+      };
+    }
+
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
