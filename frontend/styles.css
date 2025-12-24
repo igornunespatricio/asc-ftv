@@ -330,10 +330,10 @@ button {
 }
 
 /* ==========================
-   TABLEA DE JOGADORES
+   TABLE DE USERS
    ========================== */
 
-#players-table {
+#users-table {
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
@@ -344,12 +344,12 @@ button {
 }
 
 /* Cabeçalho */
-#players-table thead {
+#users-table thead {
   background: #1e88e5;
   color: white;
 }
 
-#players-table th {
+#users-table th {
   text-align: left;
   padding: 14px;
   font-size: 15px;
@@ -357,19 +357,19 @@ button {
 }
 
 /* Linhas */
-#players-table td {
+#users-table td {
   padding: 12px 14px;
   border-bottom: 1px solid #e6e6e6;
   font-size: 14px;
 }
 
 /* Zebra stripes */
-#players-table tbody tr:nth-child(even) {
+#users-table tbody tr:nth-child(even) {
   background: #f9f9f9;
 }
 
 /* Hover highlight */
-#players-table tbody tr:hover {
+#users-table tbody tr:hover {
   background: #e3f2fd;
   cursor: pointer;
 }
@@ -414,11 +414,11 @@ button {
    RESPONSIVIDADE MOBILE
    ========================== */
 @media (max-width: 600px) {
-  #players-table thead {
+  #users-table thead {
     display: none;
   }
 
-  #players-table tr {
+  #users-table tr {
     display: block;
     margin-bottom: 15px;
     border-radius: 8px;
@@ -426,20 +426,20 @@ button {
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
 
-  #players-table td {
+  #users-table td {
     display: flex;
     justify-content: space-between;
     padding: 12px;
     border-bottom: 1px solid #eee;
   }
 
-  #players-table td::before {
+  #users-table td::before {
     content: attr(data-label);
     font-weight: bold;
     color: #444;
   }
 
-  #players-table td:last-child {
+  #users-table td:last-child {
     border-bottom: none;
   }
 }
@@ -457,7 +457,7 @@ select {
   background-color: #fff;
   font-size: 16px;
   cursor: pointer;
-  appearance: none; /* remove estilo nativo */
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -492,7 +492,7 @@ label {
 .btn-submit:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none; /* garante que não clique */
+  pointer-events: none;
 }
 
 /* Caixa geral de mensagens */

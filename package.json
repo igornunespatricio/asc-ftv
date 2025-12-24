@@ -1,0 +1,24 @@
+{
+  "name": "asc-ftv",
+  "version": "1.0.0",
+  "description": "This project provides infrastructure and backend setup to manage **Futevôlei games** using AWS services (Lambda, API Gateway, S3, DynamoDB) and Terraform.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igornunespatricio/asc-ftv.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/igornunespatricio/asc-ftv/issues"
+  },
+  "homepage": "https://github.com/igornunespatricio/asc-ftv#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  }
+}

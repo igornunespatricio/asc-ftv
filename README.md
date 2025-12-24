@@ -46,7 +46,7 @@ Make sure your IAM user has permissions to create:
 
 ```
 .
-├── backend/          # Lambda functions code (Node.js)
+├── lambdas/          # Lambda functions code (Node.js)
 ├── frontend/         # Static frontend assets (HTML, JS, CSS)
 ├── infra/            # Terraform configuration files
 ├── Makefile          # Commands to build and deploy

@@ -27,3 +27,9 @@ variable "base_tags" {
     ManagedBy = "terraform"
   }
 }
+
+variable "jwt_secret" {
+  type        = string
+  description = "JWT secret used by authorizer lambda"
+  sensitive   = true
+}
