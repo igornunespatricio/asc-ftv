@@ -11,7 +11,31 @@ TF            ?= terraform
 .PHONY: init fmt validate workspace plan apply destroy \
         dev dev-plan dev-apply dev-destroy \
         prod prod-plan prod-apply prod-destroy \
-        check terraform docs
+        check terraform docs lambda-install
+
+# ---------------------------------------------------------
+# Lambda install
+# ---------------------------------------------------------
+
+lambda-install:
+	@if [ -z "$(path)" ]; then \
+		echo "❌ Uso: make lambda-install path=CAMINHO_DA_LAMBDA"; \
+		exit 1; \
+	fi
+	@if [ ! -d "$(path)" ]; then \
+		echo "❌ Diretório não encontrado: $(path)"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(path)/package.json" ]; then \
+		echo "❌ package.json não encontrado em $(path)"; \
+		exit 1; \
+	fi
+	@echo "🧹 Limpando dependências da lambda em $(path)"
+	@cd $(path) && \
+	rm -rf node_modules package-lock.json && \
+	echo "📥 Instalando dependências (produção)" && \
+	npm install --omit=dev
+	@echo "✅ Lambda reconstruída com package.json existente: $(path)"
 
 # ---------------------------------------------------------
 # Qualidade e validação
