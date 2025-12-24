@@ -16,18 +16,22 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
 
-    if (!body.name) {
+    if (!body.username || !body.email) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "Field 'name' is required." }),
+        body: JSON.stringify({
+          message: "Fields 'username' and 'email' are required.",
+        }),
       };
     }
 
     const item = {
       id: uuidv4(),
-      name: body.name,
-      nickname: body.nickname ?? null,
+      username: body.username,
+      email: body.email,
+      role: body.role ?? "viewer",
+      active: body.active ?? true,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
