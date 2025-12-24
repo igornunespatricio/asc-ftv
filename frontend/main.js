@@ -243,6 +243,11 @@ function showStatusMessage(message, type, autoClear = true) {
    AO CARREGAR A PÁGINA
    ============================================================ */
 window.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("jwt");
+  if (!token) {
+    window.location.href = "/login.html";
+  }
+
   generateMonthOptions();
   const currentMonth = document.getElementById("month-selector").value;
   await loadUsersForSelects();

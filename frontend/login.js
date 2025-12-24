@@ -21,8 +21,14 @@ async function login() {
       }),
     });
 
+    if (response.status === 401) {
+      status.innerText = "❌ Usuário ou senha inválidos";
+      return;
+    }
+
     if (!response.ok) {
-      throw new Error("Unauthorized");
+      status.innerText = "❌ Erro ao efetuar login";
+      return;
     }
 
     const data = await response.json();
