@@ -39,5 +39,15 @@ function requireAuth() {
   }
 }
 
+function requireAdmin() {
+  requireAuth();
+
+  const auth = getAuth();
+
+  if (!auth || auth.role !== "admin") {
+    logout();
+  }
+}
+
 // Executa automaticamente ao carregar a página
 requireAuth();
