@@ -136,11 +136,24 @@ document.getElementById("game-form").addEventListener("submit", async (e) => {
       const selectedMonth = document.getElementById("month-selector").value;
       loadGames(selectedMonth);
       loadRanking(selectedMonth);
-    } else {
-      showStatusMessage(`Erro: ${result.message}`, "error");
+      return;
     }
+
+    if (response.status === 403) {
+      showStatusMessage(
+        "⛔ Você não tem permissão para adicionar partidas.",
+        "error",
+      );
+      return;
+    }
+
+    showStatusMessage(`Erro: ${result.message}`, "error");
   } catch (err) {
-    showStatusMessage(`Erro de rede: ${err.message}`, "error");
+    if (err.message === "NetworkError") {
+      showStatusMessage("❌ Erro de rede. Verifique sua conexão.", "error");
+    } else {
+      showStatusMessage("❌ Erro inesperado.", "error");
+    }
   }
 });
 

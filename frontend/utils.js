@@ -12,18 +12,25 @@ async function authFetch(path, options = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${baseUrl}${path}`, {
-    ...options,
-    headers,
-  });
+  let response;
+  try {
+    response = await fetch(`${baseUrl}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (err) {
+    // Erro REAL de rede (offline, DNS, CORS, etc)
+    throw new Error("NetworkError");
+  }
 
-  // 🔴 TOKEN EXPIRADO OU INVÁLIDO
-  if (response.status === 401 || response.status === 403) {
-    console.warn("Token expirado ou inválido, redirecionando para login");
+  // 🔴 Não autenticado → logout
+  if (response.status === 401) {
     localStorage.removeItem("jwt");
+    localStorage.removeItem("auth");
     window.location.href = "/login.html";
     throw new Error("Unauthorized");
   }
 
+  // ⛔ Não tem permissão → caller decide
   return response;
 }

@@ -24,21 +24,15 @@ exports.handler = async (event) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
+    const user = {
+      email: decoded.email,
+      username: decoded.username || "",
+      role: decoded.role || "viewer",
+    };
 
-    /**
-     * Expected payload example:
-     * {
-     *   sub: "user-id",
-     *   role: "admin",
-     *   email: "user@email.com"
-     * }
-     */
+    console.log("Authorized user:", user);
 
-    return generatePolicy(decoded.sub, "Allow", event.methodArn, {
-      userId: decoded.sub,
-      role: decoded.role || "user",
-      email: decoded.email || "",
-    });
+    return generatePolicy(decoded.email, "Allow", event.methodArn, user);
   } catch (err) {
     console.error("Authorization error:", err.message);
     return generatePolicy("anonymous", "Deny", event.methodArn);
