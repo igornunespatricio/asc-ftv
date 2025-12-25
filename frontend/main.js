@@ -252,19 +252,50 @@ function showStatusMessage(message, type, autoClear = true) {
   }
 }
 
+function applyPermissions() {
+  const form = document.getElementById("game-form");
+  const container = document.getElementById("add-game-container");
+  const content = container?.querySelector(".form-content");
+
+  if (!form || !container || !content) return;
+  if (hasRole("admin")) return;
+
+  /* 1️⃣ Bloqueio funcional */
+  form.querySelectorAll("input, select, button").forEach((el) => {
+    el.disabled = true;
+  });
+
+  /* 2️⃣ Blur apenas no conteúdo */
+  content.classList.add("blurred");
+
+  container.style.position = "relative";
+
+  /* 3️⃣ Overlay sem blur */
+  if (!container.querySelector(".form-overlay")) {
+    const overlay = document.createElement("div");
+    overlay.className = "form-overlay";
+    overlay.innerHTML = `
+      <div class="overlay-message">
+        🔒 Apenas administradores podem adicionar partidas
+      </div>
+    `;
+    container.appendChild(overlay);
+  }
+}
+
 /* ============================================================
    AO CARREGAR A PÁGINA
    ============================================================ */
 window.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("jwt");
-  if (!token) {
-    window.location.href = "/login.html";
-  }
+  requireAuth();
 
   generateMonthOptions();
   const currentMonth = document.getElementById("month-selector").value;
   await loadUsersForSelects();
   setupUserDuplicateBlocking();
+
+  applyPermissions();
+
   loadGames(currentMonth);
   loadRanking(currentMonth);
 });

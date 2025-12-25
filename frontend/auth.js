@@ -10,6 +10,11 @@ function getAuth() {
   }
 }
 
+function hasRole(requiredRole) {
+  const auth = getAuth();
+  return auth?.role === requiredRole;
+}
+
 function isTokenExpired(token) {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
