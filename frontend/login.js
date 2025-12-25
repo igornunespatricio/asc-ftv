@@ -33,8 +33,19 @@ async function login() {
 
     const data = await response.json();
 
+    const token = data.token;
     // Salva o JWT
-    localStorage.setItem("jwt", data.token);
+    localStorage.setItem("jwt", token);
+
+    const payload = parseJwt(token);
+    localStorage.setItem(
+      "auth",
+      JSON.stringify({
+        email: payload.email,
+        username: payload.username,
+        role: payload.role,
+      }),
+    );
 
     // Redireciona para a home
     window.location.href = "index.html";
@@ -42,4 +53,9 @@ async function login() {
     console.error(err);
     status.innerText = "❌ Usuário ou senha inválidos";
   }
+}
+
+function parseJwt(token) {
+  const payload = token.split(".")[1];
+  return JSON.parse(atob(payload));
 }
