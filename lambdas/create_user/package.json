@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "aws-sdk": "^2.1693.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2", 
+    "bcryptjs": "^2.4.3"
   }
 }
