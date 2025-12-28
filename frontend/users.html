@@ -3,12 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <title>Gerenciamento de Usuários de Futevôlei</title>
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script>
+      // 🔒 Garante que apenas admins possam acessar esta página
+      requireAdmin();
+    </script>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
   </head>
   <body>
-    <div class="top-bar">
-      <a href="index.html" class="btn-admin">🏐 Voltar para Jogos</a>
-    </div>
+    <div id="navbar"></div>
+
     <h1 class="page-title">Gerenciamento de Usuários</h1>
 
     <div class="main-layout">
@@ -91,9 +97,7 @@
         </div>
       </div>
     </div>
-
-    <script src="config.js"></script>
-    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
     <script src="utils.js"></script>
     <script src="users.js"></script>
   </body>

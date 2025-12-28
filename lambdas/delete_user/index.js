@@ -11,8 +11,28 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
+function requireAdmin(event) {
+  const role = event.requestContext?.authorizer?.role;
+
+  if (role !== "admin") {
+    return {
+      ok: false,
+      response: {
+        statusCode: 403,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ message: "Access denied" }),
+      },
+    };
+  }
+
+  return { ok: true };
+}
+
 exports.handler = async (event) => {
   try {
+    const auth = requireAdmin(event);
+    if (!auth.ok) return auth.response;
+
     console.log("pathParameters:", event.pathParameters);
 
     const rawEmail = event.pathParameters?.email;

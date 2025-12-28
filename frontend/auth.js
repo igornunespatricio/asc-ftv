@@ -2,27 +2,49 @@ function getToken() {
   return localStorage.getItem("jwt");
 }
 
+function getAuth() {
+  try {
+    return JSON.parse(localStorage.getItem("auth"));
+  } catch {
+    return null;
+  }
+}
+
+function hasRole(requiredRole) {
+  const auth = getAuth();
+  return auth?.role === requiredRole;
+}
+
 function isTokenExpired(token) {
   try {
-    const payloadBase64 = token.split(".")[1];
-    const payload = JSON.parse(atob(payloadBase64));
+    const payload = JSON.parse(atob(token.split(".")[1]));
     const now = Math.floor(Date.now() / 1000);
-
     return !payload.exp || payload.exp < now;
-  } catch (err) {
+  } catch {
     return true;
   }
 }
 
 function logout() {
   localStorage.removeItem("jwt");
-  window.location.href = "login.html";
+  localStorage.removeItem("auth");
+  window.location.href = "/login.html";
 }
 
 function requireAuth() {
   const token = getToken();
 
   if (!token || isTokenExpired(token)) {
+    logout();
+  }
+}
+
+function requireAdmin() {
+  requireAuth();
+
+  const auth = getAuth();
+
+  if (!auth || auth.role !== "admin") {
     logout();
   }
 }

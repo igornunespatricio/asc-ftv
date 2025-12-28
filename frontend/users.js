@@ -76,25 +76,27 @@ document.getElementById("user-form").addEventListener("submit", async (e) => {
       },
     );
 
-    const result = await response.json();
+    const success = await handleApiResponse(
+      response,
+      isEdit
+        ? "✅ Usuário atualizado com sucesso!"
+        : "✅ Usuário criado com sucesso!",
+    );
 
-    if (!response.ok) {
-      document.getElementById("status").textContent = `Erro: ${result.message}`;
-      return;
-    }
+    // 🔑 Sempre sai do modo edição, independente do resultado
+    resetUserForm();
 
-    document.getElementById("status").textContent = isEdit
-      ? "Usuário atualizado!"
-      : "Usuário criado!";
-
-    form.reset();
-    form.user_email_original.value = "";
-    document.getElementById("user_email").disabled = false;
+    if (!success) return;
 
     loadUsers();
   } catch (err) {
-    document.getElementById("status").textContent =
-      `Erro de rede: ${err.message}`;
+    showStatus(
+      "🌐 Não foi possível comunicar com o servidor. Verifique sua conexão ou permissões.",
+      "error",
+    );
+
+    // 🔑 Mesmo em erro de rede, limpa o estado do formulário
+    resetUserForm();
   }
 });
 
@@ -129,13 +131,10 @@ function attachUserButtons() {
           { method: "DELETE" },
         );
 
+        await handleApiResponse(response, "🗑️ Usuário deletado com sucesso!");
+
         if (response.ok) {
-          document.getElementById("status").textContent = "Usuário deletado!";
           loadUsers();
-        } else {
-          const result = await response.json();
-          document.getElementById("status").textContent =
-            `Erro: ${result.message}`;
         }
       } catch (err) {
         document.getElementById("status").textContent =
@@ -143,6 +142,43 @@ function attachUserButtons() {
       }
     });
   });
+}
+
+async function handleApiResponse(response, successMessage) {
+  let data = {};
+
+  try {
+    data = await response.json();
+  } catch {
+    // resposta sem body
+  }
+
+  if (response.ok) {
+    showStatus(successMessage, "success");
+    return true;
+  }
+
+  if (response.status === 403) {
+    showStatus("⛔ Você não tem permissão para executar esta ação.", "error");
+    return false;
+  }
+
+  if (response.status === 401) {
+    showStatus("🔒 Sessão expirada. Faça login novamente.", "error");
+    logout();
+    return false;
+  }
+
+  showStatus(data.message || "❌ Erro inesperado.", "error");
+  return false;
+}
+
+function resetUserForm() {
+  const form = document.getElementById("user-form");
+
+  form.reset();
+  form.user_email_original.value = "";
+  document.getElementById("user_email").disabled = false;
 }
 
 /* ============================================================

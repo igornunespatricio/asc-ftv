@@ -24,21 +24,15 @@ exports.handler = async (event) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
+    const user = {
+      email: decoded.email,
+      username: decoded.username || "",
+      role: decoded.role || "viewer",
+    };
 
-    /**
-     * Expected payload example:
-     * {
-     *   sub: "user-id",
-     *   role: "admin",
-     *   email: "user@email.com"
-     * }
-     */
+    console.log("Authorized user:", user);
 
-    return generatePolicy(decoded.sub, "Allow", event.methodArn, {
-      userId: decoded.sub,
-      role: decoded.role || "user",
-      email: decoded.email || "",
-    });
+    return generatePolicy(decoded.email, "Allow", event.methodArn, user);
   } catch (err) {
     console.error("Authorization error:", err.message);
     return generatePolicy("anonymous", "Deny", event.methodArn);
@@ -48,7 +42,18 @@ exports.handler = async (event) => {
 /**
  * Generates IAM policy for API Gateway
  */
-function generatePolicy(principalId, effect, resource, context = {}) {
+function generatePolicy(principalId, effect, methodArn, context = {}) {
+  const arnParts = methodArn.split(":");
+  const region = arnParts[3];
+  const accountId = arnParts[4];
+
+  const apiGatewayArnParts = arnParts[5].split("/");
+  const restApiId = apiGatewayArnParts[0];
+  const stage = apiGatewayArnParts[1];
+
+  // 🔑 Libera TODOS os métodos e recursos do stage
+  const resourceArn = `arn:aws:execute-api:${region}:${accountId}:${restApiId}/${stage}/*/*`;
+
   return {
     principalId,
     policyDocument: {
@@ -57,7 +62,7 @@ function generatePolicy(principalId, effect, resource, context = {}) {
         {
           Action: "execute-api:Invoke",
           Effect: effect,
-          Resource: resource,
+          Resource: resourceArn,
         },
       ],
     },

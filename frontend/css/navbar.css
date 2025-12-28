@@ -1,0 +1,44 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: #0f172a;
+  color: #fff;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-link {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  color: #38bdf8;
+}
+
+.app-title {
+  font-weight: 700;
+  margin-right: 16px;
+}
+
+.user-info {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.btn-logout {
+  background: #ef4444;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}

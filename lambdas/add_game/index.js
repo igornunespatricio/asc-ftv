@@ -14,6 +14,16 @@ const corsHeaders = {
 exports.handler = async (event) => {
   console.log("Received event:", JSON.stringify(event));
 
+  const role = event.requestContext?.authorizer?.role;
+
+  if (role !== "admin") {
+    return {
+      statusCode: 403,
+      headers: corsHeaders,
+      body: JSON.stringify({ message: "Access denied" }),
+    };
+  }
+
   let body;
   try {
     body = JSON.parse(event.body);
