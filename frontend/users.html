@@ -21,7 +21,7 @@
       <!-- LEFT PANEL - FORM PARA ADICIONAR/EDITAR USER -->
       <div class="left-panel">
         <div class="form-container">
-          <h2>Adicionar Usuário</h2>
+          <h2 id="form-title">Adicionar Usuário</h2>
 
           <form id="user-form">
             <div class="form-group">
@@ -43,6 +43,15 @@
                 name="user_email"
                 placeholder="Ex: pedro@asc.com"
                 required
+              />
+            </div>
+
+            <div class="form-group" id="password-group">
+              <label for="user_password">Senha inicial</label>
+              <input
+                type="password"
+                id="user_password"
+                placeholder="Defina uma senha inicial"
               />
             </div>
 

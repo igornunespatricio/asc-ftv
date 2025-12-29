@@ -17,10 +17,19 @@ exports.handler = async () => {
       new ScanCommand({ TableName: TABLE_NAME }),
     );
 
+    const users = (result.Items || []).map((user) => ({
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      active: user.active,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    }));
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify(result.Items || []),
+      body: JSON.stringify(users),
     };
   } catch (err) {
     console.error("Error listing players:", err);

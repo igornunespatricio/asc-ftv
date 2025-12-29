@@ -55,6 +55,7 @@ document.getElementById("user-form").addEventListener("submit", async (e) => {
 
   const form = e.target;
   const originalEmail = form.user_email_original.value;
+  const isEdit = Boolean(originalEmail);
 
   const data = {
     username: form.user_username.value,
@@ -62,7 +63,10 @@ document.getElementById("user-form").addEventListener("submit", async (e) => {
     active: form.user_active.checked,
   };
 
-  const isEdit = Boolean(originalEmail);
+  if (!isEdit) {
+    data.email = form.user_email.value;
+    data.password = form.user_password.value;
+  }
 
   try {
     const response = await authFetch(
@@ -70,9 +74,7 @@ document.getElementById("user-form").addEventListener("submit", async (e) => {
       {
         method: isEdit ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          isEdit ? data : { ...data, email: form.user_email.value },
-        ),
+        body: JSON.stringify(data),
       },
     );
 
@@ -115,7 +117,12 @@ function attachUserButtons() {
       document.getElementById("user_email").disabled = true;
       document.getElementById("user_email_original").value = btn.dataset.email;
 
-      document.getElementById("status").textContent = "Editando usuário...";
+      document.getElementById("user_password").value = "";
+      document.getElementById("password-group").style.display = "none";
+
+      document.getElementById("form-title").textContent = "Editar Usuário";
+
+      showStatus("✏️ Editando usuário...", "info");
     });
   });
 
@@ -137,8 +144,7 @@ function attachUserButtons() {
           loadUsers();
         }
       } catch (err) {
-        document.getElementById("status").textContent =
-          `Erro de rede: ${err.message}`;
+        showStatus(`Erro de rede: ${err.message}`, "error");
       }
     });
   });
@@ -179,6 +185,9 @@ function resetUserForm() {
   form.reset();
   form.user_email_original.value = "";
   document.getElementById("user_email").disabled = false;
+
+  document.getElementById("password-group").style.display = "block";
+  document.getElementById("form-title").textContent = "Adicionar Usuário";
 }
 
 /* ============================================================
