@@ -47,7 +47,7 @@ exports.handler = async (event) => {
         role: result.Item.role,
       },
       JWT_SECRET,
-      { expiresIn: "8h" },
+      { expiresIn: "7d" },
     );
 
     return response(200, { token });

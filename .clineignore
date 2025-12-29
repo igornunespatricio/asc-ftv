@@ -1,0 +1,26 @@
+# Directories to ignore during searches and file operations
+**/node_modules/**
+**/*.log
+**/.git/**
+
+# Specific files that might contain sensitive information
+.env
+.env.local
+.env.*.local
+
+# Build and cache directories
+.cache/
+dist/
+build/
+*.tmp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
