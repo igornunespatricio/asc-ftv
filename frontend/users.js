@@ -120,6 +120,8 @@ function attachUserButtons() {
       document.getElementById("user_password").value = "";
       document.getElementById("password-group").style.display = "none";
 
+      document.getElementById("form-title").textContent = "Editar Usuário";
+
       showStatus("✏️ Editando usuário...", "info");
     });
   });
@@ -183,6 +185,9 @@ function resetUserForm() {
   form.reset();
   form.user_email_original.value = "";
   document.getElementById("user_email").disabled = false;
+
+  document.getElementById("password-group").style.display = "block";
+  document.getElementById("form-title").textContent = "Adicionar Usuário";
 }
 
 /* ============================================================
