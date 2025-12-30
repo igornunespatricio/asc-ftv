@@ -8,7 +8,7 @@ Remove viewer role, add game inputer role (CRUD on games), keep admin role with 
 
 - [ ] **Feature Branch: security-role-refactor**
   - [x] Commit: Create database migration script to update user roles (remove viewer, add game_inputer)
-  - [ ] Commit: Update jwt_authorizer lambda to handle new role permissions
+  - [x] Commit: Update jwt_authorizer lambda to handle new role permissions
   - [ ] Commit: Modify lambda functions to check for game_inputer role instead of viewer
   - [ ] Commit: Update frontend authentication and role-checking logic
   - [ ] Commit: Remove all viewer role references from UI components
