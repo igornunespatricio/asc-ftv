@@ -8,7 +8,10 @@ resource "aws_api_gateway_resource" "user_email" {
   path_part   = "{email}"
 }
 
-# PUT /users/{email}
+# PUT /users/{email} - Protected endpoint
+# Requires JWT authentication
+# Allows: admin (user updates)
+# Rejects: game_inputer, invalid roles
 resource "aws_api_gateway_method" "user_put" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.user_email.id
@@ -27,7 +30,10 @@ resource "aws_api_gateway_integration" "user_put" {
 }
 
 
-# DELETE /users/{email}
+# DELETE /users/{email} - Protected endpoint
+# Requires JWT authentication
+# Allows: admin (user deletion)
+# Rejects: game_inputer, invalid roles
 resource "aws_api_gateway_method" "user_delete" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.user_email.id
