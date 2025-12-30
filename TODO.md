@@ -11,7 +11,7 @@ Remove viewer role, add game inputer role (CRUD on games), keep admin role with 
   - [x] Commit: Update jwt_authorizer lambda to handle new role permissions
   - [x] Commit: Modify lambda functions to check for game_inputer role instead of viewer
   - [x] Commit: Update frontend authentication and role-checking logic
-  - [ ] Commit: Remove all viewer role references from UI components
+  - [x] Commit: Remove all viewer role references from UI components
   - [ ] Commit: Add role validation in user creation/update lambdas
   - [ ] Commit: Update API Gateway permissions for new role structure
 
