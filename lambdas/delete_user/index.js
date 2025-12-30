@@ -1,32 +1,17 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DeleteCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  successResponse,
+  errorResponse,
+  accessDeniedResponse,
+  badRequestResponse,
+  serverErrorResponse,
+  notFoundResponse,
+} = require("../shared/httpUtils");
+const { requireAdmin } = require("../shared/authUtils");
 
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
-
-// Cabeçalhos CORS
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-};
-
-function requireAdmin(event) {
-  const role = event.requestContext?.authorizer?.role;
-
-  if (role !== "admin") {
-    return {
-      ok: false,
-      response: {
-        statusCode: 403,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "Access denied" }),
-      },
-    };
-  }
-
-  return { ok: true };
-}
 
 exports.handler = async (event) => {
   try {
@@ -38,11 +23,7 @@ exports.handler = async (event) => {
     const rawEmail = event.pathParameters?.email;
 
     if (!rawEmail) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "Missing email." }),
-      };
+      return badRequestResponse("Missing email.");
     }
 
     const email = decodeURIComponent(rawEmail);
@@ -57,26 +38,14 @@ exports.handler = async (event) => {
 
     console.log(`User deleted successfully: ${email}`);
 
-    return {
-      statusCode: 204, // No Content
-      headers: CORS_HEADERS,
-      body: "",
-    };
+    return successResponse(204, "");
   } catch (err) {
     console.error("Error deleting user:", err);
 
     if (err.name === "ConditionalCheckFailedException") {
-      return {
-        statusCode: 404,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "User not found." }),
-      };
+      return notFoundResponse("User not found.");
     }
 
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ message: "Internal server error." }),
-    };
+    return serverErrorResponse("Internal server error.");
   }
 };

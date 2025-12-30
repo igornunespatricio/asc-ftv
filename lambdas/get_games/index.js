@@ -3,6 +3,7 @@ const {
   DynamoDBDocumentClient,
   QueryCommand,
 } = require("@aws-sdk/lib-dynamodb");
+const { successResponse, serverErrorResponse } = require("../shared/httpUtils");
 
 const client = new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
@@ -13,13 +14,6 @@ function getCurrentMonthPrefix() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
-
-// Cabeçalhos CORS padronizados
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-};
 
 exports.handler = async (event) => {
   const requestedMonth = event.queryStringParameters?.month;
@@ -36,18 +30,9 @@ exports.handler = async (event) => {
 
   try {
     const result = await dynamo.send(new QueryCommand(params));
-
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(result.Items),
-    };
+    return successResponse(200, result.Items);
   } catch (err) {
     console.error("DynamoDB error:", err);
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ message: "Error querying games" }),
-    };
+    return serverErrorResponse("Error querying games");
   }
 };

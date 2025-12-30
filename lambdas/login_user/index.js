@@ -2,6 +2,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  successResponse,
+  errorResponse,
+  badRequestResponse,
+  serverErrorResponse,
+} = require("../shared/httpUtils");
 
 const client = new DynamoDBClient({});
 const ddb = DynamoDBDocumentClient.from(client);
@@ -15,7 +21,7 @@ exports.handler = async (event) => {
     const { email, password } = body;
 
     if (!email || !password) {
-      return response(400, { message: "Email e senha são obrigatórios" });
+      return badRequestResponse("Email e senha são obrigatórios");
     }
 
     // Buscar usuário
@@ -27,7 +33,7 @@ exports.handler = async (event) => {
     );
 
     if (!result.Item || !result.Item.active) {
-      return response(401, { message: "Usuário ou senha inválidos" });
+      return errorResponse(401, "Usuário ou senha inválidos");
     }
 
     const validPassword = await bcrypt.compare(
@@ -36,7 +42,7 @@ exports.handler = async (event) => {
     );
 
     if (!validPassword) {
-      return response(401, { message: "Usuário ou senha inválidos" });
+      return errorResponse(401, "Usuário ou senha inválidos");
     }
 
     // Gerar JWT
@@ -50,21 +56,9 @@ exports.handler = async (event) => {
       { expiresIn: "7d" },
     );
 
-    return response(200, { token });
+    return successResponse(200, { token });
   } catch (err) {
     console.error(err);
-    return response(500, { message: "Erro interno" });
+    return serverErrorResponse("Erro interno");
   }
 };
-
-function response(statusCode, body) {
-  return {
-    statusCode,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type,Authorization",
-      "Access-Control-Allow-Methods": "POST,OPTIONS",
-    },
-    body: JSON.stringify(body),
-  };
-}

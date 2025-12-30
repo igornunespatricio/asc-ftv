@@ -1,17 +1,18 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { v4: uuidv4 } = require("uuid");
+const {
+  CORS_HEADERS,
+  successResponse,
+  errorResponse,
+  accessDeniedResponse,
+  badRequestResponse,
+  serverErrorResponse,
+} = require("../shared/httpUtils");
 
 const client = new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = process.env.GAMES_TABLE;
-
-// Cabeçalhos CORS
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "POST,OPTIONS",
-};
 
 exports.handler = async (event) => {
   console.log("Received event:", JSON.stringify(event));
@@ -19,11 +20,7 @@ exports.handler = async (event) => {
   const role = event.requestContext?.authorizer?.role;
 
   if (role !== "admin" && role !== "game_inputer") {
-    return {
-      statusCode: 403,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Access denied" }),
-    };
+    return accessDeniedResponse();
   }
 
   let body;
@@ -31,11 +28,7 @@ exports.handler = async (event) => {
     body = JSON.parse(event.body);
   } catch (err) {
     console.error("Invalid JSON:", err);
-    return {
-      statusCode: 400,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Invalid JSON payload" }),
-    };
+    return badRequestResponse("Invalid JSON payload");
   }
 
   const {
@@ -49,11 +42,7 @@ exports.handler = async (event) => {
   } = body;
 
   if (!match_date || !winner1 || !winner2 || !loser1 || !loser2) {
-    return {
-      statusCode: 400,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Missing required fields" }),
-    };
+    return badRequestResponse("Missing required fields");
   }
 
   const month = match_date.slice(0, 7);
@@ -75,17 +64,9 @@ exports.handler = async (event) => {
 
   try {
     await dynamo.send(new PutCommand({ TableName: tableName, Item: item }));
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify(item),
-    };
+    return successResponse(200, item);
   } catch (err) {
     console.error("DynamoDB error:", err);
-    return {
-      statusCode: 500,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Error saving game" }),
-    };
+    return serverErrorResponse("Error saving game");
   }
 };
