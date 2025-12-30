@@ -24,10 +24,17 @@ exports.handler = async (event) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Handle role migration: viewer -> game_inputer for backward compatibility
+    let role = decoded.role || "game_inputer";
+    if (role === "viewer") {
+      role = "game_inputer";
+    }
+
     const user = {
       email: decoded.email,
       username: decoded.username || "",
-      role: decoded.role || "viewer",
+      role: role,
     };
 
     console.log("Authorized user:", user);

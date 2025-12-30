@@ -25,7 +25,10 @@ resource "aws_api_gateway_integration" "users_get" {
   uri                     = local.lambda_invoke_uris["list_users"]
 }
 
-# POST /users
+# POST /users - Protected endpoint
+# Requires JWT authentication
+# Allows: admin (user creation)
+# Rejects: game_inputer, invalid roles
 resource "aws_api_gateway_method" "users_post" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.users.id

@@ -4,6 +4,9 @@ const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
 
+// Valid roles for user assignment
+const VALID_ROLES = ["admin", "game_inputer"];
+
 // Cabeçalhos CORS padronizados
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -79,6 +82,16 @@ exports.handler = async (event) => {
     }
 
     if (body.role !== undefined) {
+      // Validate role before updating
+      if (!VALID_ROLES.includes(body.role)) {
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({
+            message: `Invalid role '${body.role}'. Valid roles are: ${VALID_ROLES.join(", ")}`,
+          }),
+        };
+      }
       updates.push("#role = :role");
       values[":role"] = body.role;
       names["#role"] = "role";
