@@ -1,7 +1,9 @@
-const AWS = require("aws-sdk");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { v4: uuidv4 } = require("uuid");
 
-const dynamo = new AWS.DynamoDB.DocumentClient();
+const client = new DynamoDBClient({});
+const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = process.env.GAMES_TABLE;
 
 // Cabeçalhos CORS
@@ -72,7 +74,7 @@ exports.handler = async (event) => {
   };
 
   try {
-    await dynamo.put({ TableName: tableName, Item: item }).promise();
+    await dynamo.send(new PutCommand({ TableName: tableName, Item: item }));
     return {
       statusCode: 200,
       headers: corsHeaders,

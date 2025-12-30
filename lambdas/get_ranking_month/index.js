@@ -1,5 +1,11 @@
-const AWS = require("aws-sdk");
-const dynamo = new AWS.DynamoDB.DocumentClient();
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const {
+  DynamoDBDocumentClient,
+  QueryCommand,
+} = require("@aws-sdk/lib-dynamodb");
+
+const client = new DynamoDBClient({});
+const dynamo = DynamoDBDocumentClient.from(client);
 const TABLE = process.env.GAMES_TABLE;
 
 // Retorna "YYYY-MM"
@@ -30,7 +36,7 @@ exports.handler = async (event) => {
       },
     };
 
-    const result = await dynamo.query(params).promise();
+    const result = await dynamo.send(new QueryCommand(params));
     const monthGames = result.Items || [];
 
     // Ranking accumulator
