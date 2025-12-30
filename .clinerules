@@ -1,0 +1,151 @@
+# ASC-FTV Coding Rules
+
+## SOLID Principles
+
+### Single Responsibility Principle (SRP)
+
+- Each function, class, or module must have one reason to change
+- Frontend files should not handle multiple concerns (e.g., data fetching, DOM manipulation, and business logic in the same file)
+- Lambda functions should focus on a single operation
+- Avoid large files like `main.js` that handle games, rankings, forms, and permissions
+
+### Open-Closed Principle (OCP)
+
+- Code should be open for extension but closed for modification
+- Use interfaces/abstractions for common operations
+- Implement pluggable architectures for features like authentication and data storage
+
+### Liskov Substitution Principle (LSP)
+
+- Subtypes must be substitutable for their base types
+- Ensure inheritance hierarchies maintain behavioral contracts
+- Avoid overriding methods in ways that break expected behavior
+
+### Interface Segregation Principle (ISP)
+
+- Clients should not be forced to depend on interfaces they don't use
+- Create specific interfaces rather than general-purpose ones
+- Split large interfaces into smaller, more focused ones
+
+### Dependency Inversion Principle (DIP)
+
+- High-level modules should not depend on low-level modules
+- Both should depend on abstractions
+- Use dependency injection instead of hard-coded dependencies
+
+## DRY (Don't Repeat Yourself) Principles
+
+### Eliminate Code Duplication
+
+- CORS headers must be defined in a shared utility module, not repeated in every lambda
+- Authentication and authorization logic should be centralized
+- Common response formats and error handling should be abstracted
+- Database connection and configuration should be shared
+
+### Shared Utilities
+
+- Create common modules for:
+  - API response formatting
+  - Input validation
+  - Error handling
+  - Authentication helpers
+  - Database operations
+
+## Best Practices
+
+### Code Organization
+
+- Use consistent file and folder structure
+- Separate concerns: business logic, data access, presentation
+- Group related functionality together
+- Use meaningful names for files, functions, and variables
+
+### Error Handling
+
+- Implement consistent error handling patterns
+- Use appropriate HTTP status codes
+- Provide meaningful error messages
+- Log errors appropriately for debugging
+
+### Security
+
+- Validate all inputs on both client and server side
+- Use parameterized queries to prevent injection attacks
+- Implement proper authentication and authorization
+- Store sensitive data securely (never in plain text)
+
+### Performance
+
+- Minimize database queries and optimize them
+- Use appropriate data structures and algorithms
+- Implement caching where beneficial
+- Avoid unnecessary computations
+
+### Testing
+
+- Write unit tests for all business logic
+- Write integration tests for API endpoints
+- Test error conditions and edge cases
+- Maintain test coverage above 80%
+
+### Code Quality
+
+- Use consistent code formatting and style
+- Write self-documenting code with clear variable names
+- Add comments for complex logic
+- Use TypeScript for type safety
+- Run linters and fix issues before committing
+
+### Version Control
+
+- Use descriptive commit messages
+- Make small, focused commits
+- Use branches for new features
+- Review code before merging
+
+### Documentation
+
+- Maintain up-to-date README files
+- Document API endpoints and their usage
+- Include code comments for public APIs
+- Keep architecture documentation current
+
+## Specific Rules for This Project
+
+### Frontend JavaScript
+
+- Use ES6+ features consistently
+- Implement proper event handling and cleanup
+- Separate DOM manipulation from business logic
+- Use async/await for asynchronous operations
+- Validate form inputs before submission
+
+### Backend (Lambda Functions)
+
+- Use consistent AWS SDK version (prefer v3)
+- Implement proper logging with structured data
+- Handle CORS appropriately for all endpoints
+- Validate request data thoroughly
+- Return consistent response formats
+
+### Infrastructure (Terraform)
+
+- Use consistent naming conventions
+- Document resource purposes
+- Implement proper security groups and IAM policies
+- Use variables and outputs appropriately
+- Maintain state securely
+
+### Database Design
+
+- Use appropriate partition and sort keys
+- Implement data validation at the application level
+- Handle concurrent updates properly
+- Plan for data migration strategies
+
+## Enforcement
+
+- All code changes must follow these rules
+- Code reviews will check for compliance
+- Automated tools should enforce formatting and basic rules
+- Regular audits will identify areas for improvement
