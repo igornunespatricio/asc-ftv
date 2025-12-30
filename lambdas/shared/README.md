@@ -69,3 +69,74 @@ if (!authorized) {
   return accessDeniedResponse();
 }
 ```
+
+## authUtils.js
+
+Standardized authentication and role checking utilities.
+
+### VALID_ROLES
+
+Frozen array of valid roles in the system:
+
+```javascript
+["admin", "game_inputer"];
+```
+
+### Role Checking Functions
+
+#### requireAdmin(event)
+
+Returns `{ok: true}` if user has admin role, otherwise `{ok: false, response: accessDeniedResponse()}`
+
+#### requireGameInputer(event)
+
+Returns `{ok: true}` if user has game_inputer role, otherwise `{ok: false, response: accessDeniedResponse()}`
+
+#### requireAdminOrGameInputer(event)
+
+Returns `{ok: true}` if user has admin or game_inputer role, otherwise `{ok: false, response: accessDeniedResponse()}`
+
+### Utility Functions
+
+#### getRoleFromEvent(event)
+
+Extracts role from API Gateway event: `event.requestContext?.authorizer?.role`
+
+#### isValidRole(role)
+
+Returns boolean indicating if the role is valid
+
+#### validateRole(role)
+
+Throws error if role is invalid, does nothing if valid
+
+### Usage Example
+
+```javascript
+const {
+  requireAdmin,
+  requireAdminOrGameInputer,
+  getRoleFromEvent,
+  validateRole,
+  VALID_ROLES,
+} = require("../shared/authUtils");
+
+// Check admin access
+const auth = requireAdmin(event);
+if (!auth.ok) return auth.response;
+
+// Check admin or game_inputer access
+const gameAuth = requireAdminOrGameInputer(event);
+if (!gameAuth.ok) return gameAuth.response;
+
+// Get current user role
+const userRole = getRoleFromEvent(event);
+
+// Validate role before using
+validateRole(requestedRole); // Throws if invalid
+
+// Check if role is valid
+if (!VALID_ROLES.includes(someRole)) {
+  // Handle invalid role
+}
+```
