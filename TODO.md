@@ -23,8 +23,8 @@ Eliminate code duplication in lambdas, standardize AWS SDK v3, create shared uti
   - [x] Commit: Create shared utilities module for CORS headers and common responses
   - [x] Commit: Create authentication utility module for role checking
   - [x] Commit: Migrate add_game lambda to AWS SDK v3
-  - [ ] Commit: Update all lambdas to use shared CORS utilities
-  - [ ] Commit: Standardize error response formats across all lambdas
+  - [x] Commit: Update all lambdas to use shared CORS utilities
+  - [x] Commit: Standardize error response formats across all lambdas
   - [ ] Commit: Create shared database client configuration
   - [ ] Commit: Refactor input validation into shared utilities
 
