@@ -1,18 +1,15 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { v4: uuidv4 } = require("uuid");
 const {
-  CORS_HEADERS,
   successResponse,
-  errorResponse,
   accessDeniedResponse,
   badRequestResponse,
   serverErrorResponse,
 } = require("../shared/httpUtils");
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const dynamo = DynamoDBDocumentClient.from(client);
-const tableName = process.env.GAMES_TABLE;
+const dynamo = getDocumentClient();
+const tableName = TABLES.GAMES;
 
 exports.handler = async (event) => {
   console.log("Received event:", JSON.stringify(event));

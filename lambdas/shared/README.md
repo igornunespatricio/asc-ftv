@@ -134,9 +134,64 @@ const userRole = getRoleFromEvent(event);
 
 // Validate role before using
 validateRole(requestedRole); // Throws if invalid
+```
 
 // Check if role is valid
 if (!VALID_ROLES.includes(someRole)) {
-  // Handle invalid role
+// Handle invalid role
 }
+
+````
+
+## dbConfig.js
+
+Shared database client configuration and table constants.
+
+### TABLES
+
+Frozen object containing centralized table names:
+
+```javascript
+{
+  GAMES: process.env.GAMES_TABLE,
+  USERS: process.env.USERS_TABLE,
+}
+````
+
+### JWT_SECRET
+
+JWT secret for authentication (from environment variables).
+
+### Database Client Functions
+
+#### getDynamoClient()
+
+Returns shared DynamoDB client instance (singleton pattern).
+
+#### getDocumentClient()
+
+Returns shared DynamoDB DocumentClient instance (singleton pattern).
+
+### Benefits
+
+- **Singleton Pattern**: Single client instance per lambda container for memory efficiency
+- **Connection Reuse**: Persistent connections to DynamoDB
+- **Centralized Configuration**: Table names and settings in one place
+- **Maintainability**: Easy to modify database configuration globally
+
+### Usage Example
+
+```javascript
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
+
+const dynamo = getDocumentClient();
+const tableName = TABLES.GAMES;
+
+// Use in DynamoDB operations
+await dynamo.send(
+  new PutCommand({
+    TableName: tableName,
+    Item: { id: "example" },
+  }),
+);
 ```

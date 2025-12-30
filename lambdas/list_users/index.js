@@ -1,13 +1,13 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { ScanCommand } = require("@aws-sdk/lib-dynamodb");
 const { successResponse, serverErrorResponse } = require("../shared/httpUtils");
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.USERS_TABLE;
+const dynamo = getDocumentClient();
+const TABLE_NAME = TABLES.USERS;
 
 exports.handler = async () => {
   try {
-    const result = await client.send(
+    const result = await dynamo.send(
       new ScanCommand({ TableName: TABLE_NAME }),
     );
 

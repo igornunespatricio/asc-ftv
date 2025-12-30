@@ -1,19 +1,16 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { GetCommand } = require("@aws-sdk/lib-dynamodb");
 const {
   successResponse,
   errorResponse,
   badRequestResponse,
   serverErrorResponse,
 } = require("../shared/httpUtils");
+const { getDocumentClient, TABLES, JWT_SECRET } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const ddb = DynamoDBDocumentClient.from(client);
-
-const USERS_TABLE = process.env.USERS_TABLE;
-const JWT_SECRET = process.env.JWT_SECRET;
+const ddb = getDocumentClient();
+const USERS_TABLE = TABLES.USERS;
 
 exports.handler = async (event) => {
   try {

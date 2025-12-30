@@ -1,13 +1,12 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const {
   DynamoDBDocumentClient,
   QueryCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { successResponse, serverErrorResponse } = require("../shared/httpUtils");
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const dynamo = DynamoDBDocumentClient.from(client);
-const TABLE = process.env.GAMES_TABLE;
+const dynamo = getDocumentClient();
+const TABLE = TABLES.GAMES;
 
 // Retorna "YYYY-MM"
 function getCurrentMonthPrefix() {

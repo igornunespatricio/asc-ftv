@@ -1,4 +1,3 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 const {
   successResponse,
@@ -9,9 +8,10 @@ const {
   notFoundResponse,
 } = require("../shared/httpUtils");
 const { requireAdmin } = require("../shared/authUtils");
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.USERS_TABLE;
+const dynamo = getDocumentClient();
+const TABLE_NAME = TABLES.USERS;
 
 exports.handler = async (event) => {
   try {
@@ -28,7 +28,7 @@ exports.handler = async (event) => {
 
     const email = decodeURIComponent(rawEmail);
 
-    await client.send(
+    await dynamo.send(
       new DeleteCommand({
         TableName: TABLE_NAME,
         Key: { email },

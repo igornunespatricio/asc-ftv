@@ -1,4 +1,3 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 const {
   successResponse,
@@ -9,9 +8,10 @@ const {
   notFoundResponse,
 } = require("../shared/httpUtils");
 const { requireAdmin, validateRole } = require("../shared/authUtils");
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.USERS_TABLE;
+const dynamo = getDocumentClient();
+const TABLE_NAME = TABLES.USERS;
 
 // Valid roles for user assignment
 const VALID_ROLES = ["admin", "game_inputer"];
@@ -74,7 +74,7 @@ exports.handler = async (event) => {
     updates.push("updatedAt = :updatedAt");
     values[":updatedAt"] = Date.now();
 
-    const result = await client.send(
+    const result = await dynamo.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { email },

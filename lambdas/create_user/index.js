@@ -1,4 +1,3 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { PutCommand } = require("@aws-sdk/lib-dynamodb");
 const bcrypt = require("bcryptjs");
 const {
@@ -9,9 +8,10 @@ const {
   serverErrorResponse,
 } = require("../shared/httpUtils");
 const { requireAdmin, validateRole } = require("../shared/authUtils");
+const { getDocumentClient, TABLES } = require("../shared/dbConfig");
 
-const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.USERS_TABLE;
+const dynamo = getDocumentClient();
+const TABLE_NAME = TABLES.USERS;
 
 // Valid roles for user assignment
 const VALID_ROLES = ["admin", "game_inputer"];
@@ -51,7 +51,7 @@ exports.handler = async (event) => {
       updatedAt: now,
     };
 
-    await client.send(
+    await dynamo.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: item,
