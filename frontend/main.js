@@ -258,7 +258,7 @@ function applyPermissions() {
   const content = container?.querySelector(".form-content");
 
   if (!form || !container || !content) return;
-  if (hasRole("admin")) return;
+  if (canManageGames()) return;
 
   /* 1️⃣ Bloqueio funcional */
   form.querySelectorAll("input, select, button").forEach((el) => {
@@ -276,7 +276,7 @@ function applyPermissions() {
     overlay.className = "form-overlay";
     overlay.innerHTML = `
       <div class="overlay-message">
-        🔒 Apenas administradores podem adicionar partidas
+        🔒 Apenas usuários autorizados podem adicionar partidas
       </div>
     `;
     container.appendChild(overlay);

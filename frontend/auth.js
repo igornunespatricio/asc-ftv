@@ -15,6 +15,16 @@ function hasRole(requiredRole) {
   return auth?.role === requiredRole;
 }
 
+function canManageGames() {
+  const auth = getAuth();
+  return auth?.role === "admin" || auth?.role === "game_inputer";
+}
+
+function canManageUsers() {
+  const auth = getAuth();
+  return auth?.role === "admin";
+}
+
 function isTokenExpired(token) {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
