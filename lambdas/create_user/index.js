@@ -3,50 +3,54 @@ const bcrypt = require("bcryptjs");
 const {
   successResponse,
   errorResponse,
-  accessDeniedResponse,
-  badRequestResponse,
   serverErrorResponse,
 } = require("../shared/httpUtils");
 const { requireAdmin, validateRole } = require("../shared/authUtils");
 const { getDocumentClient, TABLES } = require("../shared/dbConfig");
+const {
+  validateRequest,
+  validateUserData,
+} = require("../shared/validationUtils");
 
 const dynamo = getDocumentClient();
 const TABLE_NAME = TABLES.USERS;
 
-// Valid roles for user assignment
-const VALID_ROLES = ["admin", "game_inputer"];
-
 exports.handler = async (event) => {
   try {
+    // Check authorization
     const auth = requireAdmin(event);
     if (!auth.ok) return auth.response;
 
-    const body = JSON.parse(event.body || "{}");
+    // Validate request
+    const validation = validateRequest(event, {
+      requiredBodyFields: ["username", "email", "password"],
+    });
+    if (!validation.ok) return validation.response;
 
-    if (!body.username || !body.email || !body.password) {
-      return badRequestResponse(
-        "Fields 'username', 'email' and 'password' are required.",
-      );
-    }
+    // Validate user data
+    const userValidation = validateUserData(validation.body, true);
+    if (!userValidation.ok) return userValidation.response;
+
+    const { username, email, password } = validation.body;
 
     // Validate role if provided
-    const requestedRole = body.role ?? "game_inputer";
+    const requestedRole = validation.body.role ?? "game_inputer";
     try {
       validateRole(requestedRole);
     } catch (err) {
-      return badRequestResponse(err.message);
+      return require("../shared/httpUtils").badRequestResponse(err.message);
     }
 
-    const passwordHash = bcrypt.hashSync(body.password, 10);
+    const passwordHash = bcrypt.hashSync(password, 10);
 
     const now = Date.now();
 
     const item = {
-      username: body.username,
-      email: body.email,
+      username,
+      email,
       password_hash: passwordHash,
       role: requestedRole,
-      active: body.active ?? true,
+      active: validation.body.active ?? true,
       createdAt: now,
       updatedAt: now,
     };

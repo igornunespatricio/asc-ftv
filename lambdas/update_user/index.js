@@ -2,73 +2,76 @@ const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 const {
   successResponse,
   errorResponse,
-  accessDeniedResponse,
-  badRequestResponse,
   serverErrorResponse,
   notFoundResponse,
+  badRequestResponse,
 } = require("../shared/httpUtils");
 const { requireAdmin, validateRole } = require("../shared/authUtils");
 const { getDocumentClient, TABLES } = require("../shared/dbConfig");
+const {
+  validateRequest,
+  validatePathParameter,
+  validateUpdateOperation,
+  validateUserData,
+} = require("../shared/validationUtils");
 
 const dynamo = getDocumentClient();
 const TABLE_NAME = TABLES.USERS;
-
-// Valid roles for user assignment
-const VALID_ROLES = ["admin", "game_inputer"];
 
 exports.handler = async (event) => {
   console.log("pathParameters:", event.pathParameters);
   console.log("rawPath:", event.rawPath);
 
   try {
+    // Check authorization
     const auth = requireAdmin(event);
     if (!auth.ok) return auth.response;
 
-    const rawEmail = event.pathParameters?.email;
+    // Validate path parameter
+    const pathValidation = validatePathParameter(event.pathParameters, "email");
+    if (!pathValidation.ok) return pathValidation.response;
+    const email = pathValidation.value;
 
-    if (!rawEmail) {
-      return badRequestResponse("Missing email in path.");
-    }
+    // Validate request body
+    const validation = validateRequest(event, { requiredBodyFields: [] });
+    if (!validation.ok) return validation.response;
 
-    const email = decodeURIComponent(rawEmail);
-    const body = JSON.parse(event.body || "{}");
+    // Check if there's anything to update
+    const updateValidation = validateUpdateOperation(validation.body, [
+      "username",
+      "role",
+      "active",
+    ]);
+    if (!updateValidation.ok) return updateValidation.response;
 
-    if (!email) {
-      return badRequestResponse("Missing email.");
-    }
-
-    if (
-      body.username === undefined &&
-      body.role === undefined &&
-      body.active === undefined
-    ) {
-      return badRequestResponse("Nothing to update.");
-    }
+    // Validate user data (for updates, not creation)
+    const userValidation = validateUserData(validation.body, false);
+    if (!userValidation.ok) return userValidation.response;
 
     const updates = [];
     const values = {};
     const names = {};
 
-    if (body.username !== undefined) {
+    if (validation.body.username !== undefined) {
       updates.push("username = :username");
-      values[":username"] = body.username;
+      values[":username"] = validation.body.username;
     }
 
-    if (body.role !== undefined) {
+    if (validation.body.role !== undefined) {
       // Validate role before updating
       try {
-        validateRole(body.role);
+        validateRole(validation.body.role);
       } catch (err) {
         return badRequestResponse(err.message);
       }
       updates.push("#role = :role");
-      values[":role"] = body.role;
+      values[":role"] = validation.body.role;
       names["#role"] = "role";
     }
 
-    if (body.active !== undefined) {
+    if (validation.body.active !== undefined) {
       updates.push("active = :active");
-      values[":active"] = body.active;
+      values[":active"] = validation.body.active;
     }
 
     updates.push("updatedAt = :updatedAt");

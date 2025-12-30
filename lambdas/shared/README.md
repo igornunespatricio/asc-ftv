@@ -195,3 +195,69 @@ await dynamo.send(
   }),
 );
 ```
+
+## validationUtils.js
+
+Shared input validation utilities for centralized validation logic.
+
+### Core Validation Functions
+
+#### validateRequiredFields(obj, requiredFields)
+
+Validates that required fields are present in an object.
+
+#### parseJsonBody(eventBody)
+
+Safely parses JSON from event body with proper error handling.
+
+#### validatePathParameter(pathParameters, paramName)
+
+Validates path parameters from API Gateway event.
+
+#### validateRequest(event, options)
+
+Comprehensive request validation combining JSON parsing and field validation.
+
+### Business Logic Validators
+
+#### validateGameData(body)
+
+Validates game data according to business rules (unique players, date format, etc.).
+
+#### validateUserData(body, isCreate)
+
+Validates user data with email format, username length, password strength.
+
+#### validateUpdateOperation(body, updateableFields)
+
+Ensures update operations have at least one field being updated.
+
+### Benefits
+
+- **DRY Principle**: Eliminates duplicate validation code across lambdas
+- **Centralized Logic**: Single source of truth for validation rules
+- **Consistent Errors**: Standardized error messages and response formats
+- **Extensible**: Easy to add new validation functions
+
+### Usage Example
+
+```javascript
+const {
+  validateRequest,
+  validateGameData,
+} = require("../shared/validationUtils");
+
+// Comprehensive validation
+const validation = validateRequest(event, {
+  requiredBodyFields: ["match_date", "winner1", "winner2", "loser1", "loser2"],
+});
+
+if (!validation.ok) return validation.response;
+
+// Business logic validation
+const gameValidation = validateGameData(validation.body);
+if (!gameValidation.ok) return gameValidation.response;
+
+// Proceed with validated data
+const { body } = validation;
+```

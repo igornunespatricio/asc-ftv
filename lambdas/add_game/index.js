@@ -3,10 +3,14 @@ const { v4: uuidv4 } = require("uuid");
 const {
   successResponse,
   accessDeniedResponse,
-  badRequestResponse,
   serverErrorResponse,
 } = require("../shared/httpUtils");
+const { requireAdminOrGameInputer } = require("../shared/authUtils");
 const { getDocumentClient, TABLES } = require("../shared/dbConfig");
+const {
+  validateRequest,
+  validateGameData,
+} = require("../shared/validationUtils");
 
 const dynamo = getDocumentClient();
 const tableName = TABLES.GAMES;
@@ -14,19 +18,24 @@ const tableName = TABLES.GAMES;
 exports.handler = async (event) => {
   console.log("Received event:", JSON.stringify(event));
 
-  const role = event.requestContext?.authorizer?.role;
+  // Check authorization
+  const auth = requireAdminOrGameInputer(event);
+  if (!auth.ok) return auth.response;
 
-  if (role !== "admin" && role !== "game_inputer") {
-    return accessDeniedResponse();
-  }
+  // Validate request and game data
+  const validation = validateRequest(event, {
+    requiredBodyFields: [
+      "match_date",
+      "winner1",
+      "winner2",
+      "loser1",
+      "loser2",
+    ],
+  });
+  if (!validation.ok) return validation.response;
 
-  let body;
-  try {
-    body = JSON.parse(event.body);
-  } catch (err) {
-    console.error("Invalid JSON:", err);
-    return badRequestResponse("Invalid JSON payload");
-  }
+  const gameValidation = validateGameData(validation.body);
+  if (!gameValidation.ok) return gameValidation.response;
 
   const {
     match_date,
@@ -36,11 +45,7 @@ exports.handler = async (event) => {
     loser2,
     score_winner,
     score_loser,
-  } = body;
-
-  if (!match_date || !winner1 || !winner2 || !loser1 || !loser2) {
-    return badRequestResponse("Missing required fields");
-  }
+  } = validation.body;
 
   const month = match_date.slice(0, 7);
   const id = uuidv4();

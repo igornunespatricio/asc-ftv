@@ -4,22 +4,23 @@ const { GetCommand } = require("@aws-sdk/lib-dynamodb");
 const {
   successResponse,
   errorResponse,
-  badRequestResponse,
   serverErrorResponse,
 } = require("../shared/httpUtils");
 const { getDocumentClient, TABLES, JWT_SECRET } = require("../shared/dbConfig");
+const { validateRequest } = require("../shared/validationUtils");
 
 const ddb = getDocumentClient();
 const USERS_TABLE = TABLES.USERS;
 
 exports.handler = async (event) => {
   try {
-    const body = JSON.parse(event.body || "{}");
-    const { email, password } = body;
+    // Validate request
+    const validation = validateRequest(event, {
+      requiredBodyFields: ["email", "password"],
+    });
+    if (!validation.ok) return validation.response;
 
-    if (!email || !password) {
-      return badRequestResponse("Email e senha são obrigatórios");
-    }
+    const { email, password } = validation.body;
 
     // Buscar usuário
     const result = await ddb.send(
