@@ -20,8 +20,8 @@ Remove viewer role, add game inputer role (CRUD on games), keep admin role with 
 Eliminate code duplication in lambdas, standardize AWS SDK v3, create shared utilities.
 
 - [ ] **Feature Branch: backend-refactor**
-  - [ ] Commit: Create shared utilities module for CORS headers and common responses
-  - [ ] Commit: Create authentication utility module for role checking
+  - [x] Commit: Create shared utilities module for CORS headers and common responses
+  - [x] Commit: Create authentication utility module for role checking
   - [ ] Commit: Migrate add_game lambda to AWS SDK v3
   - [ ] Commit: Update all lambdas to use shared CORS utilities
   - [ ] Commit: Standardize error response formats across all lambdas
