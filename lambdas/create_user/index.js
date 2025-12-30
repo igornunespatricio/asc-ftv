@@ -43,7 +43,7 @@ exports.handler = async (event) => {
       username: body.username,
       email: body.email,
       password_hash: passwordHash,
-      role: body.role ?? "viewer",
+      role: body.role ?? "game_inputer",
       active: body.active ?? true,
       createdAt: now,
       updatedAt: now,

@@ -16,7 +16,7 @@ exports.handler = async (event) => {
 
   const role = event.requestContext?.authorizer?.role;
 
-  if (role !== "admin") {
+  if (role !== "admin" && role !== "game_inputer") {
     return {
       statusCode: 403,
       headers: corsHeaders,
