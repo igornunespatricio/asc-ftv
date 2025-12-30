@@ -5,6 +5,9 @@ const bcrypt = require("bcryptjs");
 const client = new DynamoDBClient({});
 const TABLE_NAME = process.env.USERS_TABLE;
 
+// Valid roles for user assignment
+const VALID_ROLES = ["admin", "game_inputer"];
+
 // Cabeçalhos CORS
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -35,6 +38,18 @@ exports.handler = async (event) => {
       };
     }
 
+    // Validate role if provided
+    const requestedRole = body.role ?? "game_inputer";
+    if (!VALID_ROLES.includes(requestedRole)) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          message: `Invalid role '${requestedRole}'. Valid roles are: ${VALID_ROLES.join(", ")}`,
+        }),
+      };
+    }
+
     const passwordHash = bcrypt.hashSync(body.password, 10);
 
     const now = Date.now();
@@ -43,7 +58,7 @@ exports.handler = async (event) => {
       username: body.username,
       email: body.email,
       password_hash: passwordHash,
-      role: body.role ?? "game_inputer",
+      role: requestedRole,
       active: body.active ?? true,
       createdAt: now,
       updatedAt: now,
