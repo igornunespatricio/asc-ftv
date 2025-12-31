@@ -4,10 +4,11 @@ const {
   errorResponse,
   serverErrorResponse,
   notFoundResponse,
-} = require("../shared/httpUtils");
-const { requireAdmin } = require("../shared/authUtils");
-const { getDocumentClient, TABLES } = require("../shared/dbConfig");
-const { validatePathParameter } = require("../shared/validationUtils");
+  requireAdmin,
+  getDocumentClient,
+  TABLES,
+  validatePathParameter,
+} = require("shared-utils");
 
 const dynamo = getDocumentClient();
 const TABLE_NAME = TABLES.USERS;

@@ -4,13 +4,14 @@ const {
   successResponse,
   errorResponse,
   serverErrorResponse,
-} = require("../shared/httpUtils");
-const { requireAdmin, validateRole } = require("../shared/authUtils");
-const { getDocumentClient, TABLES } = require("../shared/dbConfig");
-const {
+  requireAdmin,
+  validateRole,
+  getDocumentClient,
+  TABLES,
   validateRequest,
   validateUserData,
-} = require("../shared/validationUtils");
+  badRequestResponse,
+} = require("shared-utils");
 
 const dynamo = getDocumentClient();
 const TABLE_NAME = TABLES.USERS;
@@ -38,7 +39,7 @@ exports.handler = async (event) => {
     try {
       validateRole(requestedRole);
     } catch (err) {
-      return require("../shared/httpUtils").badRequestResponse(err.message);
+      return badRequestResponse(err.message);
     }
 
     const passwordHash = bcrypt.hashSync(password, 10);

@@ -4,13 +4,12 @@ const {
   successResponse,
   accessDeniedResponse,
   serverErrorResponse,
-} = require("../shared/httpUtils");
-const { requireAdminOrGameInputer } = require("../shared/authUtils");
-const { getDocumentClient, TABLES } = require("../shared/dbConfig");
-const {
+  requireAdminOrGameInputer,
+  getDocumentClient,
+  TABLES,
   validateRequest,
   validateGameData,
-} = require("../shared/validationUtils");
+} = require("shared-utils");
 
 const dynamo = getDocumentClient();
 const tableName = TABLES.GAMES;

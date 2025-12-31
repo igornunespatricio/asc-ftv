@@ -2,8 +2,12 @@ const {
   DynamoDBDocumentClient,
   QueryCommand,
 } = require("@aws-sdk/lib-dynamodb");
-const { successResponse, serverErrorResponse } = require("../shared/httpUtils");
-const { getDocumentClient, TABLES } = require("../shared/dbConfig");
+const {
+  successResponse,
+  serverErrorResponse,
+  getDocumentClient,
+  TABLES,
+} = require("shared-utils");
 
 const dynamo = getDocumentClient();
 const TABLE = TABLES.GAMES;

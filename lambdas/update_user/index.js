@@ -5,15 +5,15 @@ const {
   serverErrorResponse,
   notFoundResponse,
   badRequestResponse,
-} = require("../shared/httpUtils");
-const { requireAdmin, validateRole } = require("../shared/authUtils");
-const { getDocumentClient, TABLES } = require("../shared/dbConfig");
-const {
+  requireAdmin,
+  validateRole,
+  getDocumentClient,
+  TABLES,
   validateRequest,
   validatePathParameter,
   validateUpdateOperation,
   validateUserData,
-} = require("../shared/validationUtils");
+} = require("shared-utils");
 
 const dynamo = getDocumentClient();
 const TABLE_NAME = TABLES.USERS;

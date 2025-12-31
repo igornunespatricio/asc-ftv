@@ -1,3 +1,8 @@
+module "shared_utils_layer" {
+  source      = "./modules/lambda-layer"
+  environment = terraform.workspace
+}
+
 module "lambdas" {
   source   = "./modules/lambda"
   for_each = local.lambda_configs
@@ -7,6 +12,8 @@ module "lambdas" {
 
   filename         = data.archive_file.lambdas[each.key].output_path
   source_code_hash = data.archive_file.lambdas[each.key].output_base64sha256
+
+  layers = each.value.use_shared_layer ? [module.shared_utils_layer.layer_arn] : []
 
   environment_variables = each.value.env
   tags                  = local.default_tags
