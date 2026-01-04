@@ -1,6 +1,8 @@
 // const usersUrl = `${baseUrl}/users`;
 const usersPath = "/users";
 
+import { showStatusMessage, handleApiResponse, resetForm } from "./forms.js";
+
 /* ============================================================
    FUNÇÃO: LISTAR USERS
    ============================================================ */
@@ -92,7 +94,7 @@ document.getElementById("user-form").addEventListener("submit", async (e) => {
 
     loadUsers();
   } catch (err) {
-    showStatus(
+    showStatusMessage(
       "🌐 Não foi possível comunicar com o servidor. Verifique sua conexão ou permissões.",
       "error",
     );
@@ -122,7 +124,7 @@ function attachUserButtons() {
 
       document.getElementById("form-title").textContent = "Editar Usuário";
 
-      showStatus("✏️ Editando usuário...", "info");
+      showStatusMessage("✏️ Editando usuário...", "info");
     });
   });
 
@@ -144,50 +146,22 @@ function attachUserButtons() {
           loadUsers();
         }
       } catch (err) {
-        showStatus(`Erro de rede: ${err.message}`, "error");
+        showStatusMessage(`Erro de rede: ${err.message}`, "error");
       }
     });
   });
 }
 
-async function handleApiResponse(response, successMessage) {
-  let data = {};
-
-  try {
-    data = await response.json();
-  } catch {
-    // resposta sem body
-  }
-
-  if (response.ok) {
-    showStatus(successMessage, "success");
-    return true;
-  }
-
-  if (response.status === 403) {
-    showStatus("⛔ Você não tem permissão para executar esta ação.", "error");
-    return false;
-  }
-
-  if (response.status === 401) {
-    showStatus("🔒 Sessão expirada. Faça login novamente.", "error");
-    logout();
-    return false;
-  }
-
-  showStatus(data.message || "❌ Erro inesperado.", "error");
-  return false;
-}
-
 function resetUserForm() {
   const form = document.getElementById("user-form");
 
-  form.reset();
-  form.user_email_original.value = "";
-  document.getElementById("user_email").disabled = false;
-
-  document.getElementById("password-group").style.display = "block";
-  document.getElementById("form-title").textContent = "Adicionar Usuário";
+  resetForm(form, {
+    emailOriginal: form.user_email_original,
+    emailField: document.getElementById("user_email"),
+    passwordGroup: document.getElementById("password-group"),
+    formTitle: document.getElementById("form-title"),
+    defaultTitle: "Adicionar Usuário",
+  });
 }
 
 /* ============================================================

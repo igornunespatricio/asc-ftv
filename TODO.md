@@ -34,8 +34,8 @@ Break down main.js into modular components following SRP.
 
 - [ ] **Feature Branch: frontend-modularization**
   - [x] Commit: Extract game management logic into games.js module
-  - [ ] Commit: Extract ranking display logic into ranking.js module
-  - [ ] Commit: Extract form handling logic into forms.js module
+  - [x] Commit: Extract ranking display logic into ranking.js module
+  - [x] Commit: Extract form handling logic into forms.js module
   - [ ] Commit: Extract user management logic into userManagement.js module
   - [ ] Commit: Refactor main.js to orchestrate modules without business logic
   - [ ] Commit: Create shared DOM manipulation utilities

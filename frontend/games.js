@@ -1,6 +1,8 @@
 // games.js - Game management module
 // Handles game CRUD operations, form interactions, and game display logic
 
+import { showStatusMessage } from "./forms.js";
+
 const baseUrl = window.APP_CONFIG.apiUrl;
 const gamesUrl = `${baseUrl}/games`;
 const usersUrl = `${baseUrl}/users`;
@@ -132,18 +134,6 @@ function updateUserOptions() {
   } else if (status.classList.contains("error")) {
     status.textContent = "";
     status.className = "";
-  }
-}
-
-function showStatusMessage(message, type, autoClear = true) {
-  const status = document.getElementById("status");
-  status.textContent = message;
-  status.className = `status-message ${type}`;
-  if (autoClear) {
-    setTimeout(() => {
-      status.textContent = "";
-      status.className = "";
-    }, 10000);
   }
 }
 
