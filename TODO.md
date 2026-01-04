@@ -19,7 +19,7 @@ Remove viewer role, add game inputer role (CRUD on games), keep admin role with 
 
 Eliminate code duplication in lambdas, standardize AWS SDK v3, create shared utilities.
 
-- [ ] **Feature Branch: backend-refactor**
+- [x] **Feature Branch: backend-refactor**
   - [x] Commit: Create shared utilities module for CORS headers and common responses
   - [x] Commit: Create authentication utility module for role checking
   - [x] Commit: Migrate add_game lambda to AWS SDK v3
@@ -33,7 +33,7 @@ Eliminate code duplication in lambdas, standardize AWS SDK v3, create shared uti
 Break down main.js into modular components following SRP.
 
 - [ ] **Feature Branch: frontend-modularization**
-  - [ ] Commit: Extract game management logic into games.js module
+  - [x] Commit: Extract game management logic into games.js module
   - [ ] Commit: Extract ranking display logic into ranking.js module
   - [ ] Commit: Extract form handling logic into forms.js module
   - [ ] Commit: Extract user management logic into userManagement.js module
