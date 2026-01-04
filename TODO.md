@@ -6,7 +6,7 @@ This list ranks improvements from 1 (most critical) to 10 (enhancement). Each im
 
 Remove viewer role, add game inputer role (CRUD on games), keep admin role with full access.
 
-- [ ] **Feature Branch: security-role-refactor**
+- [x] **Feature Branch: security-role-refactor**
   - [x] Commit: Create database migration script to update user roles (remove viewer, add game_inputer)
   - [x] Commit: Update jwt_authorizer lambda to handle new role permissions
   - [x] Commit: Modify lambda functions to check for game_inputer role instead of viewer
@@ -20,13 +20,13 @@ Remove viewer role, add game inputer role (CRUD on games), keep admin role with 
 Eliminate code duplication in lambdas, standardize AWS SDK v3, create shared utilities.
 
 - [ ] **Feature Branch: backend-refactor**
-  - [ ] Commit: Create shared utilities module for CORS headers and common responses
-  - [ ] Commit: Create authentication utility module for role checking
-  - [ ] Commit: Migrate add_game lambda to AWS SDK v3
-  - [ ] Commit: Update all lambdas to use shared CORS utilities
-  - [ ] Commit: Standardize error response formats across all lambdas
-  - [ ] Commit: Create shared database client configuration
-  - [ ] Commit: Refactor input validation into shared utilities
+  - [x] Commit: Create shared utilities module for CORS headers and common responses
+  - [x] Commit: Create authentication utility module for role checking
+  - [x] Commit: Migrate add_game lambda to AWS SDK v3
+  - [x] Commit: Update all lambdas to use shared CORS utilities
+  - [x] Commit: Standardize error response formats across all lambdas
+  - [x] Commit: Create shared database client configuration
+  - [x] Commit: Refactor input validation into shared utilities
 
 ## Priority 3: Frontend Architecture Refactoring
 

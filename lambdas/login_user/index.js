@@ -1,22 +1,80 @@
+console.log("=== Lambda Layer Debug ===");
+console.log("NODE_PATH:", process.env.NODE_PATH);
+console.log("Available modules in require.resolve.paths:");
+try {
+  console.log(
+    "shared-utils paths:",
+    require.resolve.paths ? require.resolve.paths("shared-utils") : "N/A",
+  );
+} catch (e) {
+  console.log("Error checking shared-utils paths:", e.message);
+}
+
+// Try to check filesystem
+const fs = require("fs");
+try {
+  const optContents = fs.readdirSync("/opt");
+  console.log("/opt contents:", optContents);
+
+  if (optContents.includes("nodejs")) {
+    const nodejsContents = fs.readdirSync("/opt/nodejs");
+    console.log("/opt/nodejs contents:", nodejsContents);
+
+    if (nodejsContents.includes("node_modules")) {
+      const nodeModulesContents = fs.readdirSync("/opt/nodejs/node_modules");
+      console.log("/opt/nodejs/node_modules contents:", nodeModulesContents);
+
+      if (nodeModulesContents.includes("shared-utils")) {
+        console.log("✅ shared-utils module found!");
+        const sharedUtilsContents = fs.readdirSync(
+          "/opt/nodejs/node_modules/shared-utils",
+        );
+        console.log(
+          "/opt/nodejs/node_modules/shared-utils contents:",
+          sharedUtilsContents,
+        );
+      } else {
+        console.log(
+          "❌ shared-utils module NOT found in /opt/nodejs/node_modules",
+        );
+      }
+    } else {
+      console.log("❌ node_modules directory NOT found in /opt/nodejs");
+    }
+  } else {
+    console.log("❌ nodejs directory NOT found in /opt");
+  }
+} catch (fsError) {
+  console.log("Filesystem check error:", fsError.message);
+}
+
+console.log("=== End Lambda Layer Debug ===");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { GetCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  successResponse,
+  errorResponse,
+  serverErrorResponse,
+  getDocumentClient,
+  TABLES,
+  JWT_SECRET,
+  validateRequest,
+} = require("shared-utils");
 
-const client = new DynamoDBClient({});
-const ddb = DynamoDBDocumentClient.from(client);
-
-const USERS_TABLE = process.env.USERS_TABLE;
-const JWT_SECRET = process.env.JWT_SECRET;
+const ddb = getDocumentClient();
+const USERS_TABLE = TABLES.USERS;
 
 exports.handler = async (event) => {
   try {
-    const body = JSON.parse(event.body || "{}");
-    const { email, password } = body;
+    // Validate request
+    const validation = validateRequest(event, {
+      requiredBodyFields: ["email", "password"],
+    });
+    if (!validation.ok) return validation.response;
 
-    if (!email || !password) {
-      return response(400, { message: "Email e senha são obrigatórios" });
-    }
+    const { email, password } = validation.body;
 
     // Buscar usuário
     const result = await ddb.send(
@@ -27,7 +85,7 @@ exports.handler = async (event) => {
     );
 
     if (!result.Item || !result.Item.active) {
-      return response(401, { message: "Usuário ou senha inválidos" });
+      return errorResponse(401, "Usuário ou senha inválidos");
     }
 
     const validPassword = await bcrypt.compare(
@@ -36,7 +94,7 @@ exports.handler = async (event) => {
     );
 
     if (!validPassword) {
-      return response(401, { message: "Usuário ou senha inválidos" });
+      return errorResponse(401, "Usuário ou senha inválidos");
     }
 
     // Gerar JWT
@@ -50,21 +108,9 @@ exports.handler = async (event) => {
       { expiresIn: "7d" },
     );
 
-    return response(200, { token });
+    return successResponse(200, { token });
   } catch (err) {
     console.error(err);
-    return response(500, { message: "Erro interno" });
+    return serverErrorResponse("Erro interno");
   }
 };
-
-function response(statusCode, body) {
-  return {
-    statusCode,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type,Authorization",
-      "Access-Control-Allow-Methods": "POST,OPTIONS",
-    },
-    body: JSON.stringify(body),
-  };
-}

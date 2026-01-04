@@ -4,6 +4,15 @@ This directory contains test scripts for validating application functionality.
 
 ## Running Tests
 
+### authUtils Test
+
+Tests the shared authentication utilities module for role checking and validation.
+
+```bash
+# Run the test
+node test_auth_utils.js
+```
+
 ### game_inputer Permissions Test
 
 Tests that users with "game_inputer" role can create games but cannot create users.
@@ -19,7 +28,7 @@ node test_game_inputer_permissions.js
 Or run in one command:
 
 ```bash
-JWT_SECRET="your-jwt-secret-here" node test_game_inputer_permissions.js
+JWT_SECRET="your-secret-here" node test_game_inputer_permissions.js
 ```
 
 ### Getting the JWT Secret

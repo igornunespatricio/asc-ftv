@@ -24,6 +24,12 @@ variable "environment_variables" {
   default = {}
 }
 
+variable "layers" {
+  description = "List of Lambda layer ARNs to attach to the function"
+  type        = list(string)
+  default     = []
+}
+
 variable "tags" {
   type    = map(string)
   default = {}

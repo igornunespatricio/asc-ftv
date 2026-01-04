@@ -27,6 +27,7 @@ Infrastructure as a code using Terraform and AWS services.
 | <a name="module_apigateway"></a> [apigateway](#module\_apigateway) | ./modules/apigateway | n/a |
 | <a name="module_games_table"></a> [games\_table](#module\_games\_table) | ./modules/dynamodb-table | n/a |
 | <a name="module_lambdas"></a> [lambdas](#module\_lambdas) | ./modules/lambda | n/a |
+| <a name="module_shared_utils_layer"></a> [shared\_utils\_layer](#module\_shared\_utils\_layer) | ./modules/lambda-layer | n/a |
 | <a name="module_users_table"></a> [users\_table](#module\_users\_table) | ./modules/dynamodb-table | n/a |
 
 ## Resources

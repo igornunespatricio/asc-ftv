@@ -149,3 +149,4 @@
 - Code reviews will check for compliance
 - Automated tools should enforce formatting and basic rules
 - Regular audits will identify areas for improvement
+- AI Assistant may modify files but cannot stage or commit changes - those actions must be reviewed and performed by human developers only

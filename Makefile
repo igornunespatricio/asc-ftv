@@ -11,7 +11,7 @@ TF            ?= terraform
 .PHONY: init fmt validate workspace plan apply destroy \
         dev dev-plan dev-apply dev-destroy \
         prod prod-plan prod-apply prod-destroy \
-        check terraform docs lambda-install
+        check terraform docs lambda-install lambda-install-all
 
 # ---------------------------------------------------------
 # Lambda install
@@ -36,6 +36,16 @@ lambda-install:
 	echo "📥 Instalando dependências (produção)" && \
 	npm install --omit=dev
 	@echo "✅ Lambda reconstruída com package.json existente: $(path)"
+
+lambda-install-all:
+	@echo "🔄 Instalando dependências para todas as lambdas..."
+	@for dir in lambdas/*/; do \
+		if [ -d "$$dir" ] && [ -f "$${dir}package.json" ]; then \
+			echo "📦 Processando $${dir%/}"; \
+			$(MAKE) lambda-install path="$${dir}"; \
+		fi; \
+	done
+	@echo "✅ Todas as lambdas foram processadas"
 
 # ---------------------------------------------------------
 # Qualidade e validação

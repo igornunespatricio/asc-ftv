@@ -1,19 +1,22 @@
-const AWS = require("aws-sdk");
-const dynamo = new AWS.DynamoDB.DocumentClient();
-const TABLE = process.env.GAMES_TABLE;
+const {
+  DynamoDBDocumentClient,
+  QueryCommand,
+} = require("@aws-sdk/lib-dynamodb");
+const {
+  successResponse,
+  serverErrorResponse,
+  getDocumentClient,
+  TABLES,
+} = require("shared-utils");
+
+const dynamo = getDocumentClient();
+const TABLE = TABLES.GAMES;
 
 // Retorna "YYYY-MM"
 function getCurrentMonthPrefix() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
-
-// Cabeçalhos CORS padronizados
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-};
 
 exports.handler = async (event) => {
   try {
@@ -30,7 +33,7 @@ exports.handler = async (event) => {
       },
     };
 
-    const result = await dynamo.query(params).promise();
+    const result = await dynamo.send(new QueryCommand(params));
     const monthGames = result.Items || [];
 
     // Ranking accumulator
@@ -91,21 +94,9 @@ exports.handler = async (event) => {
       r.position = currentRank;
     });
 
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(rankingArray),
-    };
+    return successResponse(200, rankingArray);
   } catch (err) {
     console.error("Error generating ranking:", err);
-
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        message: "Error generating ranking",
-        error: err.message,
-      }),
-    };
+    return serverErrorResponse("Error generating ranking");
   }
 };

@@ -1,40 +1,40 @@
-const AWS = require("aws-sdk");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { v4: uuidv4 } = require("uuid");
+const {
+  successResponse,
+  accessDeniedResponse,
+  serverErrorResponse,
+  requireAdminOrGameInputer,
+  getDocumentClient,
+  TABLES,
+  validateRequest,
+  validateGameData,
+} = require("shared-utils");
 
-const dynamo = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.GAMES_TABLE;
-
-// Cabeçalhos CORS
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "POST,OPTIONS",
-};
+const dynamo = getDocumentClient();
+const tableName = TABLES.GAMES;
 
 exports.handler = async (event) => {
   console.log("Received event:", JSON.stringify(event));
 
-  const role = event.requestContext?.authorizer?.role;
+  // Check authorization
+  const auth = requireAdminOrGameInputer(event);
+  if (!auth.ok) return auth.response;
 
-  if (role !== "admin" && role !== "game_inputer") {
-    return {
-      statusCode: 403,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Access denied" }),
-    };
-  }
+  // Validate request and game data
+  const validation = validateRequest(event, {
+    requiredBodyFields: [
+      "match_date",
+      "winner1",
+      "winner2",
+      "loser1",
+      "loser2",
+    ],
+  });
+  if (!validation.ok) return validation.response;
 
-  let body;
-  try {
-    body = JSON.parse(event.body);
-  } catch (err) {
-    console.error("Invalid JSON:", err);
-    return {
-      statusCode: 400,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Invalid JSON payload" }),
-    };
-  }
+  const gameValidation = validateGameData(validation.body);
+  if (!gameValidation.ok) return gameValidation.response;
 
   const {
     match_date,
@@ -44,15 +44,7 @@ exports.handler = async (event) => {
     loser2,
     score_winner,
     score_loser,
-  } = body;
-
-  if (!match_date || !winner1 || !winner2 || !loser1 || !loser2) {
-    return {
-      statusCode: 400,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Missing required fields" }),
-    };
-  }
+  } = validation.body;
 
   const month = match_date.slice(0, 7);
   const id = uuidv4();
@@ -72,18 +64,10 @@ exports.handler = async (event) => {
   };
 
   try {
-    await dynamo.put({ TableName: tableName, Item: item }).promise();
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify(item),
-    };
+    await dynamo.send(new PutCommand({ TableName: tableName, Item: item }));
+    return successResponse(200, item);
   } catch (err) {
     console.error("DynamoDB error:", err);
-    return {
-      statusCode: 500,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "Error saving game" }),
-    };
+    return serverErrorResponse("Error saving game");
   }
 };

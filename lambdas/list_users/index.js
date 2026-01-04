@@ -1,19 +1,17 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  successResponse,
+  serverErrorResponse,
+  getDocumentClient,
+  TABLES,
+} = require("shared-utils");
 
-const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.USERS_TABLE;
-
-// Cabeçalhos CORS padronizados
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-};
+const dynamo = getDocumentClient();
+const TABLE_NAME = TABLES.USERS;
 
 exports.handler = async () => {
   try {
-    const result = await client.send(
+    const result = await dynamo.send(
       new ScanCommand({ TableName: TABLE_NAME }),
     );
 
@@ -26,17 +24,9 @@ exports.handler = async () => {
       updatedAt: user.updatedAt,
     }));
 
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify(users),
-    };
+    return successResponse(200, users);
   } catch (err) {
     console.error("Error listing players:", err);
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ message: "Internal server error." }),
-    };
+    return serverErrorResponse("Internal server error.");
   }
 };

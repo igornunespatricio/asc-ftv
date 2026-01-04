@@ -1,70 +1,62 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { PutCommand } = require("@aws-sdk/lib-dynamodb");
 const bcrypt = require("bcryptjs");
+const {
+  successResponse,
+  errorResponse,
+  serverErrorResponse,
+  requireAdmin,
+  validateRole,
+  getDocumentClient,
+  TABLES,
+  validateRequest,
+  validateUserData,
+  badRequestResponse,
+} = require("shared-utils");
 
-const client = new DynamoDBClient({});
-const TABLE_NAME = process.env.USERS_TABLE;
-
-// Valid roles for user assignment
-const VALID_ROLES = ["admin", "game_inputer"];
-
-// Cabeçalhos CORS
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-};
+const dynamo = getDocumentClient();
+const TABLE_NAME = TABLES.USERS;
 
 exports.handler = async (event) => {
   try {
-    const role = event.requestContext?.authorizer?.role;
-    if (role !== "admin") {
-      return {
-        statusCode: 403,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "Access denied" }),
-      };
-    }
+    // Check authorization
+    const auth = requireAdmin(event);
+    if (!auth.ok) return auth.response;
 
-    const body = JSON.parse(event.body || "{}");
+    // Validate request
+    const validation = validateRequest(event, {
+      requiredBodyFields: ["username", "email", "password"],
+    });
+    if (!validation.ok) return validation.response;
 
-    if (!body.username || !body.email || !body.password) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          message: "Fields 'username', 'email' and 'password' are required.",
-        }),
-      };
-    }
+    // Validate user data
+    const userValidation = validateUserData(validation.body, true);
+    if (!userValidation.ok) return userValidation.response;
+
+    const { username, email, password } = validation.body;
 
     // Validate role if provided
-    const requestedRole = body.role ?? "game_inputer";
-    if (!VALID_ROLES.includes(requestedRole)) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          message: `Invalid role '${requestedRole}'. Valid roles are: ${VALID_ROLES.join(", ")}`,
-        }),
-      };
+    const requestedRole = validation.body.role ?? "game_inputer";
+    try {
+      validateRole(requestedRole);
+    } catch (err) {
+      return badRequestResponse(err.message);
     }
 
-    const passwordHash = bcrypt.hashSync(body.password, 10);
+    const passwordHash = bcrypt.hashSync(password, 10);
 
     const now = Date.now();
 
     const item = {
-      username: body.username,
-      email: body.email,
+      username,
+      email,
       password_hash: passwordHash,
       role: requestedRole,
-      active: body.active ?? true,
+      active: validation.body.active ?? true,
       createdAt: now,
       updatedAt: now,
     };
 
-    await client.send(
+    await dynamo.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: item,
@@ -72,31 +64,19 @@ exports.handler = async (event) => {
       }),
     );
 
-    return {
-      statusCode: 201,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        username: item.username,
-        email: item.email,
-        role: item.role,
-        active: item.active,
-        createdAt: item.createdAt,
-      }),
-    };
+    return successResponse(201, {
+      username: item.username,
+      email: item.email,
+      role: item.role,
+      active: item.active,
+      createdAt: item.createdAt,
+    });
   } catch (err) {
     if (err.name === "ConditionalCheckFailedException") {
-      return {
-        statusCode: 409,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ message: "User already exists." }),
-      };
+      return errorResponse(409, "User already exists.");
     }
 
     console.error("Error creating user:", err);
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ message: "Internal server error." }),
-    };
+    return serverErrorResponse("Internal server error.");
   }
 };
