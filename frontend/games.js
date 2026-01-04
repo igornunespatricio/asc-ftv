@@ -2,6 +2,14 @@
 // Handles game CRUD operations, form interactions, and game display logic
 
 import { showStatusMessage } from "./forms.js";
+import {
+  getElement,
+  querySelector,
+  clearTableBody,
+  enableElement,
+  addClass,
+  setText,
+} from "./dom.js";
 
 const baseUrl = window.APP_CONFIG.apiUrl;
 const gamesUrl = `${baseUrl}/games`;
@@ -11,7 +19,7 @@ const usersUrl = `${baseUrl}/users`;
    CARREGAR OPÇÕES DE MESES
    ============================================================ */
 function generateMonthOptions() {
-  const select = document.getElementById("month-selector");
+  const select = getElement("month-selector");
   const today = new Date();
 
   for (let i = 0; i < 12; i++) {
@@ -31,13 +39,16 @@ function generateMonthOptions() {
    CARREGAR HISTÓRICO DE JOGOS
    ============================================================ */
 async function loadGames(month) {
-  const tableBody = document.querySelector("#games-table tbody");
-
   try {
     const response = await authFetch(`/games?month=${month}`);
     const games = await response.json();
 
-    tableBody.innerHTML = "";
+    // Use DOM utility to clear table
+    clearTableBody("games-table");
+
+    // Create custom row processor for games data
+    const tableBody = querySelector("#games-table tbody");
+    if (!tableBody) return;
 
     games.forEach((game) => {
       const row = document.createElement("tr");
@@ -59,10 +70,10 @@ async function loadGames(month) {
    ============================================================ */
 async function loadUsersForSelects() {
   const selects = [
-    document.getElementById("winner1"),
-    document.getElementById("winner2"),
-    document.getElementById("loser1"),
-    document.getElementById("loser2"),
+    getElement("winner1"),
+    getElement("winner2"),
+    getElement("loser1"),
+    getElement("loser2"),
   ];
 
   try {
@@ -95,24 +106,24 @@ const userSelectIds = ["winner1", "winner2", "loser1", "loser2"];
 
 function setupUserDuplicateBlocking() {
   userSelectIds.forEach((id) => {
-    const select = document.getElementById(id);
+    const select = getElement(id);
     select.addEventListener("change", updateUserOptions);
   });
   updateUserOptions();
 }
 
 function updateUserOptions() {
-  const submitBtn = document.querySelector(".btn-submit");
-  const status = document.getElementById("status");
+  const submitBtn = querySelector(".btn-submit");
+  const status = getElement("status");
 
   const selectedValues = userSelectIds
-    .map((id) => document.getElementById(id).value)
+    .map((id) => getElement(id).value)
     .filter((v) => v !== "");
 
   const hasDuplicates = selectedValues.length !== new Set(selectedValues).size;
 
   userSelectIds.forEach((id) => {
-    const select = document.getElementById(id);
+    const select = getElement(id);
     Array.from(select.options).forEach((option) => {
       if (option.value === "") return;
       if (option.value === select.value) {
@@ -138,8 +149,8 @@ function updateUserOptions() {
 }
 
 function applyPermissions() {
-  const form = document.getElementById("game-form");
-  const container = document.getElementById("add-game-container");
+  const form = getElement("game-form");
+  const container = getElement("add-game-container");
   const content = container?.querySelector(".form-content");
 
   if (!form || !container || !content) return;
@@ -151,7 +162,7 @@ function applyPermissions() {
   });
 
   /* 2️⃣ Blur apenas no conteúdo */
-  content.classList.add("blurred");
+  addClass("add-game-container", "blurred");
 
   container.style.position = "relative";
 
@@ -172,10 +183,9 @@ function applyPermissions() {
    ADICIONAR NOVA PARTIDA
    ============================================================ */
 function setupGameForm(loadRankingCallback) {
-  document.getElementById("game-form").addEventListener("submit", async (e) => {
+  getElement("game-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.target;
-    const status = document.getElementById("status");
 
     const picks = [
       form.winner1.value,
@@ -222,7 +232,7 @@ function setupGameForm(loadRankingCallback) {
         form.reset();
         updateUserOptions();
 
-        const selectedMonth = document.getElementById("month-selector").value;
+        const selectedMonth = getElement("month-selector").value;
         loadGames(selectedMonth);
         loadRankingCallback(selectedMonth);
         return;

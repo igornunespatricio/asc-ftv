@@ -1,3 +1,5 @@
+import { clearTableBody, querySelector } from "./dom.js";
+
 // ranking.js - Ranking display module
 // Handles ranking data fetching and table display
 
@@ -8,13 +10,16 @@ const rankingUrl = `${baseUrl}/ranking`;
    CARREGAR RANKING MENSAL
    ============================================================ */
 async function loadRanking(month) {
-  const tableBody = document.querySelector("#ranking-table tbody");
-
   try {
     const response = await authFetch(`/ranking?month=${month}`);
     const ranking = await response.json();
 
-    tableBody.innerHTML = "";
+    // Use DOM utility to clear table
+    clearTableBody("ranking-table");
+
+    // Create custom row processor for ranking data
+    const tableBody = querySelector("#ranking-table tbody");
+    if (!tableBody) return;
 
     ranking.forEach((player) => {
       const row = document.createElement("tr");

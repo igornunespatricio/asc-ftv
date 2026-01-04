@@ -36,9 +36,9 @@ Break down main.js into modular components following SRP.
   - [x] Commit: Extract game management logic into games.js module
   - [x] Commit: Extract ranking display logic into ranking.js module
   - [x] Commit: Extract form handling logic into forms.js module
-  - [ ] Commit: Extract user management logic into userManagement.js module
-  - [ ] Commit: Refactor main.js to orchestrate modules without business logic
-  - [ ] Commit: Create shared DOM manipulation utilities
+  - [x] Commit: Extract user management logic into userManagement.js module
+  - [x] Commit: Refactor main.js to orchestrate modules without business logic
+  - [x] Commit: Create shared DOM manipulation utilities
   - [ ] Commit: Update imports and module dependencies
 
 ## Priority 4: Public Ranking Feature

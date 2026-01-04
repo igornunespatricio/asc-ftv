@@ -2,6 +2,7 @@
 // Handles user CRUD operations, form interactions, and user display
 
 import { showStatusMessage, handleApiResponse, resetForm } from "./forms.js";
+import { clearTableBody, querySelector, getElement, setText } from "./dom.js";
 
 const usersPath = "/users";
 
@@ -9,13 +10,16 @@ const usersPath = "/users";
    FUNÇÃO: LISTAR USERS
    ============================================================ */
 async function loadUsers() {
-  const tableBody = document.querySelector("#users-table tbody");
-
   try {
     const response = await authFetch(usersPath);
     const users = await response.json();
 
-    tableBody.innerHTML = "";
+    // Use DOM utility to clear table
+    clearTableBody("users-table");
+
+    // Create custom row processor for users data
+    const tableBody = querySelector("#users-table tbody");
+    if (!tableBody) return;
 
     users.forEach((user) => {
       const row = document.createElement("tr");
@@ -55,7 +59,7 @@ async function loadUsers() {
    ADICIONAR OU ATUALIZAR USER
    ============================================================ */
 function setupUserForm() {
-  document.getElementById("user-form").addEventListener("submit", async (e) => {
+  getElement("user-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const form = e.target;
@@ -114,21 +118,21 @@ function setupUserForm() {
    BOTÕES DE EDITAR E DELETAR
    ============================================================ */
 function attachUserButtons() {
+  // Use document.querySelectorAll since we need multiple elements
   document.querySelectorAll(".btn-edit").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.getElementById("user_username").value = btn.dataset.username;
-      document.getElementById("user_email").value = btn.dataset.email;
-      document.getElementById("user_role").value = btn.dataset.role;
-      document.getElementById("user_active").checked =
-        btn.dataset.active === "true";
+      getElement("user_username").value = btn.dataset.username;
+      getElement("user_email").value = btn.dataset.email;
+      getElement("user_role").value = btn.dataset.role;
+      getElement("user_active").checked = btn.dataset.active === "true";
 
-      document.getElementById("user_email").disabled = true;
-      document.getElementById("user_email_original").value = btn.dataset.email;
+      getElement("user_email").disabled = true;
+      getElement("user_email_original").value = btn.dataset.email;
 
-      document.getElementById("user_password").value = "";
-      document.getElementById("password-group").style.display = "none";
+      getElement("user_password").value = "";
+      getElement("password-group").style.display = "none";
 
-      document.getElementById("form-title").textContent = "Editar Usuário";
+      setText("form-title", "Editar Usuário");
 
       showStatusMessage("✏️ Editando usuário...", "info");
     });
@@ -159,13 +163,13 @@ function attachUserButtons() {
 }
 
 function resetUserForm() {
-  const form = document.getElementById("user-form");
+  const form = getElement("user-form");
 
   resetForm(form, {
-    emailOriginal: form.user_email_original,
-    emailField: document.getElementById("user_email"),
-    passwordGroup: document.getElementById("password-group"),
-    formTitle: document.getElementById("form-title"),
+    emailOriginal: getElement("user_email_original"),
+    emailField: getElement("user_email"),
+    passwordGroup: getElement("password-group"),
+    formTitle: getElement("form-title"),
     defaultTitle: "Adicionar Usuário",
   });
 }
