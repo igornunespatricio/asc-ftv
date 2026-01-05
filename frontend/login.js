@@ -1,5 +1,4 @@
 // Usa a mesma configuração global do frontend
-const baseUrl = window.APP_CONFIG.apiUrl;
 const loginUrl = `${baseUrl}/login`;
 
 async function login() {
