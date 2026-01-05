@@ -46,12 +46,12 @@ Break down main.js into modular components following SRP.
 Allow viewing ranking without authentication.
 
 - [ ] **Feature Branch: public-ranking-view**
-  - [ ] Commit: Create new public API endpoint for ranking (no auth required)
-  - [ ] Commit: Add public ranking page/route in frontend
-  - [ ] Commit: Update navigation to show ranking link for all users
-  - [ ] Commit: Implement conditional UI elements based on authentication status
-  - [ ] Commit: Add loading states and error handling for public ranking
-  - [ ] Commit: Update CORS configuration for public endpoints
+  - [ ] Commit: Verify existing ranking endpoint allows public access (no auth required)
+  - [ ] Commit: Create public fetch utility in utils.js for API calls without authentication
+  - [ ] Commit: Add ranking display section to login.html below the login form
+  - [ ] Commit: Implement ranking table display in login.js with loading states
+  - [ ] Commit: Add error handling for ranking fetch failures on login page
+  - [ ] Commit: Style the ranking section to match login page design and ensure responsiveness
 
 ## Priority 5: UI/UX Modernization
 
