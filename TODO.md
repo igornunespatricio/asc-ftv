@@ -58,9 +58,9 @@ Allow viewing ranking without authentication.
 New color scheme (black opaque primary, modern yellow) and layout improvements with DRY CSS foundation.
 
 - [ ] **Feature Branch: ui-modernization**
-  - [ ] Commit: Implement DRY CSS foundation with unified color system and component variables
-  - [ ] Commit: Extract shared component styles (buttons, forms, tables)
-  - [ ] Commit: Consolidate table styling and responsive behavior
+  - [x] Commit: Implement DRY CSS foundation with unified color system and component variables
+  - [x] Commit: Extract shared component styles (buttons, forms, tables)
+  - [x] Commit: Consolidate table styling and responsive behavior
   - [ ] Commit: Modernize form styling and user interactions
   - [ ] Commit: Update navbar and navigation styling
   - [ ] Commit: Redesign main layout structure for better responsiveness

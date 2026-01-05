@@ -25,46 +25,46 @@
 
             <div class="form-group">
               <label for="match_date">Data da partida</label>
-              <input type="date" id="match_date" name="match_date" required>
+              <input type="date" id="match_date" name="match_date" class="form-input" required>
             </div>
 
             <h3 class="section-title">Vencedores</h3>
 
             <div class="form-group">
               <label for="winner1">Jogador 1</label>
-              <select id="winner1" name="winner1" required></select>
+              <select id="winner1" name="winner1" class="form-select" required></select>
             </div>
 
             <div class="form-group">
               <label for="winner2">Jogador 2</label>
-              <select id="winner2" name="winner2" required></select>
+              <select id="winner2" name="winner2" class="form-select" required></select>
             </div>
 
             <h3 class="section-title">Perdedores</h3>
 
             <div class="form-group">
               <label for="loser1">Jogador 1</label>
-              <select id="loser1" name="loser1" required></select>
+              <select id="loser1" name="loser1" class="form-select" required></select>
             </div>
 
             <div class="form-group">
               <label for="loser2">Jogador 2</label>
-              <select id="loser2" name="loser2" required></select>
+              <select id="loser2" name="loser2" class="form-select" required></select>
             </div>
 
             <h3 class="section-title">Placar</h3>
 
             <div class="form-group">
               <label for="score_winner">Pontos do vencedor</label>
-              <input type="number" id="score_winner" name="score_winner" placeholder="Ex: 18">
+              <input type="number" id="score_winner" name="score_winner" class="form-input" placeholder="Ex: 18">
             </div>
 
             <div class="form-group">
               <label for="score_loser">Pontos do perdedor</label>
-              <input type="number" id="score_loser" name="score_loser" placeholder="Ex: 12">
+              <input type="number" id="score_loser" name="score_loser" class="form-input" placeholder="Ex: 12">
             </div>
 
-            <button type="submit" class="btn-submit">Adicionar Partida</button>
+            <button type="submit" class="btn btn--primary">Adicionar Partida</button>
           </form>
         </div>
       </div>
@@ -84,7 +84,7 @@
       <!-- RANKING MENSAL -->
       <div class="table-container">
 
-        <table id="ranking-table">
+        <table id="ranking-table" class="table">
           <thead>
 
             <!-- Full width header -->
@@ -116,7 +116,7 @@
       <!-- HISTÓRICO DE PARTIDAS -->
       <div class="table-container" style="margin-top: 40px;">
 
-        <table id="games-table">
+        <table id="games-table" class="table">
           <thead>
             <tr>
               <th colspan="4" class="table-title">Histórico de Partidas</th>

@@ -36,11 +36,4 @@
   opacity: 0.9;
 }
 
-.btn-logout {
-  background: #ef4444;
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+/* Logout button uses base .btn variant */

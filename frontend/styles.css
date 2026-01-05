@@ -1,5 +1,152 @@
 @import url('css/variables.css');
 
+/* ============================================================
+   BASE COMPONENT STYLES
+   ============================================================ */
+
+/* Base button component */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  text-decoration: none;
+  text-align: center;
+}
+
+/* Button variants */
+.btn--primary {
+  background: var(--color-secondary);
+  color: white;
+}
+
+.btn--primary:hover {
+  background: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.btn--success {
+  background: var(--color-success);
+  color: white;
+}
+
+.btn--success:hover {
+  background: var(--color-success);
+  opacity: 0.9;
+}
+
+.btn--danger {
+  background: var(--color-error);
+  color: white;
+}
+
+.btn--danger:hover {
+  background: var(--color-error);
+  opacity: 0.9;
+}
+
+.btn--secondary {
+  background: #007BFF;
+  color: white;
+}
+
+.btn--secondary:hover {
+  background: #0056b3;
+}
+
+/* Base form components */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background);
+  font-size: 15px;
+  transition: var(--transition-normal);
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(253, 224, 71, 0.15);
+}
+
+/* Base table component */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  font-family: Arial, sans-serif;
+  background: var(--color-background);
+  box-shadow: var(--shadow-md);
+}
+
+.table thead {
+  background: var(--color-primary);
+  color: white;
+}
+
+.table th {
+  text-align: left;
+  padding: 14px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.table tbody tr:nth-child(even) {
+  background: var(--color-surface-secondary);
+}
+
+.table tbody tr:hover {
+  background: rgba(227, 242, 253, 0.8);
+  cursor: pointer;
+}
+
+/* Mobile responsive for tables */
+@media (max-width: 600px) {
+  .table thead {
+    display: none;
+  }
+
+  .table tr {
+    display: block;
+    margin-bottom: 15px;
+    border-radius: var(--border-radius-md);
+    background: var(--color-background);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: var(--color-text-secondary);
+  }
+
+  .table td:last-child {
+    border-bottom: none;
+  }
+}
+
 body {
   font-family: "Inter", sans-serif;
   background: var(--color-surface);
@@ -76,101 +223,7 @@ button {
   letter-spacing: 0.5px;
 }
 
-/* ============================================================
-   TABELAS ESTILIZADAS (Ranking + Histórico)
-   ============================================================ */
-
-/* Ambas as tabelas terão exatamente o mesmo estilo */
-#games-table,
-#ranking-table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow: hidden;
-  border-radius: var(--border-radius-lg);
-  font-family: Arial, sans-serif;
-  background: var(--color-background);
-  box-shadow: var(--shadow-md);
-}
-
-/* Cabeçalho */
-#games-table thead,
-#ranking-table thead {
-  background: var(--color-primary);
-  color: white;
-}
-
-#games-table th,
-#ranking-table th {
-  text-align: left;
-  padding: 14px;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-}
-
-/* Linhas */
-#games-table td,
-#ranking-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #e6e6e6;
-  font-size: 14px;
-}
-
-/* Zebra stripes */
-#games-table tbody tr:nth-child(even),
-#ranking-table tbody tr:nth-child(even) {
-  background: #f9f9f9;
-}
-
-/* Hover highlight */
-#games-table tbody tr:hover,
-#ranking-table tbody tr:hover {
-  background: #e3f2fd;
-  cursor: pointer;
-}
-
-
-/* ============================================================
-   TABLE - MOBILE RESPONSIVE
-   ============================================================ */
-
-@media (max-width: 600px) {
-
-  /* Esconde cabeçalho */
-  #games-table thead,
-  #ranking-table thead {
-    display: none;
-  }
-
-  /* Cada linha vira card */
-  #games-table tr,
-  #ranking-table tr {
-    display: block;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-
-  #games-table td,
-  #ranking-table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-  }
-
-  #games-table td::before,
-  #ranking-table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #444;
-  }
-
-  #games-table td:last-child,
-  #ranking-table td:last-child {
-    border-bottom: none;
-  }
-}
+/* Tables now use base .table class */
 
 
 /* ============================================================
@@ -213,43 +266,9 @@ button {
   color: #333;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-  transition: 0.25s border, 0.25s box-shadow;
-}
+/* Form inputs now use base .form-input class */
 
-.form-group input:focus {
-  outline: none;
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px rgba(253, 224, 71, 0.15);
-}
-
-.btn-submit {
-  width: 100%;
-  padding: 14px;
-  margin-top: 20px;
-  background: var(--color-secondary);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-lg);
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: var(--transition-normal);
-}
-
-.btn-submit:hover {
-  background: var(--color-accent);
-  transform: translateY(-2px);
-}
-
-.btn-submit:active {
-  transform: translateY(0);
-}
+/* Submit button uses base .btn.btn--primary class */
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -317,136 +336,9 @@ button {
   text-align: right;
 }
 
-.btn-admin {
-  background-color: #007BFF;
-  color: white;
-  padding: 8px 16px;
-  text-decoration: none;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.2s;
-}
+/* Admin button uses base .btn.btn--secondary class */
 
-.btn-admin:hover {
-  background-color: #0056b3;
-}
-
-/* ==========================
-   TABLE DE USERS
-   ========================== */
-
-#users-table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow: hidden;
-  border-radius: var(--border-radius-lg);
-  font-family: Arial, sans-serif;
-  background: var(--color-background);
-  box-shadow: var(--shadow-md);
-}
-
-/* Cabeçalho */
-#users-table thead {
-  background: var(--color-primary);
-  color: white;
-}
-
-#users-table th {
-  text-align: left;
-  padding: 14px;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-}
-
-/* Linhas */
-#users-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #e6e6e6;
-  font-size: 14px;
-}
-
-/* Zebra stripes */
-#users-table tbody tr:nth-child(even) {
-  background: #f9f9f9;
-}
-
-/* Hover highlight */
-#users-table tbody tr:hover {
-  background: #e3f2fd;
-  cursor: pointer;
-}
-
-/* ==========================
-   BOTÕES DE AÇÃO
-   ========================== */
-.btn-edit {
-  background-color: var(--color-success);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  margin-right: 5px;
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  transition: var(--transition-normal);
-}
-
-.btn-edit:hover {
-  background-color: var(--color-success);
-  opacity: 0.8;
-}
-
-.btn-delete {
-  background-color: var(--color-error);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  transition: var(--transition-normal);
-}
-
-.btn-delete:hover {
-  background-color: var(--color-error);
-  opacity: 0.8;
-}
-
-/* ==========================
-   RESPONSIVIDADE MOBILE
-   ========================== */
-@media (max-width: 600px) {
-  #users-table thead {
-    display: none;
-  }
-
-  #users-table tr {
-    display: block;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-
-  #users-table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-  }
-
-  #users-table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #444;
-  }
-
-  #users-table td:last-child {
-    border-bottom: none;
-  }
-}
+/* Users table now uses base .table class */
 
 /* ==========================
    SELECT STYLES

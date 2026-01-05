@@ -9,11 +9,16 @@
     <div class="form-container">
       <h2>🔐 Login</h2>
 
-      <input type="email" id="email" placeholder="Email" />
+      <input type="email" id="email" class="form-input" placeholder="Email" />
 
-      <input type="password" id="password" placeholder="Senha" />
+      <input
+        type="password"
+        id="password"
+        class="form-input"
+        placeholder="Senha"
+      />
 
-      <button onclick="login()">Entrar</button>
+      <button onclick="login()" class="btn btn--primary">Entrar</button>
 
       <p id="login-status"></p>
     </div>
@@ -24,7 +29,7 @@
       <div id="ranking-error" style="display: none; color: red">
         ❌ Erro ao carregar ranking
       </div>
-      <table id="ranking-table" style="display: none">
+      <table id="ranking-table" class="table" style="display: none">
         <thead>
           <tr>
             <th>Posição</th>
