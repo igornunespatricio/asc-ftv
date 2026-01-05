@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="login-page">
-    <div class="login-container">
+    <div class="form-container">
       <h2>🔐 Login</h2>
 
       <input type="email" id="email" placeholder="Email" />
@@ -18,7 +18,30 @@
       <p id="login-status"></p>
     </div>
 
+    <div class="table-container">
+      <h3>🏆 Ranking Atual</h3>
+      <div id="ranking-loading">⏳ Carregando ranking...</div>
+      <div id="ranking-error" style="display: none; color: red">
+        ❌ Erro ao carregar ranking
+      </div>
+      <table id="ranking-table" style="display: none">
+        <thead>
+          <tr>
+            <th>Posição</th>
+            <th>Jogador</th>
+            <th>Pontos</th>
+            <th>Partidas</th>
+            <th>Vitórias</th>
+            <th>Derrotas</th>
+            <th>Eficiência</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
     <script src="config.js"></script>
+    <script src="utils.js"></script>
     <script src="login.js"></script>
   </body>
 </html>
