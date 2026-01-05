@@ -34,3 +34,24 @@ async function authFetch(path, options = {}) {
   // ⛔ Não tem permissão → caller decide
   return response;
 }
+
+async function publicFetch(path, options = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  let response;
+  try {
+    response = await fetch(`${baseUrl}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (err) {
+    // Erro REAL de rede (offline, DNS, CORS, etc)
+    throw new Error("NetworkError");
+  }
+
+  // For public endpoints, return response and let caller handle status codes
+  return response;
+}
