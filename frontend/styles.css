@@ -1,6 +1,8 @@
+@import url('css/variables.css');
+
 body {
   font-family: "Inter", sans-serif;
-  background: #f4f6f9;
+  background: var(--color-surface);
   margin: 0;
   padding: 20px;
 }
@@ -68,9 +70,9 @@ button {
   font-size: 22px;
   font-weight: 700;
   padding: 14px 0;
-  background: #1e88e5;     /* azul forte */
+  background: var(--color-primary);
   color: white;
-  border-bottom: 3px solid #1565c0;
+  border-bottom: 3px solid var(--color-primary);
   letter-spacing: 0.5px;
 }
 
@@ -84,16 +86,16 @@ button {
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   font-family: Arial, sans-serif;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: var(--color-background);
+  box-shadow: var(--shadow-md);
 }
 
 /* Cabeçalho */
 #games-table thead,
 #ranking-table thead {
-  background: #1e88e5;
+  background: var(--color-primary);
   color: white;
 }
 
@@ -178,11 +180,11 @@ button {
 .form-container {
   max-width: 420px;
   margin: 40px auto;
-  background: white;
+  background: var(--color-background);
   padding: 30px 35px;
-  border-radius: 18px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
-  animation: fadeIn 0.3s ease;
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn var(--transition-slow);
 }
 
 .form-container h2 {
@@ -222,26 +224,26 @@ button {
 
 .form-group input:focus {
   outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(253, 224, 71, 0.15);
 }
 
 .btn-submit {
   width: 100%;
   padding: 14px;
   margin-top: 20px;
-  background: #4f46e5;
+  background: var(--color-secondary);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   font-size: 16px;
   cursor: pointer;
   font-weight: 600;
-  transition: 0.25s background, 0.25s transform;
+  transition: var(--transition-normal);
 }
 
 .btn-submit:hover {
-  background: #4338ca;
+  background: var(--color-accent);
   transform: translateY(-2px);
 }
 
@@ -282,14 +284,14 @@ button {
    ============================================================ */
 
 .month-bar {
-  background: white;
+  background: var(--color-background);
   padding: 12px 18px;
   margin-bottom: 25px;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-sm);
   max-width: 350px;
 }
 
@@ -337,15 +339,15 @@ button {
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   font-family: Arial, sans-serif;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: var(--color-background);
+  box-shadow: var(--shadow-md);
 }
 
 /* Cabeçalho */
 #users-table thead {
-  background: #1e88e5;
+  background: var(--color-primary);
   color: white;
 }
 
@@ -378,36 +380,38 @@ button {
    BOTÕES DE AÇÃO
    ========================== */
 .btn-edit {
-  background-color: #4caf50;
+  background-color: var(--color-success);
   color: white;
   border: none;
   padding: 6px 12px;
   margin-right: 5px;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: background 0.25s;
+  transition: var(--transition-normal);
 }
 
 .btn-edit:hover {
-  background-color: #388e3c;
+  background-color: var(--color-success);
+  opacity: 0.8;
 }
 
 .btn-delete {
-  background-color: #e53935;
+  background-color: var(--color-error);
   color: white;
   border: none;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: background 0.25s;
+  transition: var(--transition-normal);
 }
 
 .btn-delete:hover {
-  background-color: #b71c1c;
+  background-color: var(--color-error);
+  opacity: 0.8;
 }
 
 /* ==========================
@@ -508,16 +512,16 @@ label {
 
 /* Mensagem de erro */
 .status-message.error {
-  background-color: #ffdddd;
-  border-left: 6px solid #e40000;
-  color: #700000;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 6px solid var(--color-error);
+  color: var(--color-error);
 }
 
 /* Mensagem de sucesso */
 .status-message.success {
-  background-color: #ddffdd;
-  border-left: 6px solid #1a9b00;
-  color: #0a5d00;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-left: 6px solid var(--color-success);
+  color: var(--color-success);
 }
 
 /* Login Page Layout */
