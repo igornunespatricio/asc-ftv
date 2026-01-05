@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "website" {
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
-    cache_policy_id            = aws_cloudfront_cache_policy.html_no_cache.id
+    cache_policy_id            = aws_cloudfront_cache_policy.no_cache.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security.id
   }
 
@@ -66,11 +66,24 @@ resource "aws_cloudfront_distribution" "website" {
     compress               = true
 
     # Sem cache
-    cache_policy_id = aws_cloudfront_cache_policy.html_no_cache.id
+    cache_policy_id = aws_cloudfront_cache_policy.no_cache.id
 
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security.id
   }
 
+  ordered_cache_behavior {
+    path_pattern     = "*.css"
+    target_origin_id = "s3-frontend"
+
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    cached_methods  = ["GET", "HEAD"]
+
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true
+
+    cache_policy_id            = aws_cloudfront_cache_policy.no_cache.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security.id
+  }
 
   default_cache_behavior {
     target_origin_id = "s3-frontend"
