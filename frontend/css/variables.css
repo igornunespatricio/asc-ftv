@@ -1,0 +1,34 @@
+:root {
+  /* Color Palette - Single source of truth */
+  --color-primary: rgba(0, 0, 0, 0.85);     /* Black opaque */
+  --color-secondary: #ffd700;               /* Modern yellow */
+  --color-accent: #ffed4e;                  /* Light yellow */
+
+  /* Semantic Colors - Unified status system */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Neutral Colors */
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-surface-secondary: #e9ecef;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6c757d;
+  --color-border: #dee2e6;
+
+  /* Component Variables - DRY foundation */
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 18px;
+
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 22px rgba(0,0,0,0.08);
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.3s ease;
+}

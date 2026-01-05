@@ -1,3 +1,5 @@
+@import url('variables.css');
+
 .blurred {
   filter: blur(3px);
   pointer-events: none;
@@ -15,37 +17,10 @@
 }
 
 .overlay-message {
-  background: #fff;
+  background: var(--color-background);
   padding: 16px 24px;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   font-weight: 600;
-  color: #333;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
-}
-
-.status-message {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-.status-message.success {
-  background: #e6f4ea;
-  color: #1e7e34;
-}
-
-.status-message.error {
-  background: #fdecea;
-  color: #b02a37;
-}
-
-.status-message.warning {
-  background: #fff4e5;
-  color: #8a5a00;
-}
-
-.status-message.info {
-  background: #eef2ff;
-  color: #3730a3;
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-md);
 }

@@ -9,11 +9,29 @@
     <div class="form-container">
       <h2>🔐 Login</h2>
 
-      <input type="email" id="email" placeholder="Email" />
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          class="form-input"
+          placeholder="seu@email.com"
+          required
+        />
+      </div>
 
-      <input type="password" id="password" placeholder="Senha" />
+      <div class="form-group">
+        <label for="password" class="form-label">Senha</label>
+        <input
+          type="password"
+          id="password"
+          class="form-input"
+          placeholder="Sua senha"
+          required
+        />
+      </div>
 
-      <button onclick="login()">Entrar</button>
+      <button onclick="login()" class="btn btn--primary">Entrar</button>
 
       <p id="login-status"></p>
     </div>
@@ -24,7 +42,7 @@
       <div id="ranking-error" style="display: none; color: red">
         ❌ Erro ao carregar ranking
       </div>
-      <table id="ranking-table" style="display: none">
+      <table id="ranking-table" class="table" style="display: none">
         <thead>
           <tr>
             <th>Posição</th>

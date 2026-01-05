@@ -28,8 +28,8 @@ resource "aws_cloudfront_cache_policy" "api_disabled" {
   }
 }
 
-resource "aws_cloudfront_cache_policy" "html_no_cache" {
-  name = "${terraform.workspace}-html-no-cache"
+resource "aws_cloudfront_cache_policy" "no_cache" {
+  name = "${terraform.workspace}-no-cache"
 
   default_ttl = 0
   min_ttl     = 0
