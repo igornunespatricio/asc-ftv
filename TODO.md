@@ -49,9 +49,9 @@ Allow viewing ranking without authentication.
   - [x] Commit: Verify existing ranking endpoint allows public access (no auth required)
   - [x] Commit: Create public fetch utility in utils.js for API calls without authentication
   - [x] Commit: Add ranking display section to login.html below the login form
-  - [ ] Commit: Implement ranking table display in login.js with loading states
-  - [ ] Commit: Add error handling for ranking fetch failures on login page
-  - [ ] Commit: Style the ranking section to match login page design and ensure responsiveness
+  - [x] Commit: Implement ranking table display in login.js with loading states
+  - [x] Commit: Add error handling for ranking fetch failures on login page
+  - [x] Commit: Style the ranking section to match login page design and ensure responsiveness
 
 ## Priority 5: UI/UX Modernization
 

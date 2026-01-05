@@ -519,3 +519,21 @@ label {
   border-left: 6px solid #1a9b00;
   color: #0a5d00;
 }
+
+/* Login Page Layout */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Ranking section heading in table container */
+.table-container h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+}
