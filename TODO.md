@@ -63,8 +63,8 @@ New color scheme (black opaque primary, modern yellow) and layout improvements w
   - [x] Commit: Consolidate table styling and responsive behavior
   - [x] Commit: Modernize form styling and user interactions
   - [x] Commit: Update navbar and navigation styling
-  - [ ] Commit: Redesign main layout structure for better responsiveness
-  - [ ] Commit: Add smooth transitions and hover effects throughout
+  - [x] Commit: Redesign main layout structure for better responsiveness
+  - [x] Commit: Add smooth transitions and hover effects throughout
 
 ## Priority 6: Type Safety Implementation
 
