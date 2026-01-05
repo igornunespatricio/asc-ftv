@@ -45,7 +45,7 @@ Break down main.js into modular components following SRP.
 
 Allow viewing ranking without authentication.
 
-- [ ] **Feature Branch: public-ranking-view**
+- [x] **Feature Branch: public-ranking-view**
   - [x] Commit: Verify existing ranking endpoint allows public access (no auth required)
   - [x] Commit: Create public fetch utility in utils.js for API calls without authentication
   - [x] Commit: Add ranking display section to login.html below the login form
@@ -55,16 +55,16 @@ Allow viewing ranking without authentication.
 
 ## Priority 5: UI/UX Modernization
 
-New color scheme (black opaque primary, modern yellow) and layout improvements.
+New color scheme (black opaque primary, modern yellow) and layout improvements with DRY CSS foundation.
 
 - [ ] **Feature Branch: ui-modernization**
-  - [ ] Commit: Update CSS variables with new color palette (black opaque, modern yellow)
-  - [ ] Commit: Redesign main layout structure for better responsiveness
+  - [ ] Commit: Implement DRY CSS foundation with unified color system and component variables
+  - [ ] Commit: Extract shared component styles (buttons, forms, tables)
+  - [ ] Commit: Consolidate table styling and responsive behavior
   - [ ] Commit: Modernize form styling and user interactions
-  - [ ] Commit: Update table designs for ranking and games lists
-  - [ ] Commit: Improve mobile responsiveness across all pages
-  - [ ] Commit: Add smooth transitions and hover effects
   - [ ] Commit: Update navbar and navigation styling
+  - [ ] Commit: Redesign main layout structure for better responsiveness
+  - [ ] Commit: Add smooth transitions and hover effects throughout
 
 ## Priority 6: Type Safety Implementation
 
