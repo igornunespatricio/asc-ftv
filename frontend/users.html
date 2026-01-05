@@ -25,7 +25,9 @@
 
           <form id="user-form">
             <div class="form-group">
-              <label for="user_username">Nome de usuário</label>
+              <label for="user_username" class="form-label"
+                >Nome de usuário</label
+              >
               <input
                 type="text"
                 id="user_username"
@@ -37,7 +39,7 @@
             </div>
 
             <div class="form-group">
-              <label for="user_email">Email</label>
+              <label for="user_email" class="form-label">Email</label>
               <input
                 type="email"
                 id="user_email"
@@ -49,17 +51,22 @@
             </div>
 
             <div class="form-group" id="password-group">
-              <label for="user_password">Senha inicial</label>
+              <label for="user_password" class="form-label"
+                >Senha inicial</label
+              >
               <input
                 type="password"
                 id="user_password"
                 class="form-input"
                 placeholder="Defina uma senha inicial"
               />
+              <span class="form-help"
+                >Deixe em branco para manter a senha atual</span
+              >
             </div>
 
             <div class="form-group">
-              <label for="user_role">Função</label>
+              <label for="user_role" class="form-label">Função</label>
               <select
                 id="user_role"
                 name="user_role"
@@ -72,13 +79,15 @@
             </div>
 
             <div class="form-group">
-              <label for="user_active">Ativo</label>
-              <input
-                type="checkbox"
-                id="user_active"
-                name="user_active"
-                checked
-              />
+              <label class="form-checkbox">
+                <input
+                  type="checkbox"
+                  id="user_active"
+                  name="user_active"
+                  checked
+                />
+                <span>Usuário ativo</span>
+              </label>
             </div>
 
             <input type="hidden" id="user_email_original" />

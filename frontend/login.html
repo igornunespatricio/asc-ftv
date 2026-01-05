@@ -9,14 +9,27 @@
     <div class="form-container">
       <h2>🔐 Login</h2>
 
-      <input type="email" id="email" class="form-input" placeholder="Email" />
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          class="form-input"
+          placeholder="seu@email.com"
+          required
+        />
+      </div>
 
-      <input
-        type="password"
-        id="password"
-        class="form-input"
-        placeholder="Senha"
-      />
+      <div class="form-group">
+        <label for="password" class="form-label">Senha</label>
+        <input
+          type="password"
+          id="password"
+          class="form-input"
+          placeholder="Sua senha"
+          required
+        />
+      </div>
 
       <button onclick="login()" class="btn btn--primary">Entrar</button>
 
