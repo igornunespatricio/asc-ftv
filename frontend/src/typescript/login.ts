@@ -1,12 +1,15 @@
-// Usa a mesma configuração global do frontend
+const baseUrl = (window as any).APP_CONFIG.apiUrl;
 const loginUrl = `${baseUrl}/login`;
 
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const status = document.getElementById("login-status");
+async function login(): Promise<void> {
+  const emailElement = document.getElementById("email") as HTMLInputElement;
+  const passwordElement = document.getElementById("password") as HTMLInputElement;
+  const statusElement = document.getElementById("login-status") as HTMLElement;
 
-  status.innerText = "⏳ Entrando...";
+  const email = emailElement.value;
+  const password = passwordElement.value;
+
+  statusElement.textContent = "⏳ Entrando...";
 
   try {
     const response = await fetch(loginUrl, {
@@ -21,12 +24,12 @@ async function login() {
     });
 
     if (response.status === 401) {
-      status.innerText = "❌ Usuário ou senha inválidos";
+      statusElement.textContent = "❌ Usuário ou senha inválidos";
       return;
     }
 
     if (!response.ok) {
-      status.innerText = "❌ Erro ao efetuar login";
+      statusElement.textContent = "❌ Erro ao efetuar login";
       return;
     }
 
@@ -50,37 +53,37 @@ async function login() {
     window.location.href = "index.html";
   } catch (err) {
     console.error(err);
-    status.innerText = "❌ Usuário ou senha inválidos";
+    statusElement.textContent = "❌ Usuário ou senha inválidos";
   }
 }
 
-function parseJwt(token) {
+function parseJwt(token: string): any {
   const payload = token.split(".")[1];
   return JSON.parse(atob(payload));
 }
 
-async function loadPublicRanking() {
-  const loading = document.getElementById("ranking-loading");
-  const table = document.getElementById("ranking-table");
-  const error = document.getElementById("ranking-error");
+async function loadPublicRanking(): Promise<void> {
+  const loading = document.getElementById("ranking-loading") as HTMLElement;
+  const table = document.getElementById("ranking-table") as HTMLElement;
+  const error = document.getElementById("ranking-error") as HTMLElement;
 
   try {
     loading.style.display = "block";
     table.style.display = "none";
     error.style.display = "none";
 
-    const response = await publicFetch("/ranking");
+    const response = await fetch(`${baseUrl}/ranking`);
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
     const ranking = await response.json();
 
     // Clear table
-    const tbody = table.querySelector("tbody");
+    const tbody = table.querySelector("tbody") as HTMLElement;
     tbody.innerHTML = "";
 
     // Populate table
-    ranking.forEach((player) => {
+    ranking.forEach((player: any) => {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td data-label="Posição">${player.position}</td>
@@ -107,3 +110,6 @@ async function loadPublicRanking() {
 document.addEventListener("DOMContentLoaded", () => {
   loadPublicRanking();
 });
+
+// Make login function globally available for onclick handler
+(window as any).login = login;

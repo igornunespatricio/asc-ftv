@@ -4,3 +4,7 @@
 crash.log
 *.zip
 *.tfvars
+
+# Frontend build artifacts
+../frontend/dist/
+../frontend/node_modules/

@@ -1,27 +1,26 @@
 import { clearTableBody, querySelector } from "./dom.js";
+import { authFetch } from "./utils.js";
+import type { RankingEntry } from "./types/api.js";
 
-// ranking.js - Ranking display module
-// Handles ranking data fetching and table display
-
-const baseUrl = window.APP_CONFIG.apiUrl;
+const baseUrl = (window as any).APP_CONFIG.apiUrl;
 const rankingUrl = `${baseUrl}/ranking`;
 
 /* ============================================================
    CARREGAR RANKING MENSAL
    ============================================================ */
-async function loadRanking(month) {
+async function loadRanking(month: string): Promise<void> {
   try {
     const response = await authFetch(`/ranking?month=${month}`);
-    const ranking = await response.json();
+    const ranking: RankingEntry[] = await response.json();
 
     // Use DOM utility to clear table
     clearTableBody("ranking-table");
 
     // Create custom row processor for ranking data
-    const tableBody = querySelector("#ranking-table tbody");
+    const tableBody = querySelector("#ranking-table tbody") as HTMLTableSectionElement;
     if (!tableBody) return;
 
-    ranking.forEach((player) => {
+    ranking.forEach((player: RankingEntry) => {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td data-label="Position">${player.position}</td>
@@ -39,6 +38,6 @@ async function loadRanking(month) {
   }
 }
 
-export function loadRankingForMonth(month) {
+export function loadRankingForMonth(month: string): void {
   loadRanking(month);
 }

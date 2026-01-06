@@ -11,7 +11,8 @@ TF            ?= terraform
 .PHONY: init fmt validate workspace plan apply destroy \
         dev dev-plan dev-apply dev-destroy \
         prod prod-plan prod-apply prod-destroy \
-        check terraform docs lambda-install lambda-install-all
+        check terraform docs lambda-install lambda-install-all \
+        frontend-install frontend-build frontend-clean
 
 # ---------------------------------------------------------
 # Lambda install
@@ -48,6 +49,23 @@ lambda-install-all:
 	@echo "✅ Todas as lambdas foram processadas"
 
 # ---------------------------------------------------------
+# Frontend operations
+# ---------------------------------------------------------
+
+frontend-install:
+	@echo "📦 Installing frontend dependencies..."
+	@cd frontend && npm install
+
+frontend-build: frontend-install
+	@echo "🔨 Building frontend with TypeScript..."
+	@cd frontend && npm run build
+	@echo "✅ Frontend built successfully"
+
+frontend-clean:
+	@echo "🧹 Cleaning frontend build artifacts..."
+	@cd frontend && rm -rf dist/
+
+# ---------------------------------------------------------
 # Qualidade e validação
 # ---------------------------------------------------------
 
@@ -79,14 +97,14 @@ workspace:
 init:
 	cd $(TERRAFORM_DIR) && $(TF) init -upgrade
 
-plan: workspace
+plan: frontend-build workspace
 	cd $(TERRAFORM_DIR) && $(TF) plan
 
 # ---------------------------------------------------------
 # Apply / Destroy (com proteção para prod)
 # ---------------------------------------------------------
 
-apply: workspace
+apply: frontend-build workspace
 ifeq ($(WORKSPACE),prod)
 	cd $(TERRAFORM_DIR) && $(TF) apply
 else
@@ -104,7 +122,7 @@ endif
 # Pipeline completo (dev only)
 # ---------------------------------------------------------
 
-terraform: init check plan apply
+terraform: frontend-build lambda-install-all init check plan apply
 
 # ---------------------------------------------------------
 # Atalhos por ambiente
@@ -112,7 +130,7 @@ terraform: init check plan apply
 
 # DEV
 dev: WORKSPACE=dev
-dev: apply
+dev: frontend-build lambda-install-all apply
 
 dev-plan: WORKSPACE=dev
 dev-plan: plan
@@ -125,7 +143,7 @@ dev-destroy: destroy
 
 # PROD
 prod: WORKSPACE=prod
-prod: apply
+prod: frontend-build lambda-install-all apply
 
 prod-plan: WORKSPACE=prod
 prod-plan: plan

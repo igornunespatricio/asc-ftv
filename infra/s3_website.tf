@@ -26,18 +26,27 @@ resource "aws_s3_bucket_public_access_block" "website" {
   restrict_public_buckets = true
 }
 
-# Upload de todos os arquivos do frontend
+# Upload de todos os arquivos do frontend (TypeScript em typescript/, HTML em pages/)
 locals {
-  frontend_files = fileset("${path.module}/../frontend", "**")
+  typescript_files = fileset("${path.module}/../frontend/dist/typescript", "**")
+  pages_files      = fileset("${path.module}/../frontend/dist/pages", "**")
+  static_files     = fileset("${path.module}/../frontend/dist", "**")
+
+  # Combine all files, excluding directories that are handled separately
+  all_frontend_files = setunion(
+    [for f in local.typescript_files : "typescript/${f}"],
+    [for f in local.pages_files : "pages/${f}"],
+    [for f in local.static_files : f if !contains(["typescript", "pages"], dirname(f)) && f != ""]
+  )
 }
 
 resource "aws_s3_object" "frontend" {
-  for_each = { for f in local.frontend_files : f => f }
+  for_each = { for f in local.all_frontend_files : f => f }
 
   bucket = aws_s3_bucket.website.id
   key    = each.value
-  source = "${path.module}/../frontend/${each.value}"
-  etag   = filemd5("${path.module}/../frontend/${each.value}")
+  source = "${path.module}/../frontend/dist/${each.value}"
+  etag   = filemd5("${path.module}/../frontend/dist/${each.value}")
 
   content_type = lookup(
     {
@@ -63,7 +72,7 @@ resource "aws_s3_object" "config_js" {
   bucket = aws_s3_bucket.website.id
   key    = "config.js"
 
-  content = templatefile("${path.module}/../frontend/config.js.tpl", {
+  content = templatefile("${path.module}/../frontend/static/config.js.tpl", {
     api_url = module.apigateway.invoke_url
   })
 
@@ -74,5 +83,3 @@ resource "aws_s3_object" "config_js" {
     aws_s3_bucket_public_access_block.website
   ]
 }
-
-
