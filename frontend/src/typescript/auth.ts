@@ -38,7 +38,7 @@ function isTokenExpired(token: string): boolean {
 function logout(): void {
   localStorage.removeItem("jwt");
   localStorage.removeItem("auth");
-  window.location.href = "login.html";
+  window.location.href = "../pages/login.html";
 }
 
 function requireAuth(): void {
