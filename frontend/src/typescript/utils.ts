@@ -1,20 +1,20 @@
-const baseUrl = window.APP_CONFIG.apiUrl;
+const apiBaseUrl = (window as any).APP_CONFIG.apiUrl;
 
-async function authFetch(path, options = {}) {
+async function authFetch(path: string, options: RequestInit = {}): Promise<Response> {
   const token = localStorage.getItem("jwt");
 
-  const headers = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...options.headers,
+    ...options.headers as Record<string, string>,
   };
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  let response;
+  let response: Response;
   try {
-    response = await fetch(`${baseUrl}${path}`, {
+    response = await fetch(`${apiBaseUrl}${path}`, {
       ...options,
       headers,
     });
@@ -35,15 +35,15 @@ async function authFetch(path, options = {}) {
   return response;
 }
 
-async function publicFetch(path, options = {}) {
+async function publicFetch(path: string, options: RequestInit = {}): Promise<Response> {
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,
   };
 
-  let response;
+  let response: Response;
   try {
-    response = await fetch(`${baseUrl}${path}`, {
+    response = await fetch(`${apiBaseUrl}${path}`, {
       ...options,
       headers,
     });
@@ -55,3 +55,6 @@ async function publicFetch(path, options = {}) {
   // For public endpoints, return response and let caller handle status codes
   return response;
 }
+
+// Export functions for use in other modules
+export { authFetch, publicFetch };

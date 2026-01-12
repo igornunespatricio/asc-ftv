@@ -1,7 +1,6 @@
-import { initGames, loadGamesForMonth } from "./games.js";
+import { initGames, loadGamesForMonth } from "./modules/games.js";
 import { loadRankingForMonth } from "./ranking.js";
-
-// const baseUrl = window.APP_CONFIG.apiUrl;
+import { requireAuth } from "./auth.js";
 
 /* ============================================================
    AO CARREGAR A PÁGINA
@@ -11,12 +10,13 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   await initGames(loadRankingForMonth);
 
-  const currentMonth = document.getElementById("month-selector").value;
+  const currentMonth = (document.getElementById("month-selector") as HTMLSelectElement).value;
   loadRankingForMonth(currentMonth);
 });
 
-document.getElementById("month-selector").addEventListener("change", (e) => {
-  const selectedMonth = e.target.value;
+document.getElementById("month-selector")?.addEventListener("change", (e: Event) => {
+  const target = e.target as HTMLSelectElement;
+  const selectedMonth = target.value;
   loadGamesForMonth(selectedMonth);
   loadRankingForMonth(selectedMonth);
 });

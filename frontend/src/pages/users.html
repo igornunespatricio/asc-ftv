@@ -3,14 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Gerenciamento de Usuários de Futevôlei</title>
-    <script src="config.js"></script>
-    <script src="auth.js"></script>
-    <script>
-      // 🔒 Garante que apenas admins possam acessar esta página
-      requireAdmin();
-    </script>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="../config.js"></script>
+    <script type="module" src="../typescript/auth.js"></script>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/navbar.css" />
   </head>
   <body>
     <div id="navbar"></div>
@@ -125,11 +121,11 @@
         </div>
       </div>
     </div>
-    <script src="navbar.js"></script>
-    <script src="utils.js"></script>
-    <script type="module" src="forms.js"></script>
-    <script type="module" src="dom.js"></script>
-    <script type="module" src="userManagement.js"></script>
-    <script type="module" src="users.js"></script>
+    <script type="module" src="../typescript/navbar.js"></script>
+    <script type="module" src="../typescript/utils.js"></script>
+    <script type="module" src="../typescript/forms.js"></script>
+    <script type="module" src="../typescript/dom.js"></script>
+    <script type="module" src="../typescript/userManagement.js"></script>
+    <script type="module" src="../typescript/users.js"></script>
   </body>
 </html>

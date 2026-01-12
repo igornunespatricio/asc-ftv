@@ -1,15 +1,12 @@
-// forms.js - Shared form utilities module
-// Contains common form handling functions used across the application
-
-let statusTimeout;
+let statusTimeout: ReturnType<typeof setTimeout>;
 
 export function showStatusMessage(
-  message,
-  type = "info",
-  autoClear = true,
-  duration = 5000,
-) {
-  const statusEl = document.getElementById("status");
+  message: string,
+  type: string = "info",
+  autoClear: boolean = true,
+  duration: number = 5000,
+): void {
+  const statusEl = document.getElementById("status") as HTMLElement;
 
   // Clear previous timeout
   if (statusTimeout) {
@@ -27,8 +24,8 @@ export function showStatusMessage(
   }
 }
 
-export async function handleApiResponse(response, successMessage) {
-  let data = {};
+export async function handleApiResponse(response: Response, successMessage: string): Promise<boolean> {
+  let data: any = {};
 
   try {
     data = await response.json();
@@ -59,7 +56,7 @@ export async function handleApiResponse(response, successMessage) {
   return false;
 }
 
-export function resetForm(formElement, options = {}) {
+export function resetForm(formElement: HTMLFormElement, options: any = {}): void {
   formElement.reset();
 
   // Reset any additional form state

@@ -1,31 +1,31 @@
-function getToken() {
+function getToken(): string | null {
   return localStorage.getItem("jwt");
 }
 
-function getAuth() {
+function getAuth(): any {
   try {
-    return JSON.parse(localStorage.getItem("auth"));
+    return JSON.parse(localStorage.getItem("auth") || "null");
   } catch {
     return null;
   }
 }
 
-function hasRole(requiredRole) {
+function hasRole(requiredRole: string): boolean {
   const auth = getAuth();
   return auth?.role === requiredRole;
 }
 
-function canManageGames() {
+function canManageGames(): boolean {
   const auth = getAuth();
   return auth?.role === "admin" || auth?.role === "game_inputer";
 }
 
-function canManageUsers() {
+function canManageUsers(): boolean {
   const auth = getAuth();
   return auth?.role === "admin";
 }
 
-function isTokenExpired(token) {
+function isTokenExpired(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     const now = Math.floor(Date.now() / 1000);
@@ -35,13 +35,13 @@ function isTokenExpired(token) {
   }
 }
 
-function logout() {
+function logout(): void {
   localStorage.removeItem("jwt");
   localStorage.removeItem("auth");
-  window.location.href = "/login.html";
+  window.location.href = "../pages/login.html";
 }
 
-function requireAuth() {
+function requireAuth(): void {
   const token = getToken();
 
   if (!token || isTokenExpired(token)) {
@@ -49,7 +49,7 @@ function requireAuth() {
   }
 }
 
-function requireAdmin() {
+function requireAdmin(): void {
   requireAuth();
 
   const auth = getAuth();
@@ -61,3 +61,11 @@ function requireAdmin() {
 
 // Executa automaticamente ao carregar a página
 requireAuth();
+
+// Check if current page requires admin access
+if (window.location.pathname.includes('users.html')) {
+  requireAdmin();
+}
+
+// Export functions for use in other modules
+export { getToken, getAuth, hasRole, canManageGames, canManageUsers, logout, requireAuth, requireAdmin };

@@ -1,27 +1,26 @@
-// userManagement.js - User management module
-// Handles user CRUD operations, form interactions, and user display
-
 import { showStatusMessage, handleApiResponse, resetForm } from "./forms.js";
 import { clearTableBody, querySelector, getElement, setText } from "./dom.js";
+import { authFetch } from "./utils.js";
+import type { User } from "./types/api.js";
 
 const usersPath = "/users";
 
 /* ============================================================
    FUNÇÃO: LISTAR USERS
    ============================================================ */
-async function loadUsers() {
+async function loadUsers(): Promise<void> {
   try {
     const response = await authFetch(usersPath);
-    const users = await response.json();
+    const users: User[] = await response.json();
 
     // Use DOM utility to clear table
     clearTableBody("users-table");
 
     // Create custom row processor for users data
-    const tableBody = querySelector("#users-table tbody");
+    const tableBody = querySelector("#users-table tbody") as HTMLTableSectionElement;
     if (!tableBody) return;
 
-    users.forEach((user) => {
+    users.forEach((user: User) => {
       const row = document.createElement("tr");
 
       row.innerHTML = `
@@ -58,23 +57,23 @@ async function loadUsers() {
 /* ============================================================
    ADICIONAR OU ATUALIZAR USER
    ============================================================ */
-function setupUserForm() {
-  getElement("user-form").addEventListener("submit", async (e) => {
+function setupUserForm(): void {
+  getElement("user-form")?.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const form = e.target;
-    const originalEmail = form.user_email_original.value;
+    const form = e.target as HTMLFormElement;
+    const originalEmail = (form.user_email_original as HTMLInputElement).value;
     const isEdit = Boolean(originalEmail);
 
     const data = {
-      username: form.user_username.value,
-      role: form.user_role.value,
-      active: form.user_active.checked,
+      username: (form.user_username as HTMLInputElement).value,
+      role: (form.user_role as HTMLSelectElement).value,
+      active: (form.user_active as HTMLInputElement).checked,
     };
 
     if (!isEdit) {
-      data.email = form.user_email.value;
-      data.password = form.user_password.value;
+      (data as any).email = (form.user_email as HTMLInputElement).value;
+      (data as any).password = (form.user_password as HTMLInputElement).value;
     }
 
     try {
@@ -96,7 +95,7 @@ function setupUserForm() {
           : "✅ Usuário criado com sucesso!",
       );
 
-      // 🔑 Sempre sai do modo edição, independente do resultado
+      // Always exit edit mode, regardless of result
       resetUserForm();
 
       if (!success) return;
@@ -108,7 +107,7 @@ function setupUserForm() {
         "error",
       );
 
-      // 🔑 Mesmo em erro de rede, limpa o estado do formulário
+      // Even on network error, clear form state
       resetUserForm();
     }
   });
@@ -117,20 +116,27 @@ function setupUserForm() {
 /* ============================================================
    BOTÕES DE EDITAR E DELETAR
    ============================================================ */
-function attachUserButtons() {
+function attachUserButtons(): void {
   // Use document.querySelectorAll since we need multiple elements
-  document.querySelectorAll(".btn-edit").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      getElement("user_username").value = btn.dataset.username;
-      getElement("user_email").value = btn.dataset.email;
-      getElement("user_role").value = btn.dataset.role;
-      getElement("user_active").checked = btn.dataset.active === "true";
+  document.querySelectorAll(".btn-edit").forEach((btn: Element) => {
+    const button = btn as HTMLButtonElement;
+    button.addEventListener("click", () => {
+      const emailElement = getElement("user_email") as HTMLInputElement;
+      const usernameElement = getElement("user_username") as HTMLInputElement;
+      const roleElement = getElement("user_role") as HTMLSelectElement;
+      const activeElement = getElement("user_active") as HTMLInputElement;
 
-      getElement("user_email").disabled = true;
-      getElement("user_email_original").value = btn.dataset.email;
+      usernameElement.value = button.dataset.username || "";
+      emailElement.value = button.dataset.email || "";
+      roleElement.value = button.dataset.role || "";
+      activeElement.checked = button.dataset.active === "true";
 
-      getElement("user_password").value = "";
-      getElement("password-group").style.display = "none";
+      emailElement.disabled = true;
+      (getElement("user_email_original") as HTMLInputElement).value = button.dataset.email || "";
+
+      (getElement("user_password") as HTMLInputElement).value = "";
+      const passwordGroup = getElement("password-group") as HTMLElement;
+      if (passwordGroup) passwordGroup.style.display = "none";
 
       setText("form-title", "Editar Usuário");
 
@@ -138,15 +144,16 @@ function attachUserButtons() {
     });
   });
 
-  document.querySelectorAll(".btn-delete").forEach((btn) => {
-    btn.addEventListener("click", async () => {
+  document.querySelectorAll(".btn-delete").forEach((btn: Element) => {
+    const button = btn as HTMLButtonElement;
+    button.addEventListener("click", async () => {
       if (!confirm("Deseja realmente deletar este usuário?")) return;
 
-      const email = btn.dataset.email;
+      const email = button.dataset.email;
 
       try {
         const response = await authFetch(
-          `${usersPath}/${encodeURIComponent(email)}`,
+          `${usersPath}/${encodeURIComponent(email || "")}`,
           { method: "DELETE" },
         );
 
@@ -156,30 +163,30 @@ function attachUserButtons() {
           loadUsers();
         }
       } catch (err) {
-        showStatusMessage(`Erro de rede: ${err.message}`, "error");
+        showStatusMessage(`Erro de rede: ${(err as Error).message}`, "error");
       }
     });
   });
 }
 
-function resetUserForm() {
-  const form = getElement("user-form");
+function resetUserForm(): void {
+  const form = getElement("user-form") as HTMLFormElement;
 
   resetForm(form, {
-    emailOriginal: getElement("user_email_original"),
-    emailField: getElement("user_email"),
-    passwordGroup: getElement("password-group"),
-    formTitle: getElement("form-title"),
+    emailOriginal: getElement("user_email_original") as HTMLInputElement,
+    emailField: getElement("user_email") as HTMLInputElement,
+    passwordGroup: getElement("password-group") as HTMLElement,
+    formTitle: getElement("form-title") as HTMLElement,
     defaultTitle: "Adicionar Usuário",
   });
 }
 
 // Exported functions for users.js
-export async function initUserManagement() {
+export async function initUserManagement(): Promise<void> {
   loadUsers();
   setupUserForm();
 }
 
-export function loadUsersForManagement() {
+export function loadUsersForManagement(): void {
   loadUsers();
 }

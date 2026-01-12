@@ -3,7 +3,7 @@ resource "aws_cloudfront_distribution" "website" {
   is_ipv6_enabled = true
   comment         = "ASC Futevôlei Frontend (${terraform.workspace})"
 
-  default_root_object = "index.html"
+  default_root_object = "pages/index.html"
 
   origin {
     domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
@@ -114,7 +114,7 @@ resource "aws_cloudfront_distribution" "website" {
   custom_error_response {
     error_code         = 404
     response_code      = 200
-    response_page_path = "/index.html"
+    response_page_path = "/pages/index.html"
   }
 
   tags = local.default_tags
