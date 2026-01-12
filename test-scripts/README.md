@@ -1,47 +1,22 @@
-# Test Scripts
+# ASC Futevôlei – Test Scripts
 
-This directory contains test scripts for validating application functionality.
+Node.js test scripts for validating application functionality and permissions.
 
-## Running Tests
+## Organization
 
-### authUtils Test
+- test_auth_utils.js: tests authentication utilities
+- test_game_inputer_permissions.js: tests role-based permissions
+- package.json: dependencies for tests
 
-Tests the shared authentication utilities module for role checking and validation.
+## How it Works
 
-```bash
-# Run the test
-node test_auth_utils.js
-```
+- Run with node command
+- Validate JWT authentication and authorization
+- Test API permissions for different user roles
+- Output results to console
 
-### game_inputer Permissions Test
+## TODOs
 
-Tests that users with "game_inputer" role can create games but cannot create users.
-
-```bash
-# Set the JWT secret environment variable
-export JWT_SECRET="your-jwt-secret-here"
-
-# Run the test
-node test_game_inputer_permissions.js
-```
-
-Or run in one command:
-
-```bash
-JWT_SECRET="your-secret-here" node test_game_inputer_permissions.js
-```
-
-### Getting the JWT Secret
-
-The JWT secret can be found in:
-
-- AWS Lambda environment variables (for deployed lambdas)
-- Local development configuration
-- Ask your team lead for the development secret
-
-## Test Coverage
-
-- JWT token validation
-- Role-based authorization
-- Lambda function permissions
-- Backward compatibility
+- Continue creating unit tests for the codebase
+- Add integration tests for API endpoints
+- Implement automated test runner
